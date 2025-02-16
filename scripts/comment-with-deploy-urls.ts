@@ -68,7 +68,7 @@ async function main(): Promise<void> {
 		}
 
 		// Extract the worker name from the "env.staging.name" property.
-		const stagingName = wranglerContent.env.staging.name;
+		const stagingName = wranglerContent.env?.staging?.name;
 		if (stagingName) {
 			const url = `https://${stagingName}.andrewdjessop.workers.dev`;
 			console.log(`Found URL for ${project}: ${url}`);
@@ -80,36 +80,77 @@ async function main(): Promise<void> {
 
 	// Join all found URLs (if more than one) into a single string.
 	const deployUrls = urls.join("\n");
+	const commentHeader = "Staging URLs deployed:";
 
+	// Construct the request body.
 	const requestBody = {
-		body: `
-		Staging URLs deployed:
-		${deployUrls}`,
+		body: `${commentHeader}\n${deployUrls}`,
 	};
 
-	console.log("Posting comment to:", commentsUrl);
+	console.log("Checking for existing comment...");
+
+	// Common headers used for both GET and POST/PATCH requests.
+	const headers = {
+		"Content-Type": "application/json",
+		Authorization: `token ${githubToken}`,
+		Accept: "application/vnd.github+json",
+		"User-Agent": "github-actions[bot]",
+		"X-GitHub-Api-Version": "2022-11-28",
+	};
 
 	try {
-		const response = await fetch(commentsUrl, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `token ${githubToken}`,
-				Accept: "application/vnd.github+json",
-				"User-Agent": "github-actions[bot]",
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
-			body: requestBody,
+		// Get all comments from the PR.
+		const getResponse = await fetch(commentsUrl, {
+			method: "GET",
+			headers,
 		});
 
-		if (!response.ok) {
-			const errorText = await response.text();
+		if (!getResponse.ok) {
+			const errorText = await getResponse.text();
 			throw new Error(
-				`Failed to create comment: ${response.status} ${errorText}`,
+				`Failed to fetch comments: ${getResponse.status} ${errorText}`,
 			);
 		}
 
-		console.log("Comment posted successfully");
+		const comments = await getResponse.json();
+
+		// Look for an existing comment that contains the header.
+		const existingComment = comments.find(
+			(comment: { body?: string; url?: string }) =>
+				comment.body && comment.body.includes(commentHeader),
+		);
+
+		if (existingComment && existingComment.url) {
+			console.log("Existing comment found. Updating comment...");
+			// Update the existing comment.
+			const patchResponse = await fetch(existingComment.url, {
+				method: "PATCH",
+				headers,
+				body: JSON.stringify(requestBody),
+			});
+			if (!patchResponse.ok) {
+				const errorText = await patchResponse.text();
+				throw new Error(
+					`Failed to update comment: ${patchResponse.status} ${errorText}`,
+				);
+			}
+			console.log("Comment updated successfully");
+		} else {
+			console.log("No existing comment found. Creating a new comment...");
+			// Post a new comment.
+			const postResponse = await fetch(commentsUrl, {
+				method: "POST",
+				headers,
+				body: JSON.stringify(requestBody),
+			});
+			if (!postResponse.ok) {
+				const errorText = await postResponse.text();
+				throw new Error(
+					`Failed to create comment: ${postResponse.status} ${errorText}`,
+				);
+			}
+			console.log("Comment posted successfully");
+		}
 	} catch (error) {
 		console.error("Error posting comment:", error);
 		process.exit(1);
