@@ -32,6 +32,11 @@ async function main(): Promise<void> {
 
 	const urls: string[] = [];
 
+	if (projects.length === 0) {
+		console.log("No affected projects found");
+		process.exit(0);
+	}
+
 	for (const project of projects) {
 		const packageJsonPath = `./workers/${project}/package.json`;
 		if (!fs.existsSync(packageJsonPath)) {
