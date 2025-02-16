@@ -9,6 +9,7 @@ on:
 permissions:
   actions: read
   contents: read
+  issues: write  # Allow writing issue comments
 
 jobs:
   main:
@@ -18,50 +19,49 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
     steps:
-      # Checkout repository with full history.
+      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # Set up Node.js and cache npm dependencies.
+      # Set up Node.js with caching for npm dependencies
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: 'npm'
 
-      # Install dependencies.
+      # Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # Set commit SHAs for Nx.
+      # Set commit shas for Nx if needed
       - name: Set Nx SHAs
         uses: nrwl/nx-set-shas@v4
 
-      # Run Nx tasks including the staging deployment.
+      # Run Nx tasks including the staging deployment and extract the URL.
       - name: Run Nx tasks including staging deployment
         id: deploy-staging
         run: |
-          # Execute Nx targets and capture the output
           output=$(npx nx affected -t lint test:ci type-check build deploy:staging)
           echo "$output"
-          # Optionally save output for debugging:
+          # Optionally, save output to file for debugging.
           echo "$output" > staging_deploy_output.txt
           # Extract the first URL starting with "https://"
           url=$(echo "$output" | grep -oP 'https://\S+' | head -n 1)
           echo "Extracted staging URL: $url"
-          # Set the URL as an environment variable for later steps
+          # Set the URL as an environment variable for subsequent steps.
           echo "STAGING_URL=$url" >> $GITHUB_ENV
-          # Also set as an output variable if needed
+          # Also, set as an output variable.
           echo "staging_url=$url" >> "$GITHUB_OUTPUT"
 
-      # If the workflow is triggered by a pull request, post a comment with the staging URL.
+      # Add a comment to the PR with the staging deployment link.
       - name: Add comment to PR with staging deployment link
         if: ${{ github.event_name == 'pull_request' }}
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             github.rest.issues.createComment({
               owner: context.repo.owner,
