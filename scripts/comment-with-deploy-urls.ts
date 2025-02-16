@@ -11,11 +11,15 @@ if (args.length < 3) {
 // Destructure the positional arguments.
 const [commentsUrl, deployUrl, githubToken] = args;
 
+postIssueComment();
+
 export async function postIssueComment(): Promise<void> {
 	// Construct the request body with the comment content.
 	const requestBody = {
 		body: deployUrl,
 	};
+
+	console.log(deployUrl, commentsUrl, githubToken);
 
 	// Send the POST request to the GitHub API.
 	const response = await fetch(commentsUrl, {
@@ -37,4 +41,6 @@ export async function postIssueComment(): Promise<void> {
 			`Failed to create comment: ${response.status} ${errorText}`,
 		);
 	}
+
+	console.log(success);
 }
