@@ -43,18 +43,9 @@ jobs:
       # Run Nx tasks including the staging deployment and extract the URL.
       - name: Run Nx tasks including staging deployment
         id: deploy-staging
-        run: |
-          output=$(npx nx affected -t lint test:ci type-check build deploy:staging)
-          echo "$output"
-          # Extract the first URL starting with "https://"
-          url=$(echo "$output" | grep -oP 'https://\S+' | head -n 1)
-          echo "Extracted staging URL: $url"
-          # Set the URL as an environment variable for subsequent steps.
-          echo "STAGING_URL=$url" >> $GITHUB_ENV
-          # Also, set as an output variable.
-          echo "staging_url=$url" >> "$GITHUB_OUTPUT"
+        run: npx nx affected -t lint test:ci type-check build deploy:staging
 
       - name: Run comment script
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          npx tsx scripts/comment-with-deploy-urls.ts "${{ github.event.pull_request.comments_url }}" "${{ steps.deploy-staging.outputs.staging_url }}" "${{ secrets.GITHUB_TOKEN }}"
+          npx tsx scripts/comment-with-deploy-urls.ts "${{ github.event.pull_request.comments_url }}" "${{ secrets.GITHUB_TOKEN }}"
