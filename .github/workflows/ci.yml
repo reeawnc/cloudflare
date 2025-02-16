@@ -46,8 +46,6 @@ jobs:
         run: |
           output=$(npx nx affected -t lint test:ci type-check build deploy:staging)
           echo "$output"
-          # Optionally, save output to file for debugging.
-          echo "$output" > staging_deploy_output.txt
           # Extract the first URL starting with "https://"
           url=$(echo "$output" | grep -oP 'https://\S+' | head -n 1)
           echo "Extracted staging URL: $url"
