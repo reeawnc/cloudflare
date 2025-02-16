@@ -1,40 +1,109 @@
-const args = process.argv.slice(2);
+#!/usr/bin/env tsx
+import { execSync } from "child_process";
+import * as fs from "fs";
 
-// Check if the required two arguments are provided.
-if (args.length < 3) {
+// Validate arguments
+const args = process.argv.slice(2);
+if (args.length < 2) {
 	console.error(
-		"Usage: node script.js <commentsUrl> <deployUrl> <githubToken>",
+		"Usage: npx tsx scripts/comment-with-deploy-urls.ts <commentsUrl> <githubToken>",
 	);
 	process.exit(1);
 }
 
-// Destructure the positional arguments.
-const [commentsUrl, deployUrl, githubToken] = args;
+const [commentsUrl, githubToken] = args;
 
-postIssueComment();
+// Retrieve the list of affected projects.
+console.log("Getting affected projects...");
+let affectedProjectsOutput: string;
+try {
+	affectedProjectsOutput = execSync("npx nx show projects --affected", {
+		encoding: "utf-8",
+	});
+} catch (error) {
+	console.error("Error retrieving affected projects", error);
+	process.exit(1);
+}
 
-export async function postIssueComment(): Promise<void> {
-	// Construct the request body with the comment content.
-	const requestBody = {
-		body: deployUrl,
-	};
+// Assume projects are space- or newline-separated.
+const projects = affectedProjectsOutput.trim().split(/\s+/);
+console.log("Affected projects:", projects);
 
-	console.log(deployUrl, commentsUrl, githubToken);
+const urls: string[] = [];
 
-	// Send the POST request to the GitHub API.
+for (const project of projects) {
+	const packageJsonPath = `${project}/package.json`;
+	if (!fs.existsSync(packageJsonPath)) {
+		console.log(`Skipping ${project}: package.json not found`);
+		continue;
+	}
+
+	let pkg: any;
+	try {
+		pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+	} catch (error) {
+		console.error(`Error parsing ${packageJsonPath}:`, error);
+		continue;
+	}
+
+	// Check for deploy:staging script in package.json
+	if (!pkg.scripts || !pkg.scripts["deploy:staging"]) {
+		console.log(`Skipping ${project}: no deploy:staging script found`);
+		continue;
+	}
+
+	const wranglerPath = `${project}/wrangler.jsonc`;
+	if (!fs.existsSync(wranglerPath)) {
+		console.log(`Skipping ${project}: wrangler.jsonc not found`);
+		continue;
+	}
+
+	let wranglerContent: string;
+	try {
+		wranglerContent = fs.readFileSync(wranglerPath, "utf-8");
+	} catch (error) {
+		console.error(`Error reading ${wranglerPath}:`, error);
+		continue;
+	}
+
+	// Use a regex to extract the worker name from "env.staging.name"
+	const match = wranglerContent.match(
+		/"env\.staging"\s*:\s*\{\s*"name"\s*:\s*"([^"]+)"/,
+	);
+	if (match && match[1]) {
+		const name = match[1];
+		const url = `https://${name}.andrewdjessop.workers.dev`;
+		console.log(`Found URL for ${project}: ${url}`);
+		urls.push(url);
+	} else {
+		console.log(`No staging name found in ${wranglerPath}`);
+	}
+}
+
+// Join all found URLs (if more than one) into a single string.
+const deployUrl = urls.join(", ");
+console.log("Final deployed staging URL(s):", deployUrl);
+
+// Construct the request body for posting the comment.
+const requestBody = {
+	body: deployUrl,
+};
+
+console.log("Posting comment to:", commentsUrl);
+
+try {
 	const response = await fetch(commentsUrl, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 			Authorization: `token ${githubToken}`,
 			Accept: "application/vnd.github+json",
-			"User-Agent": "Runestone",
+			"User-Agent": "github-actions[bot]",
 			"X-GitHub-Api-Version": "2022-11-28",
 		},
 		body: JSON.stringify(requestBody),
 	});
 
-	// Check if the request was successful.
 	if (!response.ok) {
 		const errorText = await response.text();
 		throw new Error(
@@ -42,5 +111,8 @@ export async function postIssueComment(): Promise<void> {
 		);
 	}
 
-	console.log(success);
+	console.log("Comment posted successfully");
+} catch (error) {
+	console.error("Error posting comment:", error);
+	process.exit(1);
 }

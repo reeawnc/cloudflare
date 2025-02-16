@@ -9,7 +9,6 @@ on:
 permissions:
   actions: write
   contents: read
-  issues: write  # Allow writing issue comments
   pull-requests: write
 
 jobs:
@@ -59,16 +58,3 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           npx tsx scripts/comment-with-deploy-urls.ts "${{ github.event.pull_request.comments_url }}" "${{ steps.deploy-staging.outputs.staging_url }}" "${{ secrets.GITHUB_TOKEN }}"
-
-      # Add a comment to the PR with the staging deployment link.
-      # - name: Add comment to PR with staging deployment link
-      #   if: ${{ github.event_name == 'pull_request' }}
-      #   uses: actions/github-script@v7
-      #   with:
-      #     script: |
-      #       octokit.rest.issues.createComment({
-      #         issue_number: context.issue.number,
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         body: `The staging deployment is now live at: ${process.env.STAGING_URL}`
-      #       })
