@@ -57,7 +57,7 @@ jobs:
       - name: Run comment script
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          npx tsx path-to-my-script.ts "${{ github.event.pull_request.comments_url }}" "${{ steps.deploy-staging.outputs.staging_url }}" "${{ secrets.GITHUB_TOKEN }}"
+          npx tsx scripts/comment-with-deploy-urls.ts "${{ github.event.pull_request.comments_url }}" "${{ steps.deploy-staging.outputs.staging_url }}" "${{ secrets.GITHUB_TOKEN }}"
 
       # Add a comment to the PR with the staging deployment link.
       # - name: Add comment to PR with staging deployment link
