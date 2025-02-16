@@ -8,6 +8,7 @@ import { EventSourceParserStream } from "eventsource-parser/stream";
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 
 app.use(cors());
+
 app.post("/", async (c) => {
 	const payload: {
 		messages?: Array<RoleScopedChatInput>;
