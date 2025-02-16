@@ -99,7 +99,7 @@ async function main(): Promise<void> {
 				"User-Agent": "github-actions[bot]",
 				"X-GitHub-Api-Version": "2022-11-28",
 			},
-			body: JSON.stringify(requestBody),
+			body: requestBody,
 		});
 
 		if (!response.ok) {
