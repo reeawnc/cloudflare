@@ -1,0 +1,8 @@
+{
+	"name": "logger",
+	"main": "src/index.ts",
+	"scripts": {
+		"test": "vitest --watch=false",
+		"test:ci": "vitest --watch=false"
+	}
+}

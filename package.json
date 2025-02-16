@@ -1,0 +1,52 @@
+{
+	"name": "ai-mono",
+	"scripts": {
+		"generate-app": "npx tsx ./scripts/generate-app/index.ts",
+		"generate-worker": "npx tsx ./scripts/generate-worker/index.ts"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.8.2",
+		"@clack/prompts": "^0.10.0",
+		"@types/react": "^19.0.8",
+		"@types/react-dom": "^19.0.3",
+		"@vitejs/plugin-react": "^4.3.4",
+		"globals": "^15.14.0",
+		"handlebars": "^4.7.8",
+		"miniflare": "^3.20250204.1",
+		"nx": "^20.4.3",
+		"postcss": "^8.5.2",
+		"postcss-preset-mantine": "^1.17.0",
+		"postcss-simple-vars": "^7.0.1",
+		"typescript": "^5.5.2",
+		"vite": "^6.1.0",
+		"vitest": "^1.5.0",
+		"wrangler": "^3.107.2"
+	},
+	"dependencies": {
+		"@ai-sdk/openai": "^1.1.9",
+		"@cloudflare/ai-utils": "^1.0.1",
+		"@mantine/charts": "^7.16.3",
+		"@mantine/code-highlight": "^7.16.3",
+		"@mantine/core": "^7.16.3",
+		"@mantine/dates": "^7.16.3",
+		"@mantine/form": "^7.16.3",
+		"@mantine/hooks": "^7.16.3",
+		"@mantine/modals": "^7.16.3",
+		"@mantine/notifications": "^7.16.3",
+		"ai": "^4.1.39",
+		"dayjs": "^1.11.13",
+		"eventsource-parser": "^3.0.0",
+		"hono": "^4.7.1",
+		"langchain": "^0.3.15",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"recharts": "^2.15.1",
+		"workers-ai-provider": "^0.0.11",
+		"zod": "^3.24.2"
+	},
+	"workspaces": [
+		"workers/*",
+		"libs/*",
+		"apps/*"
+	]
+}

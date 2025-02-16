@@ -1,0 +1,12 @@
+{
+	"name": "tool-call-verification",
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"lint": "biome lint --error-on-warnings ./src",
+		"start": "wrangler dev",
+		"types": "wrangler types src/types/env.d.ts && npx tsx ../../scripts/export-env-interface.ts src/types/env.d.ts",
+		"test": "vitest --watch=false",
+		"test:ci": "vitest --watch=false"
+	}
+}
