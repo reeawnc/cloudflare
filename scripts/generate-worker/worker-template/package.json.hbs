@@ -1,7 +1,7 @@
 {
 	"name": "{{projectName}}",
 	"scripts": {
-		"deploy": "wrangler deploy",
+		"deploy:production": "wrangler deploy",
 		"deploy:staging": "wrangler deploy -e staging",
 		"dev": "wrangler dev -e development",
 		"lint": "biome lint --error-on-warnings ./src",
