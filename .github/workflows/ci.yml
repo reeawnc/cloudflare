@@ -18,49 +18,54 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
     steps:
-      # Check out the repository with full history
-      - uses: actions/checkout@v4
+      # Checkout repository with full history.
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # Set up Node.js with caching for npm dependencies
-      - uses: actions/setup-node@v3
+      # Set up Node.js and cache npm dependencies.
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: 'npm'
 
-      # Install dependencies in a clean environment
-      - run: npm ci
+      # Install dependencies.
+      - name: Install dependencies
+        run: npm ci
 
-      # Set commit shas for Nx (if required)
-      - uses: nrwl/nx-set-shas@v4
+      # Set commit SHAs for Nx.
+      - name: Set Nx SHAs
+        uses: nrwl/nx-set-shas@v4
 
-      # Run Nx tasks including linting, testing, type-checking, building and deploying to staging.
-      # The deploy command output is captured to extract the staging URL.
+      # Run Nx tasks including the staging deployment.
       - name: Run Nx tasks including staging deployment
-        id: nx
+        id: deploy-staging
         run: |
-          # Execute the combined Nx targets and capture the full output
+          # Execute Nx targets and capture the output
           output=$(npx nx affected -t lint test:ci type-check build deploy:staging)
           echo "$output"
-          # Optionally, save the output to a file for debugging:
+          # Optionally save output for debugging:
           echo "$output" > staging_deploy_output.txt
-          #
           # Extract the first URL starting with "https://"
-          # Adjust the regular expression if your output format changes.
           url=$(echo "$output" | grep -oP 'https://\S+' | head -n 1)
           echo "Extracted staging URL: $url"
-          # Set the URL as an output variable using the new GITHUB_OUTPUT syntax.
+          # Set the URL as an environment variable for later steps
+          echo "STAGING_URL=$url" >> $GITHUB_ENV
+          # Also set as an output variable if needed
           echo "staging_url=$url" >> "$GITHUB_OUTPUT"
 
-      # If the event is a pull request, add a comment containing the staging deployment link.
-      - name: Comment on PR with staging deployment link
+      # If the workflow is triggered by a pull request, post a comment with the staging URL.
+      - name: Add comment to PR with staging deployment link
         if: ${{ github.event_name == 'pull_request' }}
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: actions/github-script@v7
         with:
-          header: 'Staging Deployment'
-          message: |
-            The staging deployment is now live at:
-            ${{ steps.nx.outputs.staging_url }}
-
-            Please review the deployed changes.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              issue_number: context.issue.number,
+              repo: context.repo.repo,
+              body: `The staging deployment is now live at: ${process.env.STAGING_URL}`
+            })
