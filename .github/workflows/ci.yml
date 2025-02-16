@@ -54,13 +54,10 @@ jobs:
           # Also, set as an output variable.
           echo "staging_url=$url" >> "$GITHUB_OUTPUT"
 
-      - name: Add comment to PR with staging deployment link
+      - name: Run comment script
         if: ${{ github.event_name == 'pull_request' }}
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: ${{ steps.finder.outputs.pr }}
-          message: |
-            The staging deployment is now live at: ${process.env.STAGING_URL}
+        run: |
+          npx tsx path-to-my-script.ts "${{ github.event.pull_request.comments_url }}" "${{ steps.deploy-staging.outputs.staging_url }}" "${{ secrets.GITHUB_TOKEN }}"
 
       # Add a comment to the PR with the staging deployment link.
       # - name: Add comment to PR with staging deployment link
