@@ -59,21 +59,18 @@ async function main(): Promise<void> {
 			continue;
 		}
 
-		let wranglerContent: string;
+		let wranglerContent: Record<string, any>;
 		try {
-			wranglerContent = fs.readFileSync(wranglerPath, "utf-8");
+			wranglerContent = JSON.parse(fs.readFileSync(wranglerPath, "utf-8"));
 		} catch (error) {
 			console.error(`Error reading ${wranglerPath}:`, error);
 			continue;
 		}
 
 		// Extract the worker name from the "env.staging.name" property.
-		const match = wranglerContent.match(
-			/"env\.staging"\s*:\s*\{\s*"name"\s*:\s*"([^"]+)"/,
-		);
-		if (match && match[1]) {
-			const name = match[1];
-			const url = `https://${name}.andrewdjessop.workers.dev`;
+		const stagingName = wranglerContent.env.staging.name;
+		if (stagingName) {
+			const url = `https://${stagingName}.andrewdjessop.workers.dev`;
 			console.log(`Found URL for ${project}: ${url}`);
 			urls.push(url);
 		} else {
@@ -82,12 +79,12 @@ async function main(): Promise<void> {
 	}
 
 	// Join all found URLs (if more than one) into a single string.
-	const deployUrl = urls.join(", ");
-	console.log("Final deployed staging URL(s):", deployUrl);
+	const deployUrls = urls.join("\n");
 
-	// Construct the request body for posting the comment.
 	const requestBody = {
-		body: deployUrl,
+		body: `
+		Staging URLs deployed:
+		${deployUrls}`,
 	};
 
 	console.log("Posting comment to:", commentsUrl);
