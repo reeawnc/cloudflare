@@ -54,15 +54,23 @@ jobs:
           # Also, set as an output variable.
           echo "staging_url=$url" >> "$GITHUB_OUTPUT"
 
-      # Add a comment to the PR with the staging deployment link.
       - name: Add comment to PR with staging deployment link
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/github-script@v7
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          script: |
-            octokit.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `The staging deployment is now live at: ${process.env.STAGING_URL}`
-            })
+          header: ${{ steps.finder.outputs.pr }}
+          message: |
+            The staging deployment is now live at: ${process.env.STAGING_URL}
+
+      # Add a comment to the PR with the staging deployment link.
+      # - name: Add comment to PR with staging deployment link
+      #   if: ${{ github.event_name == 'pull_request' }}
+      #   uses: actions/github-script@v7
+      #   with:
+      #     script: |
+      #       octokit.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: `The staging deployment is now live at: ${process.env.STAGING_URL}`
+      #       })
