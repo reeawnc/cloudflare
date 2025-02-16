@@ -112,7 +112,7 @@ async function main(): Promise<void> {
 			);
 		}
 
-		const comments = await getResponse.json();
+		const comments = (await getResponse.json()) as any[];
 
 		// Look for an existing comment that contains the header.
 		const existingComment = comments.find(
