@@ -33,7 +33,7 @@ async function main(): Promise<void> {
 	const urls: string[] = [];
 
 	for (const project of projects) {
-		const packageJsonPath = `${project}/package.json`;
+		const packageJsonPath = `./workers/${project}/package.json`;
 		if (!fs.existsSync(packageJsonPath)) {
 			console.log(`Skipping ${project}: package.json not found`);
 			continue;
@@ -53,7 +53,7 @@ async function main(): Promise<void> {
 			continue;
 		}
 
-		const wranglerPath = `${project}/wrangler.jsonc`;
+		const wranglerPath = `./workers/${project}/wrangler.jsonc`;
 		if (!fs.existsSync(wranglerPath)) {
 			console.log(`Skipping ${project}: wrangler.jsonc not found`);
 			continue;
