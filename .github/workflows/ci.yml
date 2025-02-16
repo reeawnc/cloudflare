@@ -10,6 +10,7 @@ permissions:
   actions: write
   contents: read
   issues: write  # Allow writing issue comments
+  pull-requests: write
 
 jobs:
   main:
