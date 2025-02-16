@@ -16,6 +16,11 @@ async function main(): Promise<void> {
 	// Retrieve the list of affected projects.
 	const projects = getAffectedProjects();
 
+	if (projects.length === 0) {
+		console.log("No affected projects found. Skipping comment.");
+		return;
+	}
+
 	// Extract deploy URLs from the affected projects.
 	const urls = getDeployUrls(projects);
 	const commentHeader = "Staging URLs deployed:";
