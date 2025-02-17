@@ -53,13 +53,12 @@ app.post("/", async (c) => {
 
 	// --- Step 2: Aggregation via a Larger LLM ---
 	// Build a prompt for the aggregator that incorporates all three responses.
-	const aggregatorPrompt =
-		`The following responses provide diverse perspectives on a given prompt:\n\n` +
-		angleOutputs
+	const aggregatorPrompt = `The following responses provide diverse perspectives on a given prompt:\n\n
+		${angleOutputs
 			.map((output, index) => `Response ${index + 1}: ${output}`)
-			.join("\n\n") +
-		`\n\nBased on these responses, please synthesise a comprehensive final result. ` +
-		`Return your answer as a JSON object in the format { "finalResult": "Your comprehensive result here." }`;
+			.join("\n\n")}
+		\n\nBased on these responses, please synthesise a comprehensive final result.
+		Return your answer as a JSON object in the format { "finalResult": "Your comprehensive result here." }`;
 
 	// Invoke the aggregator LLM.
 	const { object: aggregatorResult } = await generateObject({
