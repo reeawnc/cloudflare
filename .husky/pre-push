@@ -1,0 +1,2 @@
+npm install
+npx nx affected --base=main --head=HEAD npx nx affected -t lint test:ci type-check build
