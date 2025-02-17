@@ -5,7 +5,7 @@ import type {
 } from "hono";
 import type { Env } from "./env";
 
-export type Variables = {};
+export type Variables = Record<string, string>;
 
 export type App = Hono<{ Bindings: Env; Variables: Variables }>;
 
