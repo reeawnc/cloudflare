@@ -1,5 +1,5 @@
 {
-	"name": "tool-call-verification",
+	"name": "workers-ai-tool-calling",
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",

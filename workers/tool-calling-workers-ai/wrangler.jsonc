@@ -1,0 +1,36 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "workers-ai-tool-calling",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-01-29",
+	"compatibility_flags": ["nodejs_compat"],
+	"vars": {
+		"ENVIRONMENT": "production"
+	},
+	"env": {
+		"development": {
+			"name": "workers-ai-tool-calling-dev",
+			"vars": {
+				"ENVIRONMENT": "development"
+			},
+			"ai": {
+				"binding": "AI"
+			}
+		},
+		"staging": {
+			"name": "workers-ai-tool-calling-staging",
+			"vars": {
+				"ENVIRONMENT": "staging"
+			},
+			"ai": {
+				"binding": "AI"
+			}
+		}
+	},
+	"observability": {
+		"enabled": true
+	},
+	"ai": {
+		"binding": "AI"
+	}
+}

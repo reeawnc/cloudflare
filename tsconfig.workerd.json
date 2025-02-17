@@ -1,12 +1,13 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "types": [
-      "./types/workerd.d.ts"
-    ]
-  },
-  "include": [
-    "./workers/chat-server/src/**/*.ts",
-    "./workers/tool-call-verification/src/**/*.ts"
-  ]
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"types": ["./types/workerd.d.ts"]
+	},
+	"include": [
+		"./workers/chat-server/src/**/*.ts",
+		"./workers/structured-output-openai/src/**/*.ts",
+		"./workers/tool-calling-openai/src/**/*.ts",
+		"./workers/tool-calling-workers-ai-provider/src/**/*.ts",
+		"./workers/tool-calling-workers-ai/src/**/*.ts"
+	]
 }
