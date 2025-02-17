@@ -3,7 +3,6 @@ import { cors } from "hono/cors";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
 import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
-export { TechnicalWriter } from "./workflows/TechnicalWriter";
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateObject } from "ai";
 import z from "zod";
