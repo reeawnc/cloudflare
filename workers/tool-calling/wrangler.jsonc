@@ -1,6 +1,6 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
-	"name": "tool-call-verification",
+	"name": "tool-calling",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-01-29",
 	"compatibility_flags": ["nodejs_compat"],
@@ -8,10 +8,22 @@
 		"ENVIRONMENT": "production"
 	},
 	"env": {
+		"development": {
+			"name": "tool-calling-dev",
+			"vars": {
+				"ENVIRONMENT": "development"
+			},
+			"ai": {
+				"binding": "AI"
+			}
+		},
 		"staging": {
-			"name": "tool-call-verification-staging",
+			"name": "tool-calling-staging",
 			"vars": {
 				"ENVIRONMENT": "staging"
+			},
+			"ai": {
+				"binding": "AI"
 			}
 		}
 	},
