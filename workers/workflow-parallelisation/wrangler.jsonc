@@ -1,6 +1,6 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
-	"name": "{{projectName}}",
+	"name": "workflow-parallelisation",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-01-29",
 	"compatibility_flags": ["nodejs_compat"],
@@ -9,7 +9,7 @@
 	},
 	"env": {
 		"development": {
-			"name": "{{projectName}}-dev",
+			"name": "workflow-parallelisation-dev",
 			"vars": {
 				"ENVIRONMENT": "development"
 			},
@@ -18,7 +18,7 @@
 			}
 		},
 		"staging": {
-			"name": "{{projectName}}-staging",
+			"name": "workflow-parallelisation-staging",
 			"vars": {
 				"ENVIRONMENT": "staging"
 			},
