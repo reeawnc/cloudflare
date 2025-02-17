@@ -19,15 +19,19 @@ async function main(): Promise<void> {
 	const templateName = await select({
 		message: "Pick a worker template.",
 		options: [
-			{ value: "chat-streaming", label: "Chat (Streaming)" },
+			{
+				value: "text-generation-workers-ai-provider",
+				label: "Text Generation (workers-ai-provider)",
+			},
 			{
 				value: "tool-calling-workers-ai-provider",
-				label: "workers-ai-provider Tool Calling",
+				label: "Tool Calling (workers-ai-provider)",
 			},
 			{
 				value: "structured-output-workers-ai-provider",
-				label: "workers-ai-provider Structured Output",
+				label: "Structured Output (workers-ai-provider)",
 			},
+			{ value: "chat-streaming", label: "Chat (Streaming)" },
 		],
 	});
 
