@@ -13,6 +13,7 @@
     "./workers/text-generation-workers-ai-provider/src/**/*.ts",
     "./workers/tool-calling-openai/src/**/*.ts",
     "./workers/tool-calling-workers-ai-provider/src/**/*.ts",
+    "./workers/workflow-parallelisation/src/**/*.ts",
     "./workers/workflow-prompt-chaining/src/**/*.ts",
     "./workers/workflow-routing/src/**/*.ts"
   ]
