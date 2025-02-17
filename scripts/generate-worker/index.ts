@@ -60,6 +60,7 @@ async function main(): Promise<void> {
 	}
 
 	try {
+		console.log(TSCONFIG_PATH);
 		const TEMPLATE_DIR = path.join(__dirname, templateName as string);
 		await copyDirectory(TEMPLATE_DIR, newLocation, { projectName });
 		await updateTsconfig(TSCONFIG_PATH, [
@@ -73,6 +74,9 @@ async function main(): Promise<void> {
 	}
 
 	// Display outro message.
+	log.warning(
+		"In order to use your worker in staging/production, you need to provide an API_KEY secret, and pass that value in requests with the x-api-key header.",
+	);
 	outro(`You're all set! Run 'npx nx dev ${projectName}' to start the worker.`);
 }
 

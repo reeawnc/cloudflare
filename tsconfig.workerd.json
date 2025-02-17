@@ -7,7 +7,6 @@
 		"./workers/chat-server/src/**/*.ts",
 		"./workers/structured-output-openai/src/**/*.ts",
 		"./workers/tool-calling-openai/src/**/*.ts",
-		"./workers/tool-calling-workers-ai-provider/src/**/*.ts",
-		"./workers/tool-calling-workers-ai/src/**/*.ts"
+		"./workers/tool-calling-workers-ai-provider/src/**/*.ts"
 	]
 }

@@ -5,9 +5,11 @@ import z from "zod";
 import { createWorkersAI } from "workers-ai-provider";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
+import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
+app.use("*", authApiKey);
 
 app.post("/", async (c) => {
 	const { prompt } = (await c.req.json()) as { prompt: string };
