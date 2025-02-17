@@ -31,6 +31,10 @@ async function main(): Promise<void> {
 				value: "structured-output-workers-ai-provider",
 				label: "Structured Output (workers-ai-provider)",
 			},
+			{
+				value: "workflow-prompt-chaining",
+				label: "Workflow: Prompt Chaining (workers-ai-provider)",
+			},
 			{ value: "chat-streaming", label: "Chat (Streaming)" },
 		],
 	});
