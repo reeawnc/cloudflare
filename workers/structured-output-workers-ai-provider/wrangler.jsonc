@@ -1,0 +1,36 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "structured-output-workers-ai-provider",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-01-29",
+	"compatibility_flags": ["nodejs_compat"],
+	"vars": {
+		"ENVIRONMENT": "production"
+	},
+	"env": {
+		"development": {
+			"name": "structured-output-workers-ai-provider-dev",
+			"vars": {
+				"ENVIRONMENT": "development"
+			},
+			"ai": {
+				"binding": "AI"
+			}
+		},
+		"staging": {
+			"name": "structured-output-workers-ai-provider-staging",
+			"vars": {
+				"ENVIRONMENT": "staging"
+			},
+			"ai": {
+				"binding": "AI"
+			}
+		}
+	},
+	"observability": {
+		"enabled": true
+	},
+	"ai": {
+		"binding": "AI"
+	}
+}
