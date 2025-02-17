@@ -4,10 +4,12 @@ import { streamText } from "hono/streaming";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
 import { EventSourceParserStream } from "eventsource-parser/stream";
+import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 
 app.use(cors());
+app.use("*", authApiKey);
 
 app.post("/", async (c) => {
 	const payload: {

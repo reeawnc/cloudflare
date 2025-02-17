@@ -1,2 +1,29 @@
+#!/bin/sh
+# This husky pre-push hook fails if the lockfile changes after npm install.
+# Replace "package-lock.json" with your actual lockfile if needed.
+
+LOCKFILE="package-lock.json"
+
+# Ensure the lockfile exists.
+if [ ! -f "$LOCKFILE" ]; then
+  echo "Error: $LOCKFILE not found."
+  exit 1
+fi
+
+# Calculate the original hash of the lockfile.
+ORIGINAL_HASH=$(sha256sum "$LOCKFILE" | cut -d ' ' -f 1)
+
+# Run npm install.
 npm install
+
+# Recalculate the hash after npm install.
+NEW_HASH=$(sha256sum "$LOCKFILE" | cut -d ' ' -f 1)
+
+# Compare the hashes.
+if [ "$ORIGINAL_HASH" != "$NEW_HASH" ]; then
+  echo "Error: $LOCKFILE has been modified after npm install. Please review and commit the updated lockfile."
+  exit 1
+fi
+
+# Continue with the remaining pre-push commands.
 npx nx affected --base=main --head=HEAD -t lint types test:ci type-check build

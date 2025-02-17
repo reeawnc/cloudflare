@@ -1,0 +1,14 @@
+{
+	"name": "tool-calling-workers-ai",
+	"scripts": {
+		"deploy:production": "wrangler deploy",
+		"deploy:staging": "wrangler deploy -e staging",
+		"dev": "wrangler dev -e development",
+		"lint": "biome lint --error-on-warnings ./src",
+		"start": "wrangler dev -e development",
+		"test": "vitest --watch=false",
+		"test:ci": "vitest --watch=false",
+		"type-check": "tsc --noEmit",
+		"types": "wrangler types src/types/env.d.ts && npx tsx ../../scripts/export-env-interface.ts src/types/env.d.ts"
+	}
+}
