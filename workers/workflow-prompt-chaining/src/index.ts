@@ -30,11 +30,12 @@ app.post("/", async (c) => {
 	const openai = createOpenAI({
 		apiKey: c.env.OPENAI_API_KEY,
 	});
+	const model = openai("gpt-4o-mini");
 
 	// --- Step 1: Generate the Outline ---
 	const outlinePrompt = `${prompt}\n\nPlease generate a detailed outline for the technical documentation.`;
 	const { object: outlineObj } = await generateObject({
-		model: openai("gpt-4o-mini"),
+		model,
 		schema: outlineSchema,
 		prompt: outlinePrompt,
 	});
@@ -42,7 +43,7 @@ app.post("/", async (c) => {
 	// --- Step 2: Evaluate the Outline ---
 	const criteriaPrompt = `Please evaluate the following technical documentation outline against our criteria:\n\n${JSON.stringify(outlineObj)}\n\nReturn a JSON object with a boolean field "meetsCriteria" that is true if the outline meets the criteria, or false otherwise.`;
 	const { object: criteriaObj } = await generateObject({
-		model: openai("gpt-4o-mini"),
+		model,
 		schema: criteriaSchema,
 		prompt: criteriaPrompt,
 	});
@@ -55,7 +56,7 @@ app.post("/", async (c) => {
 	// --- Step 3: Generate Full Technical Documentation ---
 	const documentationPrompt = `Using the following approved outline for technical documentation:\n\n${JSON.stringify(outlineObj)}\n\nPlease generate the full technical documentation in a detailed and organised manner.`;
 	const { object: documentationObj } = await generateObject({
-		model: openai("gpt-4o-mini"),
+		model,
 		schema: documentationSchema,
 		prompt: documentationPrompt,
 	});
