@@ -24,12 +24,12 @@ async function main(): Promise<void> {
 		message: "Pick a worker template.",
 		options: [
 			{
-				value: "text-generation-workers-ai-provider",
-				label: "Text Generation (workers-ai-provider)",
+				value: "text-generation",
+				label: "Text Generation",
 			},
 			{
-				value: "tool-calling-workers-ai-provider",
-				label: "Tool Calling (workers-ai-provider)",
+				value: "tool-calling",
+				label: "Tool Calling",
 			},
 			{
 				value: "structured-output",
@@ -37,23 +37,23 @@ async function main(): Promise<void> {
 			},
 			{
 				value: "workflow-prompt-chaining",
-				label: "Workflow: Prompt Chaining (workers-ai-provider)",
+				label: "Workflow: Prompt Chaining",
 			},
 			{
 				value: "workflow-routing",
-				label: "Workflow: Routing (workers-ai-provider)",
+				label: "Workflow: Routing",
 			},
 			{
 				value: "workflow-parallelisation",
-				label: "Workflow: Parallelisation (workers-ai-provider)",
+				label: "Workflow: Parallelisation",
 			},
 			{
 				value: "workflow-orchestrator-workers",
-				label: "Workflow: Orchestrator Workers (workers-ai-provider)",
+				label: "Workflow: Orchestrator Workers",
 			},
 			{
 				value: "workflow-evaluator-optimiser",
-				label: "Workflow: Evaluator Optimiser (workers-ai-provider)",
+				label: "Workflow: Evaluator Optimiser",
 			},
 		],
 	});
