@@ -1,6 +1,6 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
-	"name": "structured-output-openai",
+	"name": "structured-output",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-01-29",
 	"compatibility_flags": ["nodejs_compat"],
@@ -9,7 +9,7 @@
 	},
 	"env": {
 		"development": {
-			"name": "structured-output-openai-dev",
+			"name": "structured-output-dev",
 			"vars": {
 				"ENVIRONMENT": "development"
 			},
@@ -18,7 +18,7 @@
 			}
 		},
 		"staging": {
-			"name": "structured-output-openai-staging",
+			"name": "structured-output-staging",
 			"vars": {
 				"ENVIRONMENT": "staging"
 			},

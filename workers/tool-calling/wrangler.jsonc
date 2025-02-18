@@ -1,6 +1,6 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
-	"name": "text-generation-workers-ai-provider",
+	"name": "tool-calling",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-01-29",
 	"compatibility_flags": ["nodejs_compat"],
@@ -9,7 +9,7 @@
 	},
 	"env": {
 		"development": {
-			"name": "text-generation-workers-ai-provider-dev",
+			"name": "tool-calling-dev",
 			"vars": {
 				"ENVIRONMENT": "development"
 			},
@@ -18,7 +18,7 @@
 			}
 		},
 		"staging": {
-			"name": "text-generation-workers-ai-provider-staging",
+			"name": "tool-calling-staging",
 			"vars": {
 				"ENVIRONMENT": "staging"
 			},

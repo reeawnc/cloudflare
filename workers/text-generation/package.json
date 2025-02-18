@@ -1,5 +1,5 @@
 {
-	"name": "tool-calling-openai",
+	"name": "text-generation",
 	"scripts": {
 		"deploy:production": "wrangler deploy",
 		"deploy:staging": "wrangler deploy -e staging",
