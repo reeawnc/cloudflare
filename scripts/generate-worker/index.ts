@@ -100,16 +100,32 @@ async function main(): Promise<void> {
 		process.exit(1);
 	}
 
+	const TEMPLATE_DIR = path.join(__dirname, templateName as string);
+
 	try {
-		const TEMPLATE_DIR = path.join(__dirname, templateName as string);
 		await copyDirectory(TEMPLATE_DIR, newLocation, { projectName, provider });
+	} catch (error) {
+		log.error(JSON.stringify(error, null, 2));
+		log.error("An error occurred while generating the project.");
+		process.exit(1);
+	}
+
+	try {
 		await updateTsconfig(TSCONFIG_PATH, [
 			`./workers/${projectName}/src/**/*.ts`,
 		]);
+	} catch (error) {
+		log.error(JSON.stringify(error, null, 2));
+		log.error("An error occurred while generating the project.");
+		process.exit(1);
+	}
+
+	try {
 		formatDirectory(newLocation);
 
 		log.success(`Project successfully generated at ${newLocation}`);
 	} catch (error) {
+		log.error(JSON.stringify(error, null, 2));
 		log.error("An error occurred while generating the project.");
 		process.exit(1);
 	}

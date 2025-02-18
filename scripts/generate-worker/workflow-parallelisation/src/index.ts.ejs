@@ -5,16 +5,17 @@ import type { Variables } from "./types/hono.ts";
 import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
 <% if (provider === 'openai') { -%>
 import { createOpenAI } from "@ai-sdk/openai";
-<% } -$>
+<% } -%>
 <% if (provider === 'workers-ai') { -%>
 import { createWorkersAI } from "workers-ai-provider";
-<% } -$>
+<% } -%>
 import { generateObject } from "ai";
 import z from "zod";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
 app.use("*", authApiKey);
+
 // Schema for each small LLM output.
 // Each model returns a string field "angleOutput" representing its perspective.
 const angleSchema = z.object({
@@ -36,12 +37,12 @@ app.post("/", async (c) => {
 	});
 	const bigModel = openai("gpt-4o");
 	const smallModel = openai("gpt-4o-mini");
-<% } -$>
+<% } -%>
 <% if (provider === 'workers-ai') { -%>
     const workersai = createWorkersAI({ binding: c.env.AI });
     const bigModel = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
     const smallModel = workersai("@cf/meta/llama-3.1-8b-instruct-fp8");
-<% } -$>
+<% } -%>
 
 	// --- Step 1: Execute Parallel Calls (Voting) ---
 	// Prepare three distinct prompts to get diverse perspectives on the same input.
