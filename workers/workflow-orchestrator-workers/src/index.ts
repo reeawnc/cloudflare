@@ -38,10 +38,9 @@ app.post("/", async (c) => {
 
 	// --- Step 1: Orchestrator Generates Subtasks ---
 	// The orchestrator analyses the complex coding task and produces a list of subtasks.
-	const orchestratorPrompt =
-		`Given the following complex coding task:\n\n${prompt}\n\n` +
-		`Please break it down into a list of subtasks needed to complete the task. ` +
-		`Return your answer as a JSON object in the format { "tasks": ["Task 1", "Task 2", ...] }`;
+	const orchestratorPrompt = `Given the following complex coding task:\n\n${prompt}\n\n
+		Please break it down into a list of subtasks needed to complete the task.
+		Return your answer as a JSON object in the format { "tasks": ["Task 1", "Task 2", ...] }`;
 
 	const { object: orchestratorResult } = await generateObject({
 		model: bigModel,
@@ -52,9 +51,8 @@ app.post("/", async (c) => {
 	// --- Step 2: Workers Execute Each Subtask in Parallel ---
 	// For each subtask, call a worker LLM instance to address it.
 	const workerPromises = orchestratorResult.tasks.map((taskPrompt) => {
-		const workerLLMPrompt =
-			`You are a specialised coding assistant. Please complete the following subtask:\n\n${taskPrompt}\n\n` +
-			`Return your result as a JSON object in the format { "response": "Your detailed response here." }`;
+		const workerLLMPrompt = `You are a specialised coding assistant. Please complete the following subtask:\n\n${taskPrompt}\n\n
+			Return your result as a JSON object in the format { "response": "Your detailed response here." }`;
 
 		return generateObject({
 			model: smallModel,
@@ -69,13 +67,12 @@ app.post("/", async (c) => {
 
 	// --- Step 3: Aggregator Synthesises the Worker Responses ---
 	// The aggregator LLM receives all worker outputs and synthesises a final comprehensive result.
-	const aggregatorPrompt =
-		`The following are responses from various workers addressing subtasks for a complex coding task:\n\n` +
-		workerResponses
+	const aggregatorPrompt = `The following are responses from various workers addressing subtasks for a complex coding task:\n\n
+		${workerResponses
 			.map((resp, index) => `Subtask ${index + 1}: ${resp}`)
-			.join("\n\n") +
-		`\n\nPlease synthesise these responses into a single, comprehensive final result. ` +
-		`Return your answer as a JSON object in the format { "finalResult": "Your comprehensive result here." }`;
+			.join("\n\n")}
+		\n\nPlease synthesise these responses into a single, comprehensive final result.
+		Return your answer as a JSON object in the format { "finalResult": "Your comprehensive result here." }`;
 
 	const { object: aggregatorResult } = await generateObject({
 		model: bigModel,
