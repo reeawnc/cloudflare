@@ -43,6 +43,10 @@ async function main(): Promise<void> {
 				value: "workflow-parallelisation",
 				label: "Workflow: Parallelisation (workers-ai-provider)",
 			},
+			{
+				value: "workflow-orchestrator-workers",
+				label: "Workflow: Orchestrator Workers (workers-ai-provider)",
+			},
 			{ value: "chat-streaming", label: "Chat (Streaming)" },
 		],
 	});
