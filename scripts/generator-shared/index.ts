@@ -2,7 +2,8 @@ import { log } from "@clack/prompts";
 import * as fs from "fs/promises";
 import * as path from "path";
 import { existsSync } from "fs";
-import Handlebars from "handlebars";
+import ejs from "ejs";
+import { execSync } from "child_process";
 
 /**
  * Recursively copies all files and directories from src to dest.
@@ -31,16 +32,16 @@ export async function copyDirectory(
 			// Recursively process subdirectories.
 			await copyDirectory(srcPath, destPath, context);
 		} else if (entry.isFile()) {
-			// Check if the file has a Handlebars extension ('.hbs').
-			if (entry.name.endsWith(".hbs")) {
+			// Check if the file has a Handlebars extension ('.ejs').
+			if (entry.name.endsWith(".ejs")) {
+				console.log(entry.name);
 				// Read the template file content.
 				const templateContent = await fs.readFile(srcPath, "utf8");
-				// Compile the template with the given context.
-				const template = Handlebars.compile(templateContent);
-				const compiledContent = template(context);
+				// Render the template with the given context.
+				const compiledContent = ejs.render(templateContent, context);
 
-				// Remove the .hbs extension from the destination filename.
-				destPath = destPath.replace(/\.hbs$/, "");
+				// Remove the .ejs extension from the destination filename.
+				destPath = destPath.replace(/\.ejs/, "");
 				// Write the compiled content to the destination file.
 				await fs.writeFile(destPath, compiledContent, "utf8");
 			} else {
@@ -95,4 +96,8 @@ export async function updateTsconfig(
 			log.info(`Include entry ${include} already exists in tsconfig.json.`);
 		}
 	}
+}
+
+export function formatDirectory(path: string) {
+	execSync(`biome format --write ${path}`);
 }

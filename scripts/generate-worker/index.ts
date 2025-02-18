@@ -8,7 +8,11 @@ import {
 	select,
 } from "@clack/prompts";
 import * as path from "path";
-import { copyDirectory, updateTsconfig } from "../generator-shared";
+import {
+	copyDirectory,
+	formatDirectory,
+	updateTsconfig,
+} from "../generator-shared";
 
 const TSCONFIG_PATH = path.join(__dirname, "../../tsconfig.workerd.json");
 
@@ -20,38 +24,51 @@ async function main(): Promise<void> {
 		message: "Pick a worker template.",
 		options: [
 			{
-				value: "text-generation-workers-ai-provider",
-				label: "Text Generation (workers-ai-provider)",
+				value: "text-generation",
+				label: "Text Generation",
 			},
 			{
-				value: "tool-calling-workers-ai-provider",
-				label: "Tool Calling (workers-ai-provider)",
+				value: "tool-calling",
+				label: "Tool Calling",
 			},
 			{
-				value: "structured-output-workers-ai-provider",
-				label: "Structured Output (workers-ai-provider)",
+				value: "structured-output",
+				label: "Structured Output",
 			},
 			{
 				value: "workflow-prompt-chaining",
-				label: "Workflow: Prompt Chaining (workers-ai-provider)",
+				label: "Workflow: Prompt Chaining",
 			},
 			{
 				value: "workflow-routing",
-				label: "Workflow: Routing (workers-ai-provider)",
+				label: "Workflow: Routing",
 			},
 			{
 				value: "workflow-parallelisation",
-				label: "Workflow: Parallelisation (workers-ai-provider)",
+				label: "Workflow: Parallelisation",
 			},
 			{
 				value: "workflow-orchestrator-workers",
-				label: "Workflow: Orchestrator Workers (workers-ai-provider)",
+				label: "Workflow: Orchestrator Workers",
 			},
 			{
 				value: "workflow-evaluator-optimiser",
-				label: "Workflow: Evaluator Optimiser (workers-ai-provider)",
+				label: "Workflow: Evaluator Optimiser",
 			},
-			{ value: "chat-streaming", label: "Chat (Streaming)" },
+		],
+	});
+
+	const provider = await select({
+		message: "Which model provider would you like to use?",
+		options: [
+			{
+				value: "openai",
+				label: "OpenAI",
+			},
+			{
+				value: "workers-ai",
+				label: "Workers AI",
+			},
 		],
 	});
 
@@ -83,16 +100,32 @@ async function main(): Promise<void> {
 		process.exit(1);
 	}
 
+	const TEMPLATE_DIR = path.join(__dirname, templateName as string);
+
 	try {
-		console.log(TSCONFIG_PATH);
-		const TEMPLATE_DIR = path.join(__dirname, templateName as string);
-		await copyDirectory(TEMPLATE_DIR, newLocation, { projectName });
+		await copyDirectory(TEMPLATE_DIR, newLocation, { projectName, provider });
+	} catch (error) {
+		log.error(JSON.stringify(error, null, 2));
+		log.error("An error occurred while generating the project.");
+		process.exit(1);
+	}
+
+	try {
 		await updateTsconfig(TSCONFIG_PATH, [
 			`./workers/${projectName}/src/**/*.ts`,
 		]);
+	} catch (error) {
+		log.error(JSON.stringify(error, null, 2));
+		log.error("An error occurred while generating the project.");
+		process.exit(1);
+	}
+
+	try {
+		formatDirectory(newLocation);
 
 		log.success(`Project successfully generated at ${newLocation}`);
 	} catch (error) {
+		log.error(JSON.stringify(error, null, 2));
 		log.error("An error occurred while generating the project.");
 		process.exit(1);
 	}
