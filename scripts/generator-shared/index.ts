@@ -3,6 +3,7 @@ import * as fs from "fs/promises";
 import * as path from "path";
 import { existsSync } from "fs";
 import ejs from "ejs";
+import { execSync } from "child_process";
 
 /**
  * Recursively copies all files and directories from src to dest.
@@ -36,7 +37,9 @@ export async function copyDirectory(
 				// Read the template file content.
 				const templateContent = await fs.readFile(srcPath, "utf8");
 				// Render the template with the given context.
-				const compiledContent = ejs.render(templateContent, context);
+				const compiledContent = ejs.render(templateContent, context, {
+					rmWhitespace: true,
+				});
 
 				// Remove the .ejs extension from the destination filename.
 				destPath = destPath.replace(/\.ejs/, "");
@@ -94,4 +97,8 @@ export async function updateTsconfig(
 			log.info(`Include entry ${include} already exists in tsconfig.json.`);
 		}
 	}
+}
+
+export function formatDirectory(path: string) {
+	execSync(`biome format --write ${path}`);
 }

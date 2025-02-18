@@ -8,7 +8,11 @@ import {
 	select,
 } from "@clack/prompts";
 import * as path from "path";
-import { copyDirectory, updateTsconfig } from "../generator-shared";
+import {
+	copyDirectory,
+	formatDirectory,
+	updateTsconfig,
+} from "../generator-shared";
 
 const TSCONFIG_PATH = path.join(__dirname, "../../tsconfig.workerd.json");
 
@@ -28,8 +32,8 @@ async function main(): Promise<void> {
 				label: "Tool Calling (workers-ai-provider)",
 			},
 			{
-				value: "structured-output-workers-ai-provider",
-				label: "Structured Output (workers-ai-provider)",
+				value: "structured-output",
+				label: "Structured Output",
 			},
 			{
 				value: "workflow-prompt-chaining",
@@ -97,12 +101,12 @@ async function main(): Promise<void> {
 	}
 
 	try {
-		console.log(TSCONFIG_PATH);
 		const TEMPLATE_DIR = path.join(__dirname, templateName as string);
 		await copyDirectory(TEMPLATE_DIR, newLocation, { projectName, provider });
 		await updateTsconfig(TSCONFIG_PATH, [
 			`./workers/${projectName}/src/**/*.ts`,
 		]);
+		formatDirectory(newLocation);
 
 		log.success(`Project successfully generated at ${newLocation}`);
 	} catch (error) {
