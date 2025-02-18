@@ -8,6 +8,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.8.2",
 		"@clack/prompts": "^0.10.0",
+		"@types/ejs": "^3.1.5",
 		"@types/react": "^19.0.8",
 		"@types/react-dom": "^19.0.3",
 		"@vitejs/plugin-react": "^4.3.4",
@@ -37,6 +38,7 @@
 		"@mantine/notifications": "^7.16.3",
 		"ai": "^4.1.39",
 		"dayjs": "^1.11.13",
+		"ejs": "^3.1.10",
 		"eventsource-parser": "^3.0.0",
 		"hono": "^4.7.1",
 		"langchain": "^0.3.15",

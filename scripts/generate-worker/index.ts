@@ -51,7 +51,20 @@ async function main(): Promise<void> {
 				value: "workflow-evaluator-optimiser",
 				label: "Workflow: Evaluator Optimiser (workers-ai-provider)",
 			},
-			{ value: "chat-streaming", label: "Chat (Streaming)" },
+		],
+	});
+
+	const provider = await select({
+		message: "Which model provider would you like to use?",
+		options: [
+			{
+				value: "openai",
+				label: "OpenAI",
+			},
+			{
+				value: "workers-ai",
+				label: "Workers AI",
+			},
 		],
 	});
 
@@ -86,7 +99,7 @@ async function main(): Promise<void> {
 	try {
 		console.log(TSCONFIG_PATH);
 		const TEMPLATE_DIR = path.join(__dirname, templateName as string);
-		await copyDirectory(TEMPLATE_DIR, newLocation, { projectName });
+		await copyDirectory(TEMPLATE_DIR, newLocation, { projectName, provider });
 		await updateTsconfig(TSCONFIG_PATH, [
 			`./workers/${projectName}/src/**/*.ts`,
 		]);
