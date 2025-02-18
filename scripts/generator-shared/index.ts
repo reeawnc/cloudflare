@@ -34,7 +34,6 @@ export async function copyDirectory(
 		} else if (entry.isFile()) {
 			// Check if the file has a Handlebars extension ('.ejs').
 			if (entry.name.endsWith(".ejs")) {
-				console.log(entry.name);
 				// Read the template file content.
 				const templateContent = await fs.readFile(srcPath, "utf8");
 				// Render the template with the given context.
