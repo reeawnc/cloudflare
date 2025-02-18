@@ -7,6 +7,7 @@ import {
 	log,
 	select,
 } from "@clack/prompts";
+import chalk from "chalk";
 import * as path from "path";
 import {
 	copyDirectory,
@@ -123,17 +124,34 @@ async function main(): Promise<void> {
 	try {
 		formatDirectory(newLocation);
 
-		log.success(`Project successfully generated at ${newLocation}`);
+		log.success(
+			`${chalk.green(`Project successfully generated at ${newLocation}`)}`,
+		);
 	} catch (error) {
 		log.error(JSON.stringify(error, null, 2));
 		log.error("An error occurred while generating the project.");
 		process.exit(1);
 	}
 
-	// Display outro message.
-	log.warning(
-		"In order to use your worker in staging/production, you need to provide an API_KEY secret, and pass that value in requests with the x-api-key header.",
+	const missingSecrets = [];
+
+	if (provider === "openai") {
+		missingSecrets.push(
+			`${chalk.yellow("OPENAI_API_KEY")} (Required for OpenAI integration.)`,
+		);
+	}
+
+	missingSecrets.push(
+		`${chalk.yellow("API_KEY")} (Required to access your worker in staging/production. Use the "${chalk.yellow("x-api-key")}" header in your requests.)`,
 	);
+
+	if (missingSecrets.length > 0) {
+		log.warning(
+			"Please add the following secrets to your account (or .dev.vars for local development):\n- " +
+				missingSecrets.join("\n- "),
+		);
+	}
+
 	outro(`You're all set! Run 'npx nx dev ${projectName}' to start the worker.`);
 }
 
