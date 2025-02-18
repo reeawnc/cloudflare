@@ -1,5 +1,5 @@
 {
-	"name": "structured-output-openai",
+	"name": "tool-calling",
 	"scripts": {
 		"deploy:production": "wrangler deploy",
 		"deploy:staging": "wrangler deploy -e staging",

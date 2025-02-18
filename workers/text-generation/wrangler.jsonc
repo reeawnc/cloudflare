@@ -1,6 +1,6 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
-	"name": "structured-output-workers-ai-provider",
+	"name": "text-generation",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-01-29",
 	"compatibility_flags": ["nodejs_compat"],
@@ -9,7 +9,7 @@
 	},
 	"env": {
 		"development": {
-			"name": "structured-output-workers-ai-provider-dev",
+			"name": "text-generation-dev",
 			"vars": {
 				"ENVIRONMENT": "development"
 			},
@@ -18,7 +18,7 @@
 			}
 		},
 		"staging": {
-			"name": "structured-output-workers-ai-provider-staging",
+			"name": "text-generation-staging",
 			"vars": {
 				"ENVIRONMENT": "staging"
 			},

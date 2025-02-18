@@ -1,5 +1,5 @@
 {
-	"name": "structured-output-workers-ai-provider",
+	"name": "structured-output",
 	"scripts": {
 		"deploy:production": "wrangler deploy",
 		"deploy:staging": "wrangler deploy -e staging",
