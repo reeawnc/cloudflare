@@ -9,6 +9,6 @@
 		"test": "vitest --watch=false",
 		"test:ci": "vitest --watch=false",
 		"type-check": "tsc --noEmit",
-		"types": "wrangler types src/types/env.d.ts && npx tsx ../../scripts/export-env-interface.ts src/types/env.ts"
+		"types": "wrangler types src/types/env.d.ts && npx tsx ../../scripts/export-env-interface.ts src/types/env.d.ts"
 	}
 }
