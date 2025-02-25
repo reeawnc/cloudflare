@@ -2,8 +2,6 @@
 
 export interface Env {
 	ENVIRONMENT: "production" | "development" | "staging";
-<% if (provider === 'openai') {-%>
-    OPENAI_API_KEY: string;
-<% } -%>
+	OPENAI_API_KEY: string;
 	AI: Ai;
 }

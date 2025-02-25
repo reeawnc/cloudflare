@@ -1,0 +1,12 @@
+{
+	"name": "ui-worker",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "CLOUDFLARE_ENV=development vite",
+		"build": "tsc -b && vite build",
+		"preview": "npm run build && vite preview",
+		"deploy": "npm run build && wrangler deploy"
+	}
+}
