@@ -5,8 +5,14 @@
 	"type": "module",
 	"scripts": {
 		"dev": "CLOUDFLARE_ENV=development vite",
-		"build": "tsc -b && vite build",
+		"build": "vite build",
+		"lint": "biome lint --error-on-warnings ./src",
 		"preview": "npm run build && vite preview",
-		"deploy": "npm run build && wrangler deploy"
+		"deploy:production": "wrangler deploy",
+		"deploy:staging": "wrangler deploy -e staging",
+		"test": "vitest --watch=false",
+		"test:ci": "vitest --watch=false",
+		"type-check": "tsc --noEmit",
+		"types": "wrangler types src/types/env.d.ts && npx tsx ../../scripts/export-env-interface.ts src/types/env.d.ts"
 	}
 }
