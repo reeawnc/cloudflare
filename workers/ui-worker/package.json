@@ -1,0 +1,18 @@
+{
+	"name": "ui-worker",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "CLOUDFLARE_ENV=development vite",
+		"build": "vite build",
+		"lint": "biome lint --error-on-warnings ./src",
+		"preview": "npm run build && vite preview",
+		"deploy:production": "wrangler deploy",
+		"deploy:staging": "wrangler deploy -e staging",
+		"test": "vitest --watch=false",
+		"test:ci": "vitest --watch=false",
+		"type-check": "tsc --noEmit",
+		"types": "wrangler types api/types/env.d.ts && npx tsx ../../scripts/export-env-interface.ts api/types/env.d.ts"
+	}
+}
