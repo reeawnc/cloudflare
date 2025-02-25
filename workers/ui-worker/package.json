@@ -13,6 +13,6 @@
 		"test": "vitest --watch=false",
 		"test:ci": "vitest --watch=false",
 		"type-check": "tsc --noEmit",
-		"types": "wrangler types src/types/env.d.ts && npx tsx ../../scripts/export-env-interface.ts src/types/env.d.ts"
+		"types": "wrangler types api/types/env.d.ts && npx tsx ../../scripts/export-env-interface.ts api/types/env.d.ts"
 	}
 }
