@@ -1,11 +1,11 @@
+import { generateText, tool } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { generateText, tool } from "ai";
+import { createWorkersAI } from "workers-ai-provider";
 import z from "zod";
+import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
-import { createOpenAI } from "@ai-sdk/openai";
-import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
@@ -13,12 +13,10 @@ app.use("*", authApiKey);
 
 app.post("/", async (c) => {
 	const { prompt } = (await c.req.json()) as { prompt: string };
-	const openai = createOpenAI({
-		apiKey: c.env.OPENAI_API_KEY,
-	});
+	const workersai = createWorkersAI({ binding: c.env.AI });
 
 	const result = await generateText({
-		model: openai("gpt-4o-mini"),
+		model: workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast"),
 		messages: [
 			{ role: "system", content: "You are a helpful AI assistant" },
 			{ role: "user", content: prompt },

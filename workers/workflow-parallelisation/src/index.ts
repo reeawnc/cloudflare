@@ -1,11 +1,11 @@
+import { generateObject } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { createWorkersAI } from "workers-ai-provider";
+import z from "zod";
+import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
-import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
-import { createOpenAI } from "@ai-sdk/openai";
-import { generateObject } from "ai";
-import z from "zod";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
@@ -26,9 +26,9 @@ app.post("/", async (c) => {
 	// Extract the initial prompt from the request body.
 	const { prompt } = (await c.req.json()) as { prompt: string };
 
-	const openai = createOpenAI({
-		apiKey: c.env.OPENAI_API_KEY,
-	});
+	const workersai = createWorkersAI({ binding: c.env.AI });
+	const bigModel = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
+	const smallModel = workersai("@cf/meta/llama-3.1-8b-instruct");
 
 	// --- Step 1: Execute Parallel Calls (Voting) ---
 	// Prepare three distinct prompts to get diverse perspectives on the same input.
@@ -41,7 +41,7 @@ app.post("/", async (c) => {
 	// Execute the three small LLM calls concurrently using Promise.all.
 	const smallLLMCalls = anglePrompts.map((anglePrompt) =>
 		generateObject({
-			model: openai("gpt-4o-mini"),
+			model: smallModel,
 			schema: angleSchema,
 			prompt: anglePrompt,
 		}),
@@ -62,7 +62,7 @@ app.post("/", async (c) => {
 
 	// Invoke the aggregator LLM.
 	const { object: aggregatorResult } = await generateObject({
-		model: openai("gpt-4o"),
+		model: bigModel,
 		schema: finalOutputSchema,
 		prompt: aggregatorPrompt,
 	});

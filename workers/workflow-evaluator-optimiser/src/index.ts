@@ -1,11 +1,11 @@
+import { generateObject } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { createWorkersAI } from "workers-ai-provider";
+import z from "zod";
+import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
-import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
-import { createOpenAI } from "@ai-sdk/openai";
-import { generateObject } from "ai";
-import z from "zod";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
@@ -31,11 +31,9 @@ app.post("/", async (c) => {
 	// Extract the input prompt from the request.
 	const { prompt } = (await c.req.json()) as { prompt: string };
 
-	const openai = createOpenAI({
-		apiKey: c.env.OPENAI_API_KEY,
-	});
-	const bigModel = openai("gpt-4o");
-	const smallModel = openai("gpt-4o-mini");
+	const workersai = createWorkersAI({ binding: c.env.AI });
+	const bigModel = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
+	const smallModel = workersai("@cf/meta/llama-3.1-8b-instruct");
 
 	// --- Step 1: Generate the Initial Draft ---
 	const draftPrompt = `Please generate an initial draft for the following task:\n\n${prompt}\n\n

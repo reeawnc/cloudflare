@@ -1,11 +1,11 @@
+import { generateObject } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { createWorkersAI } from "workers-ai-provider";
+import z from "zod";
+import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
-import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
-import { createOpenAI } from "@ai-sdk/openai";
-import { generateObject } from "ai";
-import z from "zod";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
@@ -22,32 +22,30 @@ const finalOutputSchema = z.object({
 });
 
 app.post("/", async (c) => {
-	// Extract the initial prompt from the request.
 	const { prompt } = (await c.req.json()) as { prompt: string };
 
-	// Create the OpenAI instance.
-	const openai = createOpenAI({
-		apiKey: c.env.OPENAI_API_KEY,
-	});
+	const workersai = createWorkersAI({ binding: c.env.AI });
+	const bigModel = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
+	const smallModel = workersai("@cf/meta/llama-3.1-8b-instruct");
 
 	// --- Step 1: Grade the Prompt ---
 	// Build a prompt to generate a grade (0-100) for the input prompt.
 	const gradePrompt = `Please evaluate the following prompt and assign a grade between 0 and 100 based on its complexity and difficulty. A higher number = more complex and difficult:\n\n${prompt}\n\nReturn a JSON object like { "grade": 75 } where the number represents the grade.`;
 	const { object: gradeObj } = await generateObject({
-		model: openai("gpt-4o-mini"),
+		model: smallModel,
 		schema: gradeSchema,
 		prompt: gradePrompt,
 	});
 
 	// --- Step 2: Route Based on the Grade ---
 	// Decide which model to use based on the grade.
-	const selectedModel = gradeObj.grade > 50 ? "gpt-4o" : "gpt-4o-mini";
+	const selectedModel = gradeObj.grade > 50 ? bigModel : smallModel;
 
 	// Build a prompt for the final processing using the selected model.
 	const finalPrompt = `Using the prompt provided below, please produce a detailed and well-formulated response:\n\n${prompt}\n\nPlease return your result as a JSON object like { "result": "Your detailed response here." }`;
 
 	const { object: finalObj } = await generateObject({
-		model: openai(selectedModel),
+		model: selectedModel,
 		schema: finalOutputSchema,
 		prompt: finalPrompt,
 	});
