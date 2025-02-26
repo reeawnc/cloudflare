@@ -79,7 +79,7 @@ async function main(): Promise<void> {
 	// Prompt for the new project location.
 	const newLocation = await text({
 		message: "Enter the full path for the new project location:",
-		initialValue: "./workers/",
+		initialValue: hasUi ? "./apps" : "./workers/",
 	});
 
 	if (isCancel(newLocation)) {
@@ -132,8 +132,8 @@ async function main(): Promise<void> {
 
 	try {
 		const serverGlob = hasUi
-			? `./workers/${projectName}/src/server/**/*.ts`
-			: `./workers/${projectName}/src/**/*.ts`;
+			? `${newLocation}/src/server/**/*.ts`
+			: `${newLocation}/src/**/*.ts`;
 
 		await updateTsconfig(path.join(__dirname, "../../tsconfig.workerd.json"), [
 			serverGlob,
@@ -143,8 +143,8 @@ async function main(): Promise<void> {
 			await updateTsconfig(
 				path.join(__dirname, "../../tsconfig.browser.json"),
 				[
-					`./workers/${projectName}/src/client/**/*.ts`,
-					`./workers/${projectName}/src/client/**/*.tsx`,
+					`${newLocation}/src/client/**/*.ts`,
+					`${newLocation}/src/client/**/*.tsx`,
 				],
 			);
 		}
