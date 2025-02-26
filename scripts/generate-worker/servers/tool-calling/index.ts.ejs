@@ -1,11 +1,16 @@
-import { generateText, tool } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { createWorkersAI } from "workers-ai-provider";
+import { generateText, tool } from "ai";
 import z from "zod";
-import { authApiKey } from "../../../libs/middleware/src/auth-api-key";
+<% if (provider === 'openai') { -%>
+import { createOpenAI } from "@ai-sdk/openai";
+<% } -%>
+<% if (provider === 'workers-ai') { -%>
+import { createWorkersAI } from "workers-ai-provider";
+<% } -%>
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
+import { authApiKey } from "<%= libsPath -%>/middleware/src/auth-api-key";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
@@ -13,10 +18,19 @@ app.use("*", authApiKey);
 
 app.post("/", async (c) => {
 	const { prompt } = (await c.req.json()) as { prompt: string };
-	const workersai = createWorkersAI({ binding: c.env.AI });
+<% if (provider === 'openai') { -%>
+    const openai = createOpenAI({
+		apiKey: c.env.OPENAI_API_KEY,
+	});
+	const model = openai("gpt-4o-mini");
+<% } -%>
+<% if (provider === 'workers-ai') { -%>
+    const workersai = createWorkersAI({ binding: c.env.AI });
+    const model = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
+<% } -%>
 
 	const result = await generateText({
-		model: workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast"),
+		model,
 		messages: [
 			{ role: "system", content: "You are a helpful AI assistant" },
 			{ role: "user", content: prompt },
@@ -33,7 +47,6 @@ app.post("/", async (c) => {
 				}),
 			}),
 		},
-		maxSteps: 5,
 	});
 
 	return c.json(result);

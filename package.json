@@ -1,7 +1,6 @@
 {
 	"name": "ai-mono",
 	"scripts": {
-		"generate-app": "npx tsx ./scripts/generate-app/index.ts",
 		"generate-worker": "npx tsx ./scripts/generate-worker/index.ts",
 		"prepare": "husky"
 	},
@@ -47,12 +46,8 @@
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"recharts": "^2.15.1",
-		"workers-ai-provider": "0.0.12",
+		"workers-ai-provider": "0.0.13",
 		"zod": "^3.24.2"
 	},
-	"workspaces": [
-		"workers/*",
-		"libs/*",
-		"apps/*"
-	]
+	"workspaces": ["workers/*", "libs/*", "apps/*"]
 }
