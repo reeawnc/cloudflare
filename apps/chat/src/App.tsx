@@ -1,15 +1,15 @@
-import React from "react";
 import { useChat } from "@ai-sdk/react";
 import {
-	Center,
-	Paper,
-	Text,
-	TextInput,
 	Button,
+	Center,
 	Group,
+	Paper,
 	ScrollArea,
 	Stack,
+	Text,
+	TextInput,
 } from "@mantine/core";
+import type React from "react";
 
 const ChatUI: React.FC = () => {
 	const { messages, input, handleSubmit, handleInputChange } = useChat({
