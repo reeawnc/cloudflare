@@ -5,7 +5,8 @@
 	"compatibility_date": "2025-02-24",
 	"assets": {
 		"not_found_handling": "single-page-application",
-		"binding": "ASSETS"
+		"binding": "ASSETS",
+        "directory": "./dist/client"
 	},
 	"observability": {
 		"enabled": true
@@ -19,12 +20,27 @@
 			"vars": {
 				"ENVIRONMENT": "development"
 			}
+            <% if (provider === 'workers-ai') { %>,
+            "ai": {
+                "binding": "AI"
+            }
+            <% } -%>
 		},
 		"staging": {
 			"name": "<%= projectName -%>-staging",
 			"vars": {
 				"ENVIRONMENT": "staging"
 			}
+            <% if (provider === 'workers-ai') { %>,
+            "ai": {
+                "binding": "AI"
+            }
+            <% } -%>
 		}
 	}
+    <% if (provider === 'workers-ai') { %>,
+    "ai": {
+        "binding": "AI"
+    }
+    <% } -%>
 }

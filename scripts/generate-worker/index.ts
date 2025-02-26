@@ -76,10 +76,15 @@ async function main(): Promise<void> {
 		message: "Would you like a React SPA setup?",
 	});
 
+	if (hasUi && provider === "workers-ai") {
+		cancel("The React SPA setup currently does not support Workers AI.");
+		process.exit(0);
+	}
+
 	// Prompt for the new project location.
 	const newLocation = await text({
 		message: "Enter the full path for the new project location:",
-		initialValue: hasUi ? "./apps" : "./workers/",
+		initialValue: hasUi ? "./apps/" : "./workers/",
 	});
 
 	if (isCancel(newLocation)) {
@@ -181,7 +186,7 @@ async function main(): Promise<void> {
 	if (missingSecrets.length > 0) {
 		log.warning(
 			`Please add the following secrets to your account (or .dev.vars for local development):
--${missingSecrets.join("\n- ")}`,
+- ${missingSecrets.join("\n- ")}`,
 		);
 	}
 
