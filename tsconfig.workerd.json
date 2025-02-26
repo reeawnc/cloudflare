@@ -1,21 +1,18 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "types": [
-      "./types/workerd.d.ts"
-    ]
-  },
-  "include": [
-    "./workers/a/src/server/**/*.ts",
-    "./workers/chat-server/src/**/*.ts",
-    "./workers/structured-output/src/**/*.ts",
-    "./workers/text-generation/src/**/*.ts",
-    "./workers/tool-calling/src/**/*.ts",
-    "./workers/ui-worker/src/server/**/*.ts",
-    "./workers/workflow-evaluator-optimiser/src/**/*.ts",
-    "./workers/workflow-orchestrator-workers/src/**/*.ts",
-    "./workers/workflow-parallelisation/src/**/*.ts",
-    "./workers/workflow-prompt-chaining/src/**/*.ts",
-    "./workers/workflow-routing/src/**/*.ts"
-  ]
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"types": ["./types/workerd.d.ts"]
+	},
+	"include": [
+		"./workers/chat-server/src/**/*.ts",
+		"./workers/structured-output/src/**/*.ts",
+		"./workers/text-generation/src/**/*.ts",
+		"./workers/tool-calling/src/**/*.ts",
+		"./workers/ui-worker/src/server/**/*.ts",
+		"./workers/workflow-evaluator-optimiser/src/**/*.ts",
+		"./workers/workflow-orchestrator-workers/src/**/*.ts",
+		"./workers/workflow-parallelisation/src/**/*.ts",
+		"./workers/workflow-prompt-chaining/src/**/*.ts",
+		"./workers/workflow-routing/src/**/*.ts"
+	]
 }
