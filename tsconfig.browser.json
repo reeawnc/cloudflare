@@ -1,18 +1,24 @@
 {
-	"extends": "./tsconfig.base.json",
-	"compilerOptions": {
-		"target": "ES2020",
-		"useDefineForClassFields": true,
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"allowSyntheticDefaultImports": true,
-		"isolatedModules": true,
-		"jsx": "react-jsx",
-		"noUncheckedSideEffectImports": true
-	},
-	"include": [
-		"./apps/chat/src/**/*.ts",
-		"./apps/chat/src/**/*.tsx",
-		"./workers/ui-worker/src/**/*.tsx",
-		"./workers/ui-worker/src/**/*.ts"
-	]
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "noUncheckedSideEffectImports": true
+  },
+  "include": [
+    "./apps/chat/src/**/*.ts",
+    "./apps/chat/src/**/*.tsx",
+    "./workers/a/src/client/**/*.ts",
+    "./workers/a/src/client/**/*.tsx",
+    "./workers/ui-worker/src/client/**/*.ts",
+    "./workers/ui-worker/src/client/**/*.tsx"
+  ]
 }

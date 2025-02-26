@@ -1,21 +1,20 @@
+import * as path from "node:path";
 import {
-	intro,
-	outro,
-	text,
-	isCancel,
 	cancel,
+	confirm,
+	intro,
+	isCancel,
 	log,
+	outro,
 	select,
+	text,
 } from "@clack/prompts";
 import chalk from "chalk";
-import * as path from "path";
 import {
-	copyDirectory,
+	copyDirectoryOrFile,
 	formatDirectory,
 	updateTsconfig,
 } from "../generator-shared";
-
-const TSCONFIG_PATH = path.join(__dirname, "../../tsconfig.workerd.json");
 
 async function main(): Promise<void> {
 	// Display introductory message.
@@ -63,14 +62,18 @@ async function main(): Promise<void> {
 		message: "Which model provider would you like to use?",
 		options: [
 			{
-				value: "openai",
-				label: "OpenAI",
-			},
-			{
 				value: "workers-ai",
 				label: "Workers AI",
 			},
+			{
+				value: "openai",
+				label: "OpenAI",
+			},
 		],
+	});
+
+	const hasUi = await confirm({
+		message: "Would you like a React SPA setup?",
 	});
 
 	// Prompt for the new project location.
@@ -101,10 +104,26 @@ async function main(): Promise<void> {
 		process.exit(1);
 	}
 
-	const TEMPLATE_DIR = path.join(__dirname, templateName as string);
+	const serverFile = path.join(__dirname, "servers", templateName as string);
+	const serverLocation = hasUi
+		? path.join(newLocation, "src", "server")
+		: path.join(newLocation, "src");
+	const shellLocation = hasUi
+		? path.join(__dirname, "worker-shell-with-ui")
+		: path.join(__dirname, "worker-shell");
+	const libsPath = hasUi ? "../../../../libs" : "../../../libs";
 
 	try {
-		await copyDirectory(TEMPLATE_DIR, newLocation, { projectName, provider });
+		await copyDirectoryOrFile(shellLocation, newLocation, {
+			libsPath,
+			projectName,
+			provider,
+		});
+		await copyDirectoryOrFile(serverFile, serverLocation, {
+			libsPath,
+			projectName,
+			provider,
+		});
 	} catch (error) {
 		log.error(JSON.stringify(error, null, 2));
 		log.error("An error occurred while generating the project.");
@@ -112,9 +131,23 @@ async function main(): Promise<void> {
 	}
 
 	try {
-		await updateTsconfig(TSCONFIG_PATH, [
-			`./workers/${projectName}/src/**/*.ts`,
+		const serverGlob = hasUi
+			? `./workers/${projectName}/src/server/**/*.ts`
+			: `./workers/${projectName}/src/**/*.ts`;
+
+		await updateTsconfig(path.join(__dirname, "../../tsconfig.workerd.json"), [
+			serverGlob,
 		]);
+
+		if (hasUi) {
+			await updateTsconfig(
+				path.join(__dirname, "../../tsconfig.browser.json"),
+				[
+					`./workers/${projectName}/src/client/**/*.ts`,
+					`./workers/${projectName}/src/client/**/*.tsx`,
+				],
+			);
+		}
 	} catch (error) {
 		log.error(JSON.stringify(error, null, 2));
 		log.error("An error occurred while generating the project.");
@@ -147,8 +180,8 @@ async function main(): Promise<void> {
 
 	if (missingSecrets.length > 0) {
 		log.warning(
-			"Please add the following secrets to your account (or .dev.vars for local development):\n- " +
-				missingSecrets.join("\n- "),
+			`Please add the following secrets to your account (or .dev.vars for local development):
+-${missingSecrets.join("\n- ")}`,
 		);
 	}
 

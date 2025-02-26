@@ -1,6 +1,6 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
-	"name": "re",
+	"name": "<%= projectName -%>",
 	"main": "src/server/index.ts",
 	"compatibility_date": "2025-02-24",
 	"assets": {
@@ -15,13 +15,13 @@
 	},
 	"env": {
 		"development": {
-			"name": "ui-worker-dev",
+			"name": "<%= projectName -%>-dev",
 			"vars": {
 				"ENVIRONMENT": "development"
 			}
 		},
 		"staging": {
-			"name": "ui-worker-staging",
+			"name": "<%= projectName -%>-staging",
 			"vars": {
 				"ENVIRONMENT": "staging"
 			}
