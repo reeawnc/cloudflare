@@ -42,10 +42,10 @@ jobs:
 
       # Run Nx tasks including the staging deployment and extract the URL.
       - name: Run Nx tasks including staging deployment
-        id: deploy-staging
-        run: npx nx affected -t lint test:ci type-check build deploy:staging
+        id: checks
+        run: npx nx affected -t lint test:ci type-check build # deploy:staging
 
-      - name: Run comment script
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          npx tsx scripts/comment-with-deploy-urls.ts "${{ github.event.pull_request.comments_url }}" "${{ secrets.GITHUB_TOKEN }}"
+#      - name: Run comment script
+#        if: ${{ github.event_name == 'pull_request' }}
+#        run: |
+#          npx tsx scripts/comment-with-deploy-urls.ts "${{ github.event.pull_request.comments_url }}" "${{ secrets.GITHUB_TOKEN }}"
