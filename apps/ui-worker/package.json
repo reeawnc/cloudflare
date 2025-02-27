@@ -10,7 +10,6 @@
 		"deploy:staging": "npm run build && wrangler deploy -e staging",
 		"test": "vitest --watch=false",
 		"test:ci": "vitest --watch=false",
-		"type-check": "tsc --noEmit",
-		"types": "wrangler types src/server/types/env.d.ts && npx tsx ../../scripts/export-env-interface.ts src/server/types/env.d.ts"
+		"type-check": "tsc --noEmit"
 	}
 }

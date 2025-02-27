@@ -40,7 +40,7 @@ async function main(): Promise<void> {
 				label: "Workflow: Prompt Chaining",
 			},
 			{
-				value: "workflow-routing",
+				value: "routing",
 				label: "Workflow: Routing",
 			},
 			{

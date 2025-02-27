@@ -9,10 +9,10 @@
 		"./apps/text-generation/src/**/*.ts",
 		"./apps/tool-calling/src/**/*.ts",
 		"./apps/ui-worker/src/server/**/*.ts",
-		"./apps/workflow-evaluator-optimiser/src/**/*.ts",
-		"./apps/workflow-orchestrator-workers/src/**/*.ts",
-		"./apps/workflow-parallelisation/src/**/*.ts",
-		"./apps/workflow-prompt-chaining/src/**/*.ts",
-		"./apps/workflow-routing/src/**/*.ts"
+		"./apps/evaluator-optimiser/src/**/*.ts",
+		"./apps/orchestrator-workers/src/**/*.ts",
+		"./apps/parallelisation/src/**/*.ts",
+		"./apps/prompt-chaining/src/**/*.ts",
+		"./apps/routing/src/**/*.ts"
 	]
 }

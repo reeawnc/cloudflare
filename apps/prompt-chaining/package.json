@@ -1,5 +1,5 @@
 {
-	"name": "text-generation",
+	"name": "prompt-chaining",
 	"scripts": {
 		"deploy:production": "wrangler deploy",
 		"deploy:staging": "wrangler deploy -e staging",

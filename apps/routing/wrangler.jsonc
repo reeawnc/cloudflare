@@ -1,0 +1,57 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "routing",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-01-29",
+	"compatibility_flags": ["nodejs_compat"],
+	"vars": {
+		"ENVIRONMENT": "production"
+	},
+	"env": {
+		"development": {
+			"name": "routing-dev",
+			"vars": {
+				"ENVIRONMENT": "development"
+			},
+			"ai": {
+				"binding": "AI"
+			},
+			"workflows": [
+				{
+					"name": "routing-workflow",
+					"binding": "ROUTING_WORKFLOW",
+					"class_name": "RoutingWorkflow"
+				}
+			]
+		},
+		"staging": {
+			"name": "routing-staging",
+			"vars": {
+				"ENVIRONMENT": "staging"
+			},
+			"ai": {
+				"binding": "AI"
+			},
+			"workflows": [
+				{
+					"name": "routing-workflow",
+					"binding": "ROUTING_WORKFLOW",
+					"class_name": "RoutingWorkflow"
+				}
+			]
+		}
+	},
+	"observability": {
+		"enabled": true
+	},
+	"ai": {
+		"binding": "AI"
+	},
+	"workflows": [
+		{
+			"name": "routing-workflow",
+			"binding": "ROUTING_WORKFLOW",
+			"class_name": "RoutingWorkflow"
+		}
+	]
+}
