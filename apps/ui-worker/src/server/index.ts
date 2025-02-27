@@ -2,14 +2,12 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { generateObject } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { authApiKey } from "middleware/src/auth-api-key.ts";
 import z from "zod";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
-app.use("*", authApiKey);
 
 const draftSchema = z.object({
 	draft: z.string(),

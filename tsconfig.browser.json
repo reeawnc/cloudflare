@@ -10,9 +10,7 @@
 		"noUncheckedSideEffectImports": true
 	},
 	"include": [
-		"./apps/chat/src/**/*.ts",
-		"./apps/chat/src/**/*.tsx",
-		"./workers/ui-worker/src/client/**/*.ts",
-		"./workers/ui-worker/src/client/**/*.tsx"
+		"./apps/ui-worker/src/client/**/*.ts",
+		"./apps/ui-worker/src/client/**/*.tsx"
 	]
 }
