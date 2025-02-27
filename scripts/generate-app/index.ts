@@ -179,10 +179,6 @@ async function main(): Promise<void> {
 		);
 	}
 
-	missingSecrets.push(
-		`${chalk.yellow("API_KEY")} (Required to access your worker in staging/production. Use the "${chalk.yellow("x-api-key")}" header in your requests.)`,
-	);
-
 	if (missingSecrets.length > 0) {
 		log.warning(
 			`Please add the following secrets to your account (or .dev.vars for local development):

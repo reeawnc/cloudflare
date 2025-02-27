@@ -10,11 +10,9 @@ import { createOpenAI } from "@ai-sdk/openai";
 <% if (provider === 'workers-ai') { -%>
 import { createWorkersAI } from "workers-ai-provider";
 <% } -%>
-import { authApiKey } from "<%= relativeRootPath -%>/libs/middleware/src/auth-api-key";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
-app.use("*", authApiKey);
 
 app.post("/", async (c) => {
 	const { prompt } = (await c.req.json()) as { prompt: string };
