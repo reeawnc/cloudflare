@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
-import { authApiKey } from "<%= libsPath -%>/middleware/src/auth-api-key";
+import { authApiKey } from "<%= relativeRootPath -%>/libs/middleware/src/auth-api-key";
 <% if (provider === 'openai') { -%>import { createOpenAI } from "@ai-sdk/openai";<% } -%>
 <% if (provider === 'workers-ai') { -%>import { createWorkersAI } from "workers-ai-provider";<% } -%>
 import { generateObject } from "ai";
