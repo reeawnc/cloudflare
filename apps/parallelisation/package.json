@@ -1,5 +1,5 @@
 {
-	"name": "text-generation",
+	"name": "parallelisation",
 	"scripts": {
 		"deploy:production": "wrangler deploy",
 		"deploy:staging": "wrangler deploy -e staging",

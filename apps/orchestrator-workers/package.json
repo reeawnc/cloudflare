@@ -1,5 +1,5 @@
 {
-	"name": "text-generation",
+	"name": "orchestrator-workers",
 	"scripts": {
 		"deploy:production": "wrangler deploy",
 		"deploy:staging": "wrangler deploy -e staging",
