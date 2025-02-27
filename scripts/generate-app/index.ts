@@ -84,7 +84,7 @@ async function main(): Promise<void> {
 	// Prompt for the new project location.
 	const newLocation = await text({
 		message: "Enter the full path for the new project location:",
-		initialValue: hasUi ? "./apps/" : "./workers/",
+		initialValue: "./apps/",
 	});
 
 	if (isCancel(newLocation)) {
@@ -116,16 +116,16 @@ async function main(): Promise<void> {
 	const shellLocation = hasUi
 		? path.join(__dirname, "worker-shell-with-ui")
 		: path.join(__dirname, "worker-shell");
-	const libsPath = hasUi ? "../../../../libs" : "../../../libs";
+	const relativeRootPath = hasUi ? "../../../.." : "../../..";
 
 	try {
 		await copyDirectoryOrFile(shellLocation, newLocation, {
-			libsPath,
+			relativeRootPath,
 			projectName,
 			provider,
 		});
 		await copyDirectoryOrFile(serverFile, serverLocation, {
-			libsPath,
+			relativeRootPath,
 			projectName,
 			provider,
 		});
@@ -190,7 +190,9 @@ async function main(): Promise<void> {
 		);
 	}
 
-	outro(`You're all set! Run 'npx nx dev ${projectName}' to start the worker.`);
+	outro(`You're all set! To start your worker:
+
+   ${chalk.dim("$")} ${chalk.green(`npx nx dev ${projectName}`)}`);
 }
 
 // Execute the main function and handle any unexpected errors.

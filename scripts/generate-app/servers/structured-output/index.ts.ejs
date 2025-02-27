@@ -1,15 +1,16 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { generateText } from "ai";
+import { generateObject } from "ai";
+import z from "zod";
+import type { Env } from "./types/env.ts";
+import type { Variables } from "./types/hono.ts";
 <% if (provider === 'openai') { -%>
 import { createOpenAI } from "@ai-sdk/openai";
 <% } -%>
 <% if (provider === 'workers-ai') { -%>
 import { createWorkersAI } from "workers-ai-provider";
 <% } -%>
-import type { Env } from "./types/env.ts";
-import type { Variables } from "./types/hono.ts";
-import { authApiKey } from "<%= libsPath -%>/middleware/src/auth-api-key";
+import { authApiKey } from "<%= relativeRootPath -%>/libs/middleware/src/auth-api-key";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
@@ -28,12 +29,21 @@ app.post("/", async (c) => {
     const model = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
 <% } -%>
 
-	const result = await generateText({
+	const { object } = await generateObject({
 		model,
+		schema: z.object({
+			recipe: z.object({
+				name: z.string(),
+				ingredients: z.array(
+					z.object({ name: z.string(), amount: z.string() }),
+				),
+				steps: z.array(z.string()),
+			}),
+		}),
 		prompt,
 	});
 
-	return c.json(result);
+	return c.json(object);
 });
 
 export default {
