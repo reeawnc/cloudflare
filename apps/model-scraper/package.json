@@ -1,9 +1,9 @@
 {
-	"name": "<%= projectName -%>",
+	"name": "model-scraper",
 	"scripts": {
 		"deploy:production": "wrangler deploy",
 		"deploy:staging": "wrangler deploy -e staging",
-		"dev": "wrangler dev -e development",
+		"dev": "wrangler dev -e development --remote",
 		"lint": "biome lint --error-on-warnings ./src",
 		"start": "wrangler dev -e development",
 		"test": "vitest --watch=false",
