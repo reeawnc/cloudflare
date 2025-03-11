@@ -32,6 +32,16 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      # Restore the cached .nx folder (if it exists)
+      - name: Restore Nx cache
+        id: nx-cache
+        uses: actions/cache@v3
+        with:
+          path: .nx
+          key: nx-cache-${{ runner.os }}-${{ hashFiles('**/nx.json') }}
+          restore-keys: |
+            nx-cache-${{ runner.os }}-
+
       # Install dependencies
       - name: Install dependencies
         run: npm ci
@@ -44,3 +54,11 @@ jobs:
       - name: Run Nx tasks including staging deployment
         id: checks
         run: npx nx affected -t lint test:ci type-check build # deploy:staging
+
+      - name: Cache Nx folder
+        uses: actions/cache@v3
+        with:
+          path: .nx
+          key: nx-cache-${{ runner.os }}-${{ hashFiles('**/nx.json') }}
+          restore-keys: |
+            nx-cache-${{ runner.os }}-
