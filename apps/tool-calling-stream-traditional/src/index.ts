@@ -42,7 +42,7 @@ app.post("/", async (c) => {
 	const selected_tool = response.tool_calls?.[0] as { name: string, arguments: { location: string }};
 	let res;
 
-	if (selected_tool?.name == "get_weather") {
+	if (selected_tool?.name === "get_weather") {
 		res = selected_tool.arguments.location === "London" ? "Raining" : "Sunny"
 	}
 
