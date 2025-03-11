@@ -9,12 +9,6 @@ type CamelCase<S extends string> = S extends `${infer P}_${infer R}`
 		: S;
 
 /**
- * Utility type to convert a snake_case or kebab-case string to PascalCase.
- * For example, "generating_prd" becomes "GeneratingPrd".
- */
-type PascalCase<S extends string> = Capitalize<CamelCase<S>>;
-
-/**
  * Utility type to convert a union type to an intersection type.
  */
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
