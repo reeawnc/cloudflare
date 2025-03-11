@@ -14,8 +14,9 @@
     "./apps/routing/src/**/*.ts",
     "./apps/structured-output/src/**/*.ts",
     "./apps/text-generation/src/**/*.ts",
+    "./apps/tool-calling-stream-traditional/src/**/*.ts",
+    "./apps/tool-calling-stream/src/**/*.ts",
     "./apps/tool-calling/src/**/*.ts",
-  	"./apps/tool-calling-stream/src/**/*.ts",
     "./apps/ui-worker/src/server/**/*.ts"
   ]
 }
