@@ -1,15 +1,17 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
-	"name": "chat-server",
+	"name": "tool-calling-stream",
 	"main": "src/index.ts",
-	"compatibility_date": "2025-01-29",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_date": "2025-02-24",
+	"observability": {
+		"enabled": true
+	},
 	"vars": {
 		"ENVIRONMENT": "production"
 	},
 	"env": {
 		"development": {
-			"name": "chat-server-dev",
+			"name": "tool-calling-stream-dev",
 			"vars": {
 				"ENVIRONMENT": "development"
 			},
@@ -18,7 +20,7 @@
 			}
 		},
 		"staging": {
-			"name": "chat-server-staging",
+			"name": "tool-calling-stream-staging",
 			"vars": {
 				"ENVIRONMENT": "staging"
 			},
@@ -26,9 +28,6 @@
 				"binding": "AI"
 			}
 		}
-	},
-	"observability": {
-		"enabled": true
 	},
 	"ai": {
 		"binding": "AI"

@@ -1,13 +1,8 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { generateText, tool } from "ai";
+import { streamText, tool } from "ai";
 import z from "zod";
-<% if (provider === 'openai') { -%>
-import { createOpenAI } from "@ai-sdk/openai";
-<% } -%>
-<% if (provider === 'workers-ai') { -%>
 import { createWorkersAI } from "workers-ai-provider";
-<% } -%>
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
 
@@ -16,18 +11,10 @@ app.use(cors());
 
 app.post("/", async (c) => {
 	const { prompt } = (await c.req.json()) as { prompt: string };
-<% if (provider === 'openai') { -%>
-    const openai = createOpenAI({
-		apiKey: c.env.OPENAI_API_KEY,
-	});
-	const model = openai("gpt-4o-mini");
-<% } -%>
-<% if (provider === 'workers-ai') { -%>
-    const workersai = createWorkersAI({ binding: c.env.AI });
-    const model = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
-<% } -%>
+	const workersai = createWorkersAI({ binding: c.env.AI });
+	const model = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
 
-	const result = await generateText({
+	const result = streamText({
 		model,
 		messages: [
 			{ role: "system", content: "You are a helpful AI assistant" },
@@ -45,10 +32,16 @@ app.post("/", async (c) => {
 				}),
 			}),
 		},
-        maxSteps: 5,
+		maxSteps: 5,
 	});
 
-	return c.json(result);
+	return result.toDataStreamResponse({
+		headers: {
+			"Content-Type": "text/x-unknown",
+			"content-encoding": "identity",
+			"transfer-encoding": "chunked",
+		},
+	});
 });
 
 export default {
