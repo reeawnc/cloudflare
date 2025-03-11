@@ -8,7 +8,6 @@ import type { Variables } from "./types/hono.ts";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
-
 app.get("/", (c) => c.json("ok"));
 
 app.post("/", async (c) => {
