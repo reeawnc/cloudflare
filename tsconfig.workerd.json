@@ -1,23 +1,22 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "types": [
-      "./types/workerd.d.ts"
-    ]
-  },
-  "include": [
-    "./apps/agent-task-manager/src/**/*.ts",
-    "./apps/evaluator-optimiser/src/**/*.ts",
-    "./apps/model-scraper/src/**/*.ts",
-    "./apps/orchestrator-workers/src/**/*.ts",
-    "./apps/parallelisation/src/**/*.ts",
-    "./apps/prompt-chaining/src/**/*.ts",
-    "./apps/routing/src/**/*.ts",
-    "./apps/structured-output/src/**/*.ts",
-    "./apps/text-generation/src/**/*.ts",
-    "./apps/tool-calling-stream-traditional/src/**/*.ts",
-    "./apps/tool-calling-stream/src/**/*.ts",
-    "./apps/tool-calling/src/**/*.ts",
-    "./apps/ui-worker/src/server/**/*.ts"
-  ]
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"types": ["./types/workerd.d.ts"]
+	},
+	"include": [
+		"./apps/agent-task-manager/src/**/*.ts",
+		"./apps/agent-task-manager-human-in-the-loop/src/**/*.ts",
+		"./apps/evaluator-optimiser/src/**/*.ts",
+		"./apps/model-scraper/src/**/*.ts",
+		"./apps/orchestrator-workers/src/**/*.ts",
+		"./apps/parallelisation/src/**/*.ts",
+		"./apps/prompt-chaining/src/**/*.ts",
+		"./apps/routing/src/**/*.ts",
+		"./apps/structured-output/src/**/*.ts",
+		"./apps/text-generation/src/**/*.ts",
+		"./apps/tool-calling-stream-traditional/src/**/*.ts",
+		"./apps/tool-calling-stream/src/**/*.ts",
+		"./apps/tool-calling/src/**/*.ts",
+		"./apps/ui-worker/src/server/**/*.ts"
+	]
 }
