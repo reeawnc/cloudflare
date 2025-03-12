@@ -68,13 +68,9 @@ This worker:
    This effectively calls `wrangler dev`, spinning up a local environment so that you can send requests to `http://localhost:8787/` (default port).
 
 4. **Deployment**  
-   If you have your Cloudflare account set up (with the required credentials in `wrangler.toml` or environment variables), you may deploy using:
+   If you have your Cloudflare account set up (with the required credentials in your environment variables), you may deploy using:
    ```bash
-   npm run deploy
-   ```
-   or:
-   ```bash
-   npx nx run agent-task-manager:deploy
+   npx nx deploy agent-task-manager
    ```
    This calls `wrangler deploy` under the hood.
 
@@ -144,15 +140,15 @@ Below is an abbreviated overview of the relevant files:
 
 - **Run Tests:**
   ```bash
-  npm run test
+  npx nx test:ci agent-task-manager
   ```
 - **Lint Code:**
   ```bash
-  npm run lint
+  npx nx lint agent-task-manager
   ```
 - **Type Check:**
   ```bash
-  npm run type-check
+  npx nx type-check agent-task-manager
   ```
 
 We hope you find the Agent Task Manager both entertaining and practical. Whether you need to keep track of complex projects or simply remove that lingering to-do item, this worker has you covered with AI-driven intelligence and a straightforward JSON API. Enjoy your new, automated task manager!

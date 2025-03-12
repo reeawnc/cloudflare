@@ -56,13 +56,7 @@ By wrapping all critical decisions in a confirmation process, you can integrate 
    npx nx dev agent-task-manager-human-in-the-loop
    ```
    This starts the Worker in development mode (watching for file changes) and applies the configurations from `wrangler.jsonc`.
-
-3. **Alternative**: Use the scripts in the `package.json`. For instance:
-   ```bash
-   npm run dev
-   ```
-   This internally calls `wrangler dev -e development`, launching the Worker with your local environment variables.
-
+3. 
 ---
 
 ## Usage
@@ -140,20 +134,12 @@ There are two main routes for deployment using **Wrangler**:
 
 1. **Production**:
    ```bash
-   npm run deploy:production
-   ```
-   or
-   ```bash
-   wrangler deploy
+   npx nx deploy:production agent-task-manager-human-in-the-loop
    ```
 
 2. **Staging**:
    ```bash
-   npm run deploy:staging
-   ```
-   or
-   ```bash
-   wrangler deploy -e staging
+   npx nx deploy:staging agent-task-manager-human-in-the-loop
    ```
 
 Each environment points to the relevant configuration specified in `wrangler.jsonc`.
@@ -165,13 +151,13 @@ Each environment points to the relevant configuration specified in `wrangler.jso
 To run the test suite:
 
 ```bash
-npm run test
+npx nx test agent-task-manager-human-in-the-loop
 ```
 
 This uses **Vitest** and runs the tests located throughout the `src` directory. For CI environments or to run tests once, you can use:
 
 ```bash
-npm run test:ci
+npx nx test:ci agent-task-manager-human-in-the-loop
 ```
 
 ---
