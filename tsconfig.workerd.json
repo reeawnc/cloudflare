@@ -6,6 +6,7 @@
     ]
   },
   "include": [
+    "./apps/agent-task-manager/src/**/*.ts",
     "./apps/evaluator-optimiser/src/**/*.ts",
     "./apps/model-scraper/src/**/*.ts",
     "./apps/orchestrator-workers/src/**/*.ts",
