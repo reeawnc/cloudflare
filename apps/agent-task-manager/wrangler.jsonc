@@ -1,0 +1,63 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "agent-task-manager",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-02-24",
+	"observability": {
+		"enabled": true
+	},
+	"vars": {
+		"ENVIRONMENT": "production"
+	},
+	"env": {
+		"development": {
+			"name": "agent-task-manager-dev",
+			"vars": {
+				"ENVIRONMENT": "development"
+			},
+			"ai": {
+				"binding": "AI"
+			},
+			"durable_objects": {
+				"bindings": [
+					{
+						"name": "TASK_MANAGER_AGENT",
+						"class_name": "TaskManagerAgent"
+					}
+				]
+			},
+			"migrations": [
+				{
+					"tag": "v1",
+					"new_sqlite_classes": ["TaskManagerAgent"]
+				}
+			]
+		},
+		"staging": {
+			"name": "agent-task-manager-staging",
+			"vars": {
+				"ENVIRONMENT": "staging"
+			},
+			"ai": {
+				"binding": "AI"
+			}
+		}
+	},
+	"ai": {
+		"binding": "AI"
+	},
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "TASK_MANAGER_AGENT",
+				"class_name": "TaskManagerAgent"
+			}
+		]
+	},
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": ["TaskManagerAgent"]
+		}
+	]
+}

@@ -38,4 +38,4 @@ jobs:
       # Run Nx tasks including the staging deployment and extract the URL.
       - name: Run Nx tasks including staging deployment
         id: checks
-        run: npx nx run-many -t lint test:ci type-check build # deploy:staging
+        run: npx nx run-many -t lint test:ci type-check build
