@@ -6,6 +6,7 @@
 	"include": [
 		"./apps/agent-task-manager/src/**/*.ts",
 		"./apps/agent-task-manager-human-in-the-loop/src/**/*.ts",
+		"./apps/agent-scheduler/src/**/*.ts",
 		"./apps/evaluator-optimiser/src/**/*.ts",
 		"./apps/model-scraper/src/**/*.ts",
 		"./apps/orchestrator-workers/src/**/*.ts",
