@@ -1,14 +1,14 @@
 /**
- * This script performs the following actions:
- * 1. Runs `npx nx show projects --affected` to obtain a list of affected Nx projects.
- * 2. Builds a Map of project name => project root by recursively scanning for package.json files.
- * 3. For each affected project:
- *    - Looks up its root folder in the project map.
- *    - Uses `git ls-files` to list all tracked files in that project.
- *    - Reads each file's contents and concatenates them (with file path prepended).
+ * This script performs the following actions for each project:
+ * 1. For each project (identified via package.json files):
+ *    - Checks for an existing README.md and extracts the base commit SHA from a comment.
+ * 2. Runs a Git diff (or uses all tracked files if no base commit exists) to determine which files have changed.
+ * 3. For projects with changes:
+ *    - Reads the changed files (excluding README.md) and concatenates their paths and contents.
  *    - Appends this concatenated content to the user-provided PROMPT.
  *    - Calls the Cloudflare AI endpoint with the constructed prompt.
- *    - Writes the AI response to `README.md` in the project's root folder.
+ *    - Writes the AI response to README.md in the project's root folder,
+ *      appending a "Last updated: [commit-sha]" comment.
  *
  * Environment variables required:
  *   - OPENAI_API_KEY
@@ -36,7 +36,6 @@ for (const envVar of requiredEnvVars) {
 	}
 }
 
-// User-provided prompt with instructions.
 const PROMPT = `
 # Introduction
 You are a REAME.md generator. Your goal is to generate a README.md file for a project based on the codebase.
@@ -161,74 +160,101 @@ E.g.
 { "markdown": "# My Project\n\nThis is a description of my project." }
 `;
 
-void main();
-
 /**
- * Main function that processes affected projects.
+ * Main function that processes each project individually.
  */
 async function main() {
 	try {
 		// Build a project map: project name -> project root.
 		const projectMap = buildProjectMap();
 
-		// 1. Get affected projects from Nx.
-		const affectedProjectsOutput = runCommand(
-			"npx nx show projects --affected",
-		);
-		const affectedProjects = affectedProjectsOutput
-			.split("\n")
-			.map((p) => p.trim())
-			.filter((p) => !!p);
+		// Retrieve the current commit SHA for appending to the README.
+		const currentCommitSha = runCommand("git rev-parse HEAD");
 
-		if (affectedProjects.length === 0) {
-			console.log("No affected projects found.");
-			process.exit(0);
-		}
-
-		// 2. Process each affected project.
-		for (const project of affectedProjects) {
-			// Look up the project root in the project map.
-			const projectRoot = projectMap.get(project);
-			if (!projectRoot) {
-				throw new Error(
-					`Unable to locate the root folder for project "${project}" in the project map.`,
-				);
-			}
+		// Process each project in the map.
+		for (const [project, projectRoot] of projectMap.entries()) {
 			console.log(`\nProcessing project "${project}" at "${projectRoot}" ...`);
 
-			// Retrieve all tracked files in the repository.
-			const trackedFiles = runCommand("git ls-files").split("\n");
+			// Determine the base commit SHA from an existing README.md (if present).
+			const readmePath = path.join(projectRoot, "README.md");
+			let baseCommit: string | undefined;
+			if (fs.existsSync(readmePath)) {
+				const readmeContent = fs.readFileSync(readmePath, "utf-8");
+				// Use regex to extract commit SHA from a comment in the form: <!-- Last updated: <sha> -->
+				const match = readmeContent.match(
+					/<!--\s*Last\s+updated:\s*([a-f0-9]+)\s*-->/i,
+				);
+				if (match?.[1]) {
+					baseCommit = match[1];
+				}
+			}
 
-			// Filter files to include only those within the project root.
-			const projectFiles = trackedFiles
-				.filter((file) => {
-					const relative = path.relative(projectRoot, file);
-					// Ensure the file is actually within the project folder.
-					return (
-						relative && !relative.startsWith("..") && !path.isAbsolute(relative)
+			// Determine changed files within this project's root.
+			let changedFilesOutput = "";
+			if (baseCommit) {
+				// Run a diff from the base commit to HEAD within the project folder.
+				try {
+					changedFilesOutput = runCommand(
+						`git diff --name-only ${baseCommit} HEAD -- "${projectRoot}"`,
 					);
-				})
-				.filter((file) => {
-					// Exclude root README.md
-					return file !== "README.md";
-				});
+				} catch (error) {
+					console.warn(
+						`Error obtaining diff for project "${project}". Falling back to all tracked files.`,
+					);
+					changedFilesOutput = runCommand(`git ls-files "${projectRoot}"`);
+				}
+			} else {
+				// No base commit: include all tracked files in the project.
+				console.warn(
+					`No base commit found for project "${project}". Including all tracked files.`,
+				);
+				changedFilesOutput = runCommand(`git ls-files "${projectRoot}"`);
+			}
+			const changedFiles = changedFilesOutput
+				.split("\n")
+				.map((f) => f.trim())
+				.filter((f) => !!f);
 
-			// Concatenate each file's path and content.
+			// Filter to include only files within the project root and exclude README.md.
+			const projectFiles = changedFiles.filter((file) => {
+				// Compute the relative path with respect to the project root.
+				const absoluteFilePath = path.resolve(file);
+				const relative = path.relative(projectRoot, absoluteFilePath);
+				return (
+					relative &&
+					!relative.startsWith("..") &&
+					!path.isAbsolute(relative) &&
+					path.basename(file) !== "README.md"
+				);
+			});
+
+			// If no files have changed, skip updating this project.
+			if (projectFiles.length === 0) {
+				console.log(
+					`No changes detected for project "${project}". Skipping update.`,
+				);
+				continue;
+			}
+
+			// Concatenate the file paths and their contents.
 			let concatenatedContent = "";
 			for (const filePath of projectFiles) {
+				// Ensure the file exists (it may have been deleted in the diff).
+				if (!fs.existsSync(filePath)) continue;
 				concatenatedContent += `${filePath}\n`;
 				const fileData = fs.readFileSync(filePath, "utf-8");
 				concatenatedContent += `${fileData}\n\n`;
 			}
 
-			// Combine the concatenated content with the user-provided prompt.
+			// Combine the user-provided prompt with the concatenated content.
 			const finalPrompt = `${PROMPT}\n\n${concatenatedContent}`;
 
+			// Initialise the OpenAI client.
 			const openai = createOpenAI({
 				apiKey: OPENAI_API_KEY,
 			});
 
-			// Generate the README.md content by invoking the Cloudflare AI endpoint.
+			// Generate the README content via the Cloudflare AI endpoint.
 			const { object } = await generateObject({
 				model: openai("gpt-4o"),
 				schema: z.object({
@@ -237,10 +263,11 @@ async function main() {
 				prompt: finalPrompt,
 			});
 
-			// Save the AI response as README.md in the project's root folder.
-			const readmePath = path.join(projectRoot, "README.md");
+			// Append the "Last updated" comment with the current commit SHA.
+			const updatedContent = `${object.markdown}\n\n<!-- Last updated: ${currentCommitSha} -->`;
 
-			fs.writeFileSync(readmePath, object.markdown, "utf-8");
+			// Write the updated content to README.md in the project's root.
+			fs.writeFileSync(readmePath, updatedContent, "utf-8");
 			console.log(`AI response saved to ${readmePath}`);
 		}
 
@@ -263,7 +290,7 @@ function runCommand(command: string): string {
 
 /**
  * Recursively searches for package.json files starting from a given directory.
- * Skips directories like node_modules and .git.
+ * Skips directories such as node_modules and .git.
  *
  * @param {string} dir - The directory to search from.
  * @returns {string[]} An array of paths to package.json files.
@@ -311,3 +338,6 @@ function buildProjectMap(): Map<string, string> {
 	}
 	return projectMap;
 }
+
+// Execute the main function.
+void main();
