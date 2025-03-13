@@ -1,123 +1,67 @@
 # Evaluator Optimiser
 
-Welcome to the **Evaluator Optimiser** worker! This project is designed to generate an initial text draft, evaluate it, and then optimise it when necessary, all by orchestrating calls to different AI models. If you have tasks that need iterative refinement—first producing a rough draft, then evaluating and optionally improving it—this worker will automate those steps swiftly.
+Evaluator Optimiser is a sophisticated workflow application designed to iteratively refine and optimize textual drafts using AI models. It leverages a combination of large and small language models to generate, evaluate, and enhance text based on feedback.
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Usage](#usage)
-3. [Architecture](#architecture)
+- [Overview](#overview)
+- [Usage](#usage)
+- [Architecture](#architecture)
 
 ## Overview
-The Evaluator Optimiser is a Cloudflare Worker Workflow that automates the process of generating, evaluating, and optimising text drafts. It uses AI models to perform these tasks asynchronously, ensuring efficient and reliable text refinement. The workflow is encapsulated in a series of steps that include draft generation, evaluation, and optimisation.
+The Evaluator Optimiser project is built to automate the process of drafting, evaluating, and optimizing text. It uses a workflow pattern that involves generating an initial draft, evaluating it for improvements, and then optimizing the draft based on feedback. This process is facilitated by AI models, specifically the Llama models, to ensure high-quality output.
 
 ## Usage
+To start the project locally, you can use the following npm scripts:
 
-### Local Development
-To run the worker in your local development environment, ensure you have:
+- **deploy**: Deploy the application using `wrangler deploy`.
+- **dev**: Start the development server with `wrangler dev`.
+- **lint**: Run linting on the source files using `biome lint --error-on-warnings ./src`.
+- **start**: Alias for starting the development server with `wrangler dev`.
+- **test**: Run tests using `vitest --watch=false`.
+- **test:ci**: Run tests in CI mode using `vitest --watch=false`.
+- **type-check**: Perform TypeScript type checking with `tsc --noEmit`.
 
-- Node.js (LTS version recommended)  
-- Yarn or npm  
-- `nx` CLI (installed globally or via npx)
+### API Interaction
+The project exposes a RESTful API with the following endpoints:
 
-Then run:
-```bash
-npx nx dev evaluator-optimiser
-```
-By default, `wrangler dev` will be invoked under the hood. Your worker will be accessible at a local development endpoint (typically `localhost:<port>`).
-
-### Environment Variables
-- The file `.dev.vars` contains environment variables for development. For instance:
+#### POST /
+Trigger a new workflow instance.
+- **Request**: JSON payload with a `prompt` property.
+- **Response**: JSON object containing the workflow instance ID and details.
+- **Curl Command**:
   ```bash
-  OPENAI_API_KEY=sk-proj-RdrexlMjH-JdjL6an...
+  curl -X POST http://localhost:8787/ -H "Content-Type: application/json" -d '{"prompt": "Your prompt here"}'
   ```
-  Replace the placeholder with your actual OpenAI API key, taking care never to commit real credentials to version control.
 
-- The `wrangler.jsonc` file configures your worker for Cloudflare. Within it, various environments (development, staging, production) define different variable sets. By default, `ENVIRONMENT` is set to `production`, but it can be overridden in each environment configuration.
-
-### Deployments
-The `package.json` scripts include:
-
-- `deploy:production` — Deploys the production environment:
+#### GET /:id
+Fetch the status of an existing workflow instance by its ID.
+- **Request**: Instance ID as a URL parameter.
+- **Response**: JSON object containing the status of the workflow instance.
+- **Curl Command**:
   ```bash
-  yarn deploy:production
-  ```
-  or
-  ```bash
-  npm run deploy:production
-  ```
-- `deploy:staging` — Deploys the staging environment:
-  ```bash
-  yarn deploy:staging
-  ```
-  or
-  ```bash
-  npm run deploy:staging
-  ```
-
-Adjust them according to your preferred package manager. Deployment uses [Wrangler](https://developers.cloudflare.com/workers/wrangler) behind the scenes.
-
-### API Endpoints
-- **`POST /`**  
-  Triggers a new workflow instance.  
-  **Request body** should be JSON, including:
-  ```json
-  { "prompt": "Your task description or request here" }
-  ```
-  **Example response**:
-  ```json
-  {
-    "id": "<workflow-instance-id>",
-    "details": {
-      "status": "running or completed",
-      ...
-    }
-  }
-  ```
-- **`GET /:id`**  
-  Fetches the status of an existing workflow instance by its ID.  
-  **Example response**:
-  ```json
-  {
-    "status": {
-      "result": {
-        "initialDraft": "Initial draft",
-        "evaluation": {
-          "feedback": "Constructive feedback",
-          "needsRevision": false
-        },
-        "finalDraft": "Possibly an improved version"
-      },
-      ...
-    }
-  }
+  curl http://localhost:8787/{id}
   ```
 
 ## Architecture
+The Evaluator Optimiser application is structured as a cloud-based workflow system. It uses Cloudflare Workers to manage the execution of tasks and AI models for processing text. The architecture follows the Evaluator-Optimizer pattern, where an initial draft is generated, evaluated, and optimized iteratively.
 
 ### System Diagram
 ```mermaid
 graph TD;
-    A[User Request] -->|POST /| B[Evaluator Optimiser Workflow]
-    B --> C[Generate Initial Draft]
-    C --> D[Evaluate Draft]
-    D -->|Needs Revision| E[Optimise Draft]
-    D -->|No Revision Needed| F[Return Final Draft]
-    E --> F
+    A[User Request] --> B[Evaluator Optimiser API];
+    B --> C[Generate Initial Draft];
+    C --> D[Evaluate Draft];
+    D --> E{Needs Revision};
+    E -->|Yes| F[Optimize Draft];
+    E -->|No| G[Final Draft];
+    F --> G;
+    G --> H[Return Final Draft];
 ```
 
 ### Evaluator-Optimizer Pattern
-The Evaluator Optimiser employs the Evaluator-Optimizer pattern, which involves an iterative refinement loop between task execution and evaluation. This pattern is beneficial for tasks that require iterative, criteria-based improvement, such as text generation and refinement.
+The project implements the Evaluator-Optimizer pattern, which involves:
+- **Initial Draft Generation**: Using a small AI model to create a draft.
+- **Draft Evaluation**: Providing feedback on the draft using the same model.
+- **Draft Optimization**: If needed, refining the draft using a larger AI model based on feedback.
 
-```mermaid
-graph TD;
-    A[Generate Initial Draft] --> B[Evaluate Draft]
-    B -->|Needs Revision| C[Optimise Draft]
-    B -->|No Revision Needed| D[Final Draft]
-    C --> D
-```
-
-## Conclusion
-
-**Evaluator Optimiser** is a compact yet powerful Cloudflare Worker Workflow that harnesses multiple AI models to produce, evaluate, and enhance text content. Whether you need quick, iterative text generation or a more extensive review of complex tasks, this service delivers a streamlined approach to text refinement.
-
-Should you have any questions or suggestions, please open an issue or submit a pull request. Enjoy your refined, AI-driven text outputs!
+This pattern ensures that the text is iteratively improved, leveraging AI capabilities to enhance quality and coherence.

@@ -1,125 +1,88 @@
 # Text Generation
 
-Welcome to **Text Generation**, a Cloudflare Worker that leverages powerful Large Language Models (LLMs) via [`workers-ai-provider`](https://developers.cloudflare.com/workers/ai/) to generate human-like text on demand. This worker is orchestrated through Nx, making development, testing, and deployment straightforward. Below you will find everything you need to get started, from installation to usage.
+This project is a text generation application that leverages AI models to generate text based on user prompts. It is designed to be deployed on a serverless platform, providing a scalable and efficient solution for text generation tasks.
 
 ## Table of Contents
-- [Overview](#overview)
-- [Usage](#usage)
-- [Architecture](#architecture)
+1. [Overview](#overview)
+2. [Usage](#usage)
+3. [Architecture](#architecture)
 
 ## Overview
-
-This worker is designed to accept a prompt from the user, generate a text response using a model provisioned through Cloudflare’s AI bindings, and return the generated text as JSON. The worker taps into the `@cf/meta/llama-3.3-70b-instruct-fp8-fast` model by default, but you can configure it to your preference.
-
-Essentially, the process is:
-1. A user submits a **prompt** via a `POST` request.
-2. The worker takes this prompt and sends it to the AI model (using `workers-ai-provider`).
-3. The AI model produces a response.
-4. The response is returned as JSON to the user.
+The Text Generation project is built to provide an API for generating text using AI models. It utilizes the Hono framework for handling HTTP requests and integrates with AI models through the Workers AI provider. The primary functionality is to accept a text prompt and return generated text based on that prompt.
 
 ## Usage
-
-### Development
-
-1. Ensure you have all dependencies installed (run `npm install` in your repository root).
-2. Start your local development server:
-   ```bash
-   npx nx dev text-generation
-   ```
-   Under the hood, this calls:
-   ```bash
-   wrangler dev -e development
-   ```
-   The Worker will start locally at `http://localhost:8787` by default.
-
-### Sending Requests
-
-To interact with the worker, simply send a `POST` request to `http://localhost:8787/`, with a JSON body:
-
-```json
-{
-  "prompt": "Tell me an interesting fact about honey badgers."
-}
-```
-
-The worker will respond with JSON containing the generated text. For instance:
-
-```json
-{
-  "text": "Honey badgers are known for their incredible resilience..."
-}
-```
-
-### Testing
-
-This worker includes a minimal test setup using [Vitest](https://vitest.dev/). To run tests:
+To start the project locally, use the following command:
 
 ```bash
-npx nx test text-generation
+npx nx dev text-generation
 ```
 
-### Linting and Type Checking
+### NPM Scripts
+- **deploy**: Deploys the application using Wrangler.
+  ```bash
+  npx nx deploy text-generation
+  ```
+- **dev**: Starts the development server using Wrangler.
+  ```bash
+  npx nx dev text-generation
+  ```
+- **lint**: Lints the source code using Biome.
+  ```bash
+  npx nx lint text-generation
+  ```
+- **start**: Alias for `dev`, starts the development server.
+  ```bash
+  npx nx start text-generation
+  ```
+- **test**: Runs the test suite using Vitest.
+  ```bash
+  npx nx test text-generation
+  ```
+- **test:ci**: Runs the test suite in CI mode using Vitest.
+  ```bash
+  npx nx test:ci text-generation
+  ```
+- **type-check**: Performs TypeScript type checking.
+  ```bash
+  npx nx type-check text-generation
+  ```
 
-To ensure your code remains consistent and bug-free, use the following:
-
-```bash
-# Linting
-npx nx lint text-generation
-
-# Type Checking
-npx nx type-check text-generation
-```
-
-### Deployments
-
-Deployment is managed by [Wrangler](https://developers.cloudflare.com/workers/wrangler/). You can deploy to **production** or **staging**. The relevant scripts are found in `package.json`:
-
-```bash
-# Production
-npx nx deploy:production text-generation
-
-# Staging
-npx nx deploy:staging text-generation
-```
-
-These commands correlate to the respective environments outlined in your `wrangler.jsonc`.
+### API Endpoint
+- **POST /**: Generates text based on the provided prompt.
+  - **Request**:
+    - Method: POST
+    - Headers: `Content-Type: application/json`
+    - Body: `{ "prompt": "Your text prompt here" }`
+  - **Response**:
+    - Content-Type: `application/json`
+    - Body: `{ "generatedText": "Generated text based on the prompt" }`
+  - **Curl Command**:
+    ```bash
+    curl -X POST \
+    -H "Content-Type: application/json" \
+    -d '{ "prompt": "Your text prompt here" }' \
+    http://localhost:8787/
+    ```
 
 ## Architecture
+The application is structured as a serverless function using the Hono framework. It integrates with AI models via the Workers AI provider, allowing for scalable and efficient text generation.
 
 ### System Diagram
+```mermaid
+graph TD;
+    A[Client] --> B[Hono Server];
+    B --> C[Workers AI Provider];
+    C --> D[AI Model];
+    D --> B;
+    B --> A;
+```
+
+### Tool Use Pattern
+The application uses the Tool Use Pattern by dynamically interacting with the Workers AI provider to generate text. This pattern allows the application to extend its capabilities by leveraging external AI models for text generation.
 
 ```mermaid
 graph TD;
-    A[User] -->|POST Request| B[Cloudflare Worker];
-    B -->|Prompt| C[AI Model];
-    C -->|Generated Text| B;
-    B -->|JSON Response| A;
+    A[Identify Task] --> B[Invoke AI Model];
+    B --> C[Integrate Data];
+    C --> D[Return Response];
 ```
-
-### Workflow Pattern
-
-Here is a simplified sequence diagram to illustrate the worker’s internal flow:
-
-```mermaid
-sequenceDiagram
-    participant User as User
-    participant Worker as Cloudflare Worker
-    participant LLM as AI Model
-
-    User->>Worker: POST / (JSON with "prompt")
-    Worker->>LLM: generateText(prompt)
-    LLM-->>Worker: Generated text
-    Worker-->>User: JSON response with text
-```
-
-1. **User** sends a `prompt`.
-2. **Worker** relays the prompt to the LLM via `workers-ai-provider`.
-3. **LLM** (running in Cloudflare's environment) computes the text.
-4. **Worker** receives the generated output.
-5. **Worker** returns the text as JSON.
-
-This simple agentic pattern leverages Cloudflare’s AI binding (`AI`) to offload the heavy lifting of text generation.
-
----
-
-**Happy Text-generating!**
