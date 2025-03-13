@@ -28,35 +28,28 @@ export async function extractCronSchedule(model: LanguageModel, query: string) {
 			  { "cron": undefined }
 
 			Examples
-			1. **Remind me to stand u every minute**:
-
+			1. Remind me to stand u every minute.
 				* * * * *
 
-			2. **Set an alarm to get up at 8:00 AM every day**:
+			2. Set an alarm to get up at 8:00 AM every day.
 				0 8 * * *
 
-			3. **Pick up the kids at 2:15 PM every Monday, Wednesday, Friday**:
-
+			3. Pick up the kids at 2:15 PM every Monday, Wednesday, Friday.
 				15 14 1,3,5 * *
 
-			4. **Beware the ides of the month every hour on the 15th day of every month**:
-
+			4. Beware the ides of the month every hour on the 15th day of every month.
 				0 0 15 * *
 
-			5. **Remind me of some random thing that happens every 5 minutes on the 2nd day of every month**:
-
+			5. Remind me of some random thing that happens every 5 minutes on the 2nd day of every month.
 				*/5 0 2 * *
 
-			6. **It's a strange time to go to church, but please remind me every Sunday at 3:00 AM**:
-
+			6. It's a strange time to go to church, but please remind me every Sunday at 3:00 AM.
 				0 3 * * 0
 
-			7. **Run a command at 9:00 PM on the last day of every month**:
-
+			7. Run a command at 9:00 PM on the last day of every month.
 				0 21 L * *
 
-			8. **Run a command at 10:00 PM on the 1st day of every month**:
-
+			8. Run a command at 10:00 PM on the 1st day of every month.
 				0 22 1 * *
 			`,
 	});

@@ -13,18 +13,20 @@ export async function extractScheduleId(
 			scheduleId: z.string().optional(),
 		}),
 		prompt: `
-          You are an intelligent schedule manager. The user requested cancelling a schedule.
-          Try to figure out which schedule ID from the list below is the best match.
+			You are an intelligent schedule manager. The user requested cancelling a schedule.
+			Try to figure out which schedule ID from the list below is the best match.
 
-          Prompt: "${query}"
+			Prompt: "${query}"
 
-          Current tasks: ${JSON.stringify(schedules)}
+			Current tasks: ${JSON.stringify(schedules)}
 
-          Respond with a JSON object of the form:
-            { "scheduleId": "[id]" }
-          if you find a match, or
-            { "scheduleId": undefined }
-          if there is no match.
+			Respond with a JSON object of the form:
+
+			- if you find a match:
+			{ "scheduleId": "[id]" }
+
+			- if not:
+			{ "scheduleId": undefined }
         `,
 	});
 
