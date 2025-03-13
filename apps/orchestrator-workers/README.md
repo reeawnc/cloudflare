@@ -18,31 +18,31 @@ npx nx dev orchestrator-workers
 
 ### NPM Scripts
 - **deploy**: Deploys the application using Wrangler.
-  ```
+```
 npx nx deploy orchestrator-workers
 ```
 - **dev**: Starts the development server.
-  ```
+```
 npx nx dev orchestrator-workers
 ```
 - **lint**: Lints the codebase for errors and warnings.
-  ```
+```
 npx nx lint orchestrator-workers
 ```
 - **start**: Starts the application in development mode.
-  ```
+```
 npx nx start orchestrator-workers
 ```
 - **test**: Runs the test suite.
-  ```
+```
 npx nx test orchestrator-workers
 ```
 - **test:ci**: Runs the test suite in CI mode.
-  ```
+```
 npx nx test:ci orchestrator-workers
 ```
 - **type-check**: Checks TypeScript types.
-  ```
+```
 npx nx type-check orchestrator-workers
 ```
 
