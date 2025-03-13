@@ -6,8 +6,8 @@
 		"dev": "wrangler dev -e development",
 		"lint": "biome lint --error-on-warnings ./src",
 		"start": "wrangler dev -e development",
-		"test": "npm run dev & wait-on http://localhost:8787 && vitest; kill $!",
-		"test:ci": "npm run dev & wait-on http://localhost:8787 && vitest --watch=false; kill $!",
+		"test": "vitest",
+		"test:ci": "vitest --watch=false",
 		"type-check": "tsc --noEmit"
 	}
 }
