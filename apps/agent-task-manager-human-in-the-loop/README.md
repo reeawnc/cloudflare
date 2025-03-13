@@ -28,14 +28,14 @@ npx nx dev agent-task-manager-human-in-the-loop
 ### API Endpoints
 #### POST /query
 - **Request**:
-  ```json
+  ```jsonc
   {
     "agentId": "string",
     "prompt": "string"
   }
   ```
 - **Response**:
-  ```json
+  ```jsonc
   {
     "confirmation": {
       "id": "string",
@@ -54,14 +54,14 @@ npx nx dev agent-task-manager-human-in-the-loop
 
 #### POST /confirmations/:confirmationId
 - **Request**:
-  ```json
+  ```jsonc
   {
     "agentId": "string",
     "confirm": true | false
   }
   ```
 - **Response**:
-  ```json
+  ```jsonc
   {
     "result": "Task | string | false | undefined"
   }
