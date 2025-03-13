@@ -22,27 +22,27 @@ npx nx dev agent-task-manager
 npx nx deploy agent-task-manager
 ```
 - **dev**: Starts the development server.
-  ```
+```
 npx nx dev agent-task-manager
 ```
 - **lint**: Lints the source code and throws errors on warnings.
-  ```
+```
 npx nx lint agent-task-manager
 ```
 - **start**: Starts the application in development mode.
-  ```
+```
 npx nx start agent-task-manager
 ```
 - **test**: Runs the test suite.
-  ```
+```
 npx nx test agent-task-manager
 ```
 - **test:ci**: Runs the test suite in CI mode.
-  ```
+```
 npx nx test:ci agent-task-manager
 ```
 - **type-check**: Performs TypeScript type checking.
-  ```
+```
 npx nx type-check agent-task-manager
 ```
 
