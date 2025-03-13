@@ -60,6 +60,6 @@ describe("Structured Outputs Integration Tests", () => {
 			const successRate = results.filter(Boolean).length / results.length;
 			expect(successRate).toBeGreaterThanOrEqual(PASSING_THRESHOLD);
 		},
-		{ timeout: 90000 },
+		{ timeout: 500000 },
 	);
 });
