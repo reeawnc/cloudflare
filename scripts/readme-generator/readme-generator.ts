@@ -85,6 +85,22 @@ graph TD;
     B -->|Valid Key| C[Proceed to API]
     B -->|Invalid Key| D[Return Error]
 
+### Markdown formatting
+
+There is often a problem when using lists where the next line is indented with the list. This often happens with code blocks, e.g.:
+
+- **dev**: Starts the development server.
+  \`\`\`
+npx nx dev agent-task-manager
+\`\`\`
+
+Notice how the first set of backticks is indented with the list item. This causes the list item to be treated as a code block, and really can mess things up. To fix this, you should ensure that the next line is not indented, e.g.:
+
+- **dev**: Starts the development server.
+\`\`\`
+npx nx dev agent-task-manager
+\`\`\`
+
 
 ## Agentic Design Patterns Cheatsheet
 
