@@ -38,7 +38,7 @@ interface TaskManagerState {
 
 export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 	/**
-	 * The initial state of the TaskManagerAgent. By default, there are no tasks and no confirmations.
+	 * The initial state of the SchedulerAgent. By default, there are no tasks and no confirmations.
 	 */
 	initialState: TaskManagerState = {
 		tasks: [],

@@ -1,0 +1,12 @@
+{
+	"name": "agent-scheduler",
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"lint": "biome lint --error-on-warnings ./src",
+		"start": "wrangler dev",
+		"test": "vitest --watch=false",
+		"test:ci": "vitest --watch=false",
+		"type-check": "tsc --noEmit"
+	}
+}
