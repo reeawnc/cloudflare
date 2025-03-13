@@ -1,120 +1,133 @@
 # Agent Task Manager
 
-**Welcome to the Agent Task Manager worker!**  
-This is a Cloudflare Worker (with a Durable Object) that listens for task-related instructions and intelligently manages a list of tasks. It is designed to interpret your requests, either adding tasks, removing tasks, listing tasks, or doing nothing if it deems that no changes are needed. The results of its decisions can then be retrieved and incorporated into your applications as you see fit.
+Agent Task Manager is an intelligent task management system that leverages AI to manage tasks dynamically. It can add, delete, and list tasks based on user prompts, making it a versatile tool for task automation and management.
 
 ## Table of Contents
 - [Overview](#overview)
 - [Usage](#usage)
 - [Architecture](#architecture)
-- [Example Usage](#example-usage)
-- [Testing and Linting](#testing-and-linting)
 
 ## Overview
-
-This worker:
-- Provides a POST endpoint at `/` that accepts a JSON payload containing a user prompt.
-- Uses advanced AI capabilities to interpret user input and decide the most appropriate task-based action:
-  1. **Add** a new task,  
-  2. **Delete** an existing task,  
-  3. **List** all existing tasks,  
-  4. **Do nothing** (if the query does not suggest a modification to the task list).
-- Persists these tasks in a Durable Object called `TASK_MANAGER_AGENT`.
+The Agent Task Manager is designed to automate task management using AI. It utilizes a task manager agent that can interpret user prompts to perform actions such as adding, deleting, or listing tasks. The system is built on a durable object architecture, ensuring state persistence and scalability.
 
 ## Usage
-
-### Prerequisites
-- Node.js and npm installed.
-- A Cloudflare account for production deployment (optional if you merely want to run locally).
-
-### Installation  
-In the monorepo’s root directory, install dependencies:
-```bash
-npm install
+To start the project locally, use the following command:
 ```
-
-### Run (Development Mode)  
-Start the worker in development mode with Nx:
-```bash
 npx nx dev agent-task-manager
 ```
-This effectively calls `wrangler dev`, spinning up a local environment so that you can send requests to `http://localhost:8787/` (default port).
-
-### Deployment  
-If you have your Cloudflare account set up (with the required credentials in your environment variables), you may deploy using:
-```bash
-npx nx deploy agent-task-manager
-```
-This calls `wrangler deploy` under the hood.
 
 ### NPM Scripts
-- **`deploy`**: Deploys via Cloudflare Wrangler
-- **`dev`**: Runs in local dev mode
-- **`lint`**: Checks code with Biome
-- **`test`**: Runs tests with Vitest
-- **`type-check`**: Runs `tsc` without emitting files
+- **deploy**: Deploys the application using Wrangler.
+  ```
+npx nx deploy agent-task-manager
+```
+- **dev**: Starts the development server using Wrangler.
+  ```
+npx nx dev agent-task-manager
+```
+- **lint**: Lints the source code using Biome.
+  ```
+npx nx lint agent-task-manager
+```
+- **start**: Starts the application in development mode.
+  ```
+npx nx start agent-task-manager
+```
+- **test**: Runs the test suite using Vitest.
+  ```
+npx nx test agent-task-manager
+```
+- **test:ci**: Runs the test suite in CI mode using Vitest.
+  ```
+npx nx test:ci agent-task-manager
+```
+- **type-check**: Performs TypeScript type checking.
+  ```
+npx nx type-check agent-task-manager
+```
+
+### API Interaction
+The project exposes an API endpoint to interact with the task manager agent.
+
+#### Add a Task
+To add a task, send a POST request with the following format:
+
+**Request**
+```json
+{
+  "agentId": "your-agent-id",
+  "prompt": "add a new task"
+}
+```
+
+**Curl Command**
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"agentId": "your-agent-id", "prompt": "add a new task"}' \
+  http://localhost:8787/
+```
+
+#### Delete a Task
+To delete a task, send a POST request with the following format:
+
+**Request**
+```json
+{
+  "agentId": "your-agent-id",
+  "prompt": "delete task"
+}
+```
+
+**Curl Command**
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"agentId": "your-agent-id", "prompt": "delete task"}' \
+  http://localhost:8787/
+```
+
+#### List Tasks
+To list tasks, send a POST request with the following format:
+
+**Request**
+```json
+{
+  "agentId": "your-agent-id",
+  "prompt": "list tasks"
+}
+```
+
+**Curl Command**
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"agentId": "your-agent-id", "prompt": "list tasks"}' \
+  http://localhost:8787/
+```
 
 ## Architecture
+The Agent Task Manager is structured around a durable object architecture, which allows for persistent state management and scalability. The main components include the TaskManagerAgent, which handles task operations, and the API layer, which facilitates interaction with the agent.
 
 ### System Diagram
 ```mermaid
 graph TD;
-    A[User] -->|POST Request| B[Cloudflare Worker]
-    B -->|Interprets Prompt| C[AI Model]
-    C -->|Decides Action| D[TaskManagerAgent]
-    D -->|Updates| E[Task List]
-    E -->|Response| A
+    A[User] -->|Sends Prompt| B[API Layer];
+    B -->|Processes Request| C[TaskManagerAgent];
+    C -->|Manages Tasks| D[Durable Object Storage];
+    D -->|Stores State| C;
 ```
 
-### Durable Object
-- **`TaskManagerAgent`**: Contains logic for all task management operations, as well as the internal state of tasks in memory.
-- The `taskId` values are generated by `crypto.randomUUID()`, ensuring uniqueness.
+### Agentic Patterns
+The project employs the Tool Use Pattern, where the TaskManagerAgent dynamically interacts with AI models to determine task actions based on user prompts.
 
-## Example Usage
+#### Tool Use Pattern
+```mermaid
+graph TD;
+    A[User Prompt] --> B[TaskManagerAgent];
+    B -->|Identifies Task| C[AI Model];
+    C -->|Returns Action| B;
+    B -->|Executes Action| D[Task List];
+```
 
-1. **Adding a Task**
-   ```bash
-   curl -X POST http://localhost:8787/ \
-     -H "Content-Type: application/json" \
-     -d '{
-       "agentId": "demo-agent",
-       "prompt": "Please add a new task to fix my website's homepage"
-     }'
-   ```
-
-2. **Deleting a Task**
-   ```bash
-   curl -X POST http://localhost:8787/ \
-     -H "Content-Type: application/json" \
-     -d '{
-       "agentId": "demo-agent",
-       "prompt": "Delete the task titled 'fix my website's homepage'"
-     }'
-   ```
-
-3. **Listing Tasks**
-   ```bash
-   curl -X POST http://localhost:8787/ \
-     -H "Content-Type: application/json" \
-     -d '{
-       "agentId": "demo-agent",
-       "prompt": "Please show all my tasks"
-     }'
-   ```
-
-## Testing and Linting
-
-- **Run Tests:**
-  ```bash
-  npx nx test:ci agent-task-manager
-  ```
-- **Lint Code:**
-  ```bash
-  npx nx lint agent-task-manager
-  ```
-- **Type Check:**
-  ```bash
-  npx nx type-check agent-task-manager
-  ```
-
-We hope you find the Agent Task Manager both entertaining and practical. Whether you need to keep track of complex projects or simply remove that lingering to-do item, this worker has you covered with AI-driven intelligence and a straightforward JSON API. Enjoy your new, automated task manager!
+This pattern allows the agent to extend its capabilities by leveraging AI to interpret and act on user inputs dynamically.

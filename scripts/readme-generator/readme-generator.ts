@@ -200,13 +200,18 @@ async function main() {
 			const trackedFiles = runCommand("git ls-files").split("\n");
 
 			// Filter files to include only those within the project root.
-			const projectFiles = trackedFiles.filter((file) => {
-				const relative = path.relative(projectRoot, file);
-				// Ensure the file is actually within the project folder.
-				return (
-					relative && !relative.startsWith("..") && !path.isAbsolute(relative)
-				);
-			});
+			const projectFiles = trackedFiles
+				.filter((file) => {
+					const relative = path.relative(projectRoot, file);
+					// Ensure the file is actually within the project folder.
+					return (
+						relative && !relative.startsWith("..") && !path.isAbsolute(relative)
+					);
+				})
+				.filter((file) => {
+					// Exclude root README.md
+					return file !== "README.md";
+				});
 
 			// Concatenate each file's path and content.
 			let concatenatedContent = "";
@@ -234,6 +239,7 @@ async function main() {
 
 			// Save the AI response as README.md in the project's root folder.
 			const readmePath = path.join(projectRoot, "README.md");
+
 			fs.writeFileSync(readmePath, object.markdown, "utf-8");
 			console.log(`AI response saved to ${readmePath}`);
 		}

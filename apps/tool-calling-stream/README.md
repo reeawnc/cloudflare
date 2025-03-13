@@ -1,6 +1,6 @@
-# Tool-Calling-Stream Worker
+# Tool Calling Stream
 
-Welcome to **tool-calling-stream**, a Cloudflare Worker project designed to demonstrate conversational AI interactions with tool usage, all in a streaming fashion. In other words, this Worker makes it possible to ask a question and have an AI model respond in real time, calling external “tools” (like a weather service) as needed.
+Tool Calling Stream is a project designed to provide a streaming interface for AI models, allowing for dynamic tool usage and interaction. It leverages the Hono framework to create a server that can handle AI model requests and stream responses back to the client.
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -8,82 +8,59 @@ Welcome to **tool-calling-stream**, a Cloudflare Worker project designed to demo
 3. [Architecture](#architecture)
 
 ## Overview
-The **tool-calling-stream** project is a Cloudflare Worker that facilitates real-time AI interactions by streaming responses and invoking external tools to enhance the AI's capabilities. The primary purpose is to demonstrate how AI can be integrated with external services to provide enriched responses. The architecture leverages Cloudflare Workers for serverless deployment, ensuring scalability and low latency.
+The Tool Calling Stream project serves as a streaming interface for AI models, specifically designed to handle requests and provide responses in a streaming manner. It utilizes the Hono framework to set up a server that can process AI model interactions, allowing for dynamic tool usage such as weather information retrieval. The project is structured to support various environments, including production, development, and staging.
 
 ## Usage
-To start the project locally, ensure you are in the root of the project directory and use the following commands:
+To start the project locally, you can use the following npm scripts:
 
-### Start Development Server
-```bash
-npx nx dev tool-calling-stream
-```
-This command uses `wrangler dev` under the hood, launching the Worker on a local development server (usually at [http://localhost:8787](http://localhost:8787)).
+- `npx nx dev tool-calling-stream`: Starts the development server using Wrangler.
+- `npx nx deploy tool-calling-stream`: Deploys the application using Wrangler.
+- `npx nx lint tool-calling-stream`: Lints the source code using Biome, ensuring code quality and consistency.
+- `npx nx start tool-calling-stream`: An alias for starting the development server.
+- `npx nx test tool-calling-stream`: Runs the test suite using Vitest.
+- `npx nx test:ci tool-calling-stream`: Runs the test suite in continuous integration mode, without watching for changes.
+- `npx nx type-check tool-calling-stream`: Performs TypeScript type checking without emitting output files.
 
-### Lint
-```bash
-npx nx lint tool-calling-stream
-```
-Runs [Biome](https://biomejs.dev/) linting on the codebase to ensure it meets style and code-quality conventions.
+### API Interaction
+The project exposes an API with the following endpoints:
 
-### Type-Check
-```bash
-npx nx type-check tool-calling-stream
-```
-Uses TypeScript to verify type correctness without emitting compiled files.
-
-### Test
-```bash
-npx nx test tool-calling-stream
-```
-Starts the local development server in the background, runs [Vitest](https://vitest.dev/) test suites (including integration tests), and then cleans up the server.
-
-### Deploy
-```bash
-# For production:
-npx nx deploy:production tool-calling-stream
-
-# For staging:
-npx nx deploy:staging tool-calling-stream
-```
-Deploys the Worker using `wrangler deploy` to the specified environment.
-
-### API Usage
-To interact with the API, send a `POST` request to the Worker’s root endpoint (`/`).
-
-Example usage:
-```bash
-curl -X POST http://localhost:8787/ \
-  -H 'Content-Type: application/json' \
-  -d '{"prompt": "What is the weather in London?"}'
-```
-The Worker will respond with a text stream containing the AI’s reply, which might include “Raining” after it calls the weather tool.
+#### POST /
+- **Description**: Streams AI model responses based on the provided prompt.
+- **Request Format**:
+  ```json
+  {
+    "prompt": "Your prompt here"
+  }
+  ```
+- **Response Format**: Streams text responses from the AI model.
+- **Curl Command**:
+  ```bash
+  curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "What is the weather in London?"}' \
+  http://localhost:8787/
+  ```
 
 ## Architecture
-The architecture of the **tool-calling-stream** project is designed to handle real-time AI interactions efficiently. Below is a conceptual view of the **agentic** workflow, where the AI model can “step outside” to call a tool (the weather checker) before continuing its response. This allows for more powerful, context-rich answers.
+The architecture of the Tool Calling Stream project is designed to handle AI model requests and stream responses efficiently. It uses the Hono framework to manage HTTP requests and responses, and integrates with AI models to provide dynamic tool usage.
 
+### System Diagram
 ```mermaid
-sequenceDiagram
-    participant User
-    participant Worker
-    participant LLM
-    participant WeatherTool
-
-    User->>Worker: POST request with prompt
-    Worker->>LLM: Send user prompt
-    LLM->>LLM: Process prompt
-    alt Needs weather info
-        LLM->>WeatherTool: Invoke weather tool
-        WeatherTool-->>LLM: Return weather data
-    end
-    LLM-->>Worker: Stream response
-    Worker-->>User: Send streaming text chunks
+graph TD;
+    A[Client] -->|HTTP Request| B[Hono Server];
+    B -->|Process Request| C[AI Model];
+    C -->|Stream Response| B;
+    B -->|HTTP Response| A;
 ```
 
-## Additional Notes
-- **`wrangler.jsonc`** configures environment variables, AI bindings, and environment-specific settings.
-- The tool (called “weather”) is defined with [Zod](https://zod.dev/) schemas to ensure correct input handling.
-- [`streamText`](https://www.npmjs.com/package/ai) drives the streaming response, which is returned as a chunked HTTP response so the client can read as soon as data is available.
+### Tool Use Pattern
+The project employs the Tool Use Pattern, where the AI model dynamically interacts with external tools to extend its capabilities. In this case, the AI model can fetch weather information based on user prompts.
 
-We hope you find this Worker both enlightening and fun to experiment with. Feel free to extend its functionality by adding more tools, exploring other AI models, or integrating custom logic.
+```mermaid
+graph TD;
+    A[AI Model] -->|Identify Task| B[Weather Tool];
+    B -->|Fetch Weather Data| A;
+    A -->|Integrate Data| C[Response Stream];
+```
 
-Happy building!
+This pattern allows the AI model to enhance its responses by incorporating real-time data from external sources, providing more accurate and relevant information to users.

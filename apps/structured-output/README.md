@@ -1,6 +1,6 @@
 # Structured Output
 
-This project is named **Structured Output** and is a Cloudflare Worker designed to process user prompts and return reliable, structured JSON responses. It leverages an AI model to extract recipe-like data from free-form text, ensuring that each response strictly adheres to a predefined structure.
+Structured Output is a project designed to generate structured data objects from natural language prompts using AI models. It leverages the power of large language models to interpret and transform user inputs into predefined data structures, making it ideal for applications requiring structured data generation from unstructured text.
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -8,58 +8,107 @@ This project is named **Structured Output** and is a Cloudflare Worker designed 
 3. [Architecture](#architecture)
 
 ## Overview
-The **Structured Output Worker** is responsible for transforming arbitrary prompts into strict, typed objects. For example, by sending a request describing a recipe idea, it outputs a JSON object with the exact structure defined by our zod schema. This worker orchestrates the interplay between Nx, Wrangler, zod, and a Cloudflare-based AI binding in a streamlined workflow.
+The Structured Output project aims to provide a seamless interface for generating structured data from natural language prompts. It utilizes AI models to parse and convert text inputs into structured JSON objects, specifically designed for applications like recipe generation, where the output needs to adhere to a specific schema.
+
+The project is built using the Hono framework and integrates with AI models via the Workers AI provider. It includes a RESTful API that accepts POST requests with prompts and returns structured JSON objects.
 
 ## Usage
-- **Development**: Run the worker locally with:
+To start the project locally, use the following command:
+
+```bash
+npx nx dev structured-output
+```
+
+### NPM Scripts
+- **deploy**: Deploys the application using Wrangler.
+  ```bash
+  npx nx deploy structured-output
+  ```
+- **dev**: Starts the development server using Wrangler.
   ```bash
   npx nx dev structured-output
   ```
-  This triggers `wrangler dev -e development`, spinning up a local instance at `http://localhost:8787`.
-
-- **Local Testing**: Execute tests locally with:
+- **lint**: Lints the source code using Biome.
+  ```bash
+  npx nx lint structured-output
+  ```
+- **start**: Alias for `dev`, starts the development server.
+  ```bash
+  npx nx start structured-output
+  ```
+- **test**: Runs the test suite using Vitest.
   ```bash
   npx nx test structured-output
   ```
-  This performs an integration test that repeatedly sends requests to `http://localhost:8787/` and checks whether the structured response conforms to the zod schema.
-
-- **Deployment**: Deploy to production or staging with:
+- **test:ci**: Runs the test suite in CI mode.
   ```bash
-  npx nx deploy:production structured-output
+  npx nx test:ci structured-output
   ```
-  or
+- **type-check**: Performs TypeScript type checking.
   ```bash
-  npx nx deploy:staging structured-output
+  npx nx type-check structured-output
   ```
 
-### NPM Scripts
-- `deploy`: Deploys the worker using Wrangler.
-- `dev`: Starts the worker in development mode.
-- `lint`: Lints the source code using Biome.
-- `start`: Alias for `dev`.
-- `test`: Runs the test suite.
-- `test:ci`: Runs the test suite in CI mode.
-- `type-check`: Performs TypeScript type checking.
+### API Usage
+The project exposes a RESTful API with the following endpoint:
+
+- **POST /**
+  - **Description**: Generates a structured data object from a given prompt.
+  - **Request Format**:
+    ```json
+    {
+      "prompt": "Create a recipe for sourdough bread."
+    }
+    ```
+  - **Response Format**:
+    ```json
+    {
+      "recipe": {
+        "name": "Sourdough Bread",
+        "ingredients": [
+          { "name": "Flour", "amount": "500g" },
+          { "name": "Water", "amount": "300ml" }
+        ],
+        "steps": [
+          "Mix ingredients",
+          "Knead dough",
+          "Let it rise"
+        ]
+      }
+    }
+    ```
+  - **Curl Command**:
+    ```bash
+    curl -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"prompt": "Create a recipe for sourdough bread."}' \
+    http://localhost:8787/
+    ```
 
 ## Architecture
-The worker uses a “prompt chaining” approach to generate strictly typed JSON from freeform text. The flow is simple yet powerful:
+The architecture of the Structured Output project is designed to efficiently handle natural language processing tasks and generate structured outputs. It consists of the following main components:
 
+- **Hono Framework**: Serves as the web server framework, handling HTTP requests and responses.
+- **Workers AI Provider**: Integrates AI models to process prompts and generate structured data.
+- **Zod Schema Validation**: Ensures the generated data adheres to the predefined schema.
+
+### System Diagram
 ```mermaid
-flowchart LR
-    A[Client] -->|Submits prompt JSON| B[Structured Output Worker]
-    B -->|Makes call to AI model| C[AI Provider]
-    C -->|Returns structured data| B
-    B -->|Validates and returns JSON| A
+graph TD;
+    A[Client] --> B[Hono Server];
+    B --> C[Workers AI Provider];
+    C --> D[AI Model];
+    D --> E[Structured Data Output];
+    B --> F[Zod Schema Validation];
+    F --> E;
 ```
 
-### Key Points
-- **zod Integration** ensures responses strictly match the schema, preventing spurious or invalid fields.
-- **Workers AI Binding** connects your Cloudflare Worker to LLM capabilities without managing complicated API requests yourself.
-- **Nx + Wrangler** streamlines local development and deployment. Nx orchestrates tasks like linting, testing, or building, while Wrangler handles the Cloudflare specifics.
+### Tool Use Pattern
+The project employs the Tool Use Pattern, where the AI model dynamically interacts with external tools (in this case, the Workers AI provider) to extend its capabilities. This pattern involves identifying the task, invoking the appropriate tool, and integrating the returned data into the workflow.
 
-### Environment Variables
-- **`ENVIRONMENT`**: Indicates the current environment (`production`, `development`, or `staging`).
-- **`OPENAI_API_KEY`**: Your OpenAI API key (not required if relying solely on the `AI` binding).
-- **`AI`**: The AI binding provided by Cloudflare for direct model inference.
-
-All these are configured in the `wrangler.jsonc` file, and you can override them per environment.
+```mermaid
+graph TD;
+    A[Identify Task] --> B[Invoke AI Model];
+    B --> C[Generate Structured Data];
+    C --> D[Integrate Data into Workflow];
+```
