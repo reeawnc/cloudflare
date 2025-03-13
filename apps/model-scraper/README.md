@@ -1,32 +1,26 @@
-# model-scraper
+# Model Scraper
 
 A joyful worker that fetches model definitions from a GitHub repository, tucks them into Cloudflare KV for safekeeping, and intelligently serves them up via simple HTTP endpoints. This worker uses Cloudflare’s latest AI integration features to determine whether your prompts require structured or text-based responses.
-
----
 
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Features](#features)
-3. [Usage](#usage)
-   - [1. Development Mode](#1-development-mode)
-   - [2. Staging Deployment](#2-staging-deployment)
-   - [3. Production Deployment](#3-production-deployment)
-4. [API Endpoints](#api-endpoints)
+2. [Usage](#usage)
+   - [Development Mode](#development-mode)
+   - [Staging Deployment](#staging-deployment)
+   - [Production Deployment](#production-deployment)
+3. [API Endpoints](#api-endpoints)
    - [POST /update](#post-update)
    - [POST /query](#post-query)
    - [GET /models_by_task](#get-models_by_task)
    - [GET /models_by_capability](#get-models_by_capability)
-5. [Environment Variables](#environment-variables)
-6. [Interesting Patterns](#interesting-patterns)
-7. [Testing & Linting](#testing--linting)
-8. [License](#license)
-
----
+4. [Environment Variables](#environment-variables)
+5. [Interesting Patterns](#interesting-patterns)
+6. [Testing & Linting](#testing--linting)
 
 ## Overview
 
-**model-scraper** is a Cloudflare Worker (written in TypeScript) that does the following:
+**Model Scraper** is a Cloudflare Worker (written in TypeScript) that does the following:
 
 1. **Fetch** JSON models from a GitHub repository.
 2. **Save** these models to a Cloudflare KV store.
@@ -34,23 +28,11 @@ A joyful worker that fetches model definitions from a GitHub repository, tucks t
 
 The worker leverages an AI interface to decide whether to respond with structured JSON or a text-based response, based on the prompt given by the user. This is particularly helpful if you’re building an application that needs advanced AI-driven responses without losing the convenience of RESTful endpoints.
 
----
-
-## Features
-
-- **Model data sync**: By calling the `/update` endpoint, you can swiftly fetch and store all relevant model files from GitHub into the Cloudflare KV store.
-- **AI-based query**: The `/query` endpoint checks the prompt you provide, determines if it’s a structured or text-based request, and returns the best possible format.
-- **Filtering**: The `/models_by_task` and `/models_by_capability` endpoints allow you to filter models by particular tasks or capabilities (e.g. tool usage).
-- **Built with Hono**: Uses the [Hono](https://hono.dev/) framework for Cloudflare Workers, giving you a neat and concise way to define routes and middlewares.
-- **Flexible environment**: Supports production, staging, and development environments, each with their own separate naming and variables.
-
----
-
 ## Usage
 
 You can run this worker in development mode or deploy it to staging or production. The following commands assume you have [Nx](https://nx.dev/) and the appropriate Cloudflare [Wrangler](https://developers.cloudflare.com/workers/wrangler/) tooling configured.
 
-### 1. Development Mode
+### Development Mode
 
 1. Make sure you have your environment variables set in `apps/model-scraper/.dev.vars` (see [Environment Variables](#environment-variables) below).
 2. Then simply run:
@@ -61,7 +43,7 @@ You can run this worker in development mode or deploy it to staging or productio
 
 This will start the worker in development mode, using the `.dev.vars` file to load your `GITHUB_TOKEN` and `OPENAI_API_KEY`.
 
-### 2. Staging Deployment
+### Staging Deployment
 
 Deploying to staging uses a separate environment within `wrangler.jsonc`:
 
@@ -69,15 +51,13 @@ Deploying to staging uses a separate environment within `wrangler.jsonc`:
 npx nx run model-scraper:deploy:staging
 ```
 
-### 3. Production Deployment
+### Production Deployment
 
 Similarly, for production:
 
 ```bash
 npx nx run model-scraper:deploy:production
 ```
-
----
 
 ## API Endpoints
 
@@ -118,13 +98,11 @@ All endpoints are defined in [`src/index.ts`](./src/index.ts). Below is a summar
 
 ### GET `/models_by_capability?capability=...`
 
-- **Description**: Filters and returns an array of models with certain capabilities. Currently, only the `"tools"` capability is supported, which checks if a model supports tool-calling.
+- **Description**: Filters and returns an array of models with certain capabilities. Currently, only the "tools" capability is supported, which checks if a model supports tool-calling.
 - **Example**:
   ```bash
   curl "https://<your-worker-url>/models_by_capability?capability=tools"
   ```
-
----
 
 ## Environment Variables
 
@@ -136,8 +114,6 @@ OPENAI_API_KEY=sk-proj-RdrexlMjH-JdjL6an...
 ```
 
 Do not commit real tokens to version control. In production and staging, use secure mechanisms (such as Cloudflare Secrets) to store these.
-
----
 
 ## Interesting Patterns
 
@@ -177,8 +153,6 @@ sequenceDiagram
     end
 ```
 
----
-
 ## Testing & Linting
 
 - **Unit Tests**:  
@@ -207,4 +181,3 @@ sequenceDiagram
   npx nx run model-scraper:type-check
   ```
   This ensures your code is free from TypeScript errors.
-

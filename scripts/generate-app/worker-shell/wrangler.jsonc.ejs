@@ -6,33 +6,6 @@
 	"observability": {
 		"enabled": true
 	},
-	"vars": {
-		"ENVIRONMENT": "production"
-	},
-	"env": {
-		"development": {
-			"name": "<%= projectName -%>-dev",
-			"vars": {
-				"ENVIRONMENT": "development"
-			}
-            <% if (provider === 'workers-ai') { %>,
-            "ai": {
-                "binding": "AI"
-            }
-            <% } -%>
-		},
-		"staging": {
-			"name": "<%= projectName -%>-staging",
-			"vars": {
-				"ENVIRONMENT": "staging"
-			}
-            <% if (provider === 'workers-ai') { %>,
-            "ai": {
-                "binding": "AI"
-            }
-            <% } -%>
-		}
-	}
     <% if (provider === 'workers-ai') { %>,
     "ai": {
         "binding": "AI"

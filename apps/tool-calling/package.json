@@ -1,11 +1,10 @@
 {
 	"name": "tool-calling",
 	"scripts": {
-		"deploy:production": "wrangler deploy",
-		"deploy:staging": "wrangler deploy -e staging",
-		"dev": "wrangler dev -e development",
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
 		"lint": "biome lint --error-on-warnings ./src",
-		"start": "wrangler dev -e development",
+		"start": "wrangler dev",
 		"test": "npm run dev & wait-on http://localhost:8787 && vitest; kill $!",
 		"test:ci": "npm run dev & wait-on http://localhost:8787 && vitest --watch=false; kill $!",
 		"type-check": "tsc --noEmit"

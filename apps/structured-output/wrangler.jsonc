@@ -4,29 +4,6 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2025-01-29",
 	"compatibility_flags": ["nodejs_compat"],
-	"vars": {
-		"ENVIRONMENT": "production"
-	},
-	"env": {
-		"development": {
-			"name": "structured-output-dev",
-			"vars": {
-				"ENVIRONMENT": "development"
-			},
-			"ai": {
-				"binding": "AI"
-			}
-		},
-		"staging": {
-			"name": "structured-output-staging",
-			"vars": {
-				"ENVIRONMENT": "staging"
-			},
-			"ai": {
-				"binding": "AI"
-			}
-		}
-	},
 	"observability": {
 		"enabled": true
 	},

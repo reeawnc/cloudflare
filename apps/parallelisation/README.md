@@ -4,6 +4,16 @@ Welcome to the **Parallelisation Worker**! This worker orchestrates a workflow t
 
 ---
 
+## Table of Contents
+1. [Overview](#overview)
+2. [Usage](#usage)
+3. [Architecture](#architecture)
+4. [Interesting Patterns](#interesting-patterns)
+5. [Under the Bonnet](#under-the-bonnet)
+6. [Conclusion](#conclusion)
+
+---
+
 ## Overview
 
 This worker leverages Cloudflare Workflows and a combination of **small** and **large** language models to process a single user prompt from multiple perspectives. These perspectives are then aggregated to produce one definitive, synthesised result. In particular, it:
@@ -19,9 +29,9 @@ The worker exposes two primary HTTP endpoints:
 
 ---
 
-## Running the Project
+## Usage
 
-### Development
+### How to Start the Project Locally
 
 1. **Install dependencies** (at the root of your monorepo or wherever the package is located):
    ```bash
@@ -57,35 +67,9 @@ The worker exposes two primary HTTP endpoints:
   npx nx type-check parallelisation
   ```
 
----
+### API Interaction
 
-## File Structure
-
-Below is a brief overview of the main files in this application:
-
-- **`wrangler.jsonc`**  
-  The configuration for the worker, specifying the worker name, entry point, environment variables, and workflow bindings.
-
-- **`package.json`**  
-  Contains scripts for development, testing, and deployment.
-
-- **`vitest.config.ts`**  
-  Configures Vitest to run tests (currently allows no tests to pass gracefully).
-
-- **`src/types/hono.ts`** and **`src/types/env.ts`**  
-  Define TypeScript types for the application context and environment bindings.
-
-- **`src/parallelisation-workflow.ts`**  
-  Houses the `ParallelisationWorkflow` class, orchestrating parallel calls to multiple language models and then aggregating results.
-
-- **`src/index.ts`**  
-  The main entry point for the Hono-based HTTP server. Exposes endpoints for initiating and tracking workflow instances.
-
----
-
-## Usage
-
-### 1. Create a Workflow Instance
+#### 1. Create a Workflow Instance
 
 Send a `POST` request to the worker’s root endpoint (`/`) with a JSON body containing your `prompt`:
 
@@ -110,12 +94,36 @@ Example response:
 }
 ```
 
-### 2. Check a Workflow’s Status
+#### 2. Check a Workflow’s Status
 
 Once you have the workflow instance ID, you can fetch its status:
 
 ```bash
 curl http://localhost:8787/clldfeoq70023y5r3rc5u5ryz
+```
+
+---
+
+## Architecture
+
+### High-Level Overview
+
+The architecture of the Parallelisation Worker is designed to efficiently handle multiple perspectives on a given prompt and aggregate them into a single, comprehensive response. The system is built using Cloudflare Workflows and leverages both small and large language models.
+
+### System Diagram
+
+```mermaid
+flowchart TB
+    A[Start Workflow] --> B{Parallel Calls}
+    B --> B1((Angle 1))
+    B --> B2((Angle 2))
+    B --> B3((Angle 3))
+    B1 --> C[Collect Angle Results]
+    B2 --> C
+    B3 --> C
+    C --> D{Aggregating with Large LLM}
+    D --> E[Final Synthesised Result]
+    E --> F[Workflow Completion]
 ```
 
 ---
@@ -160,5 +168,3 @@ flowchart TB
 This Parallelisation Worker is designed to run quickly in parallel, then rejoin its findings into a single, powerful result. By using multiple language models in combination, it exemplifies a multi-perspective approach to text generation and analysis.
 
 We hope you enjoy using the Parallelisation Worker! If you have any questions or encounter any issues, please feel free to reach out. Happy parallelising!
-
-```

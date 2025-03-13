@@ -2,6 +2,7 @@
 	"name": "ai-mono",
 	"scripts": {
 		"generate-app": "npx tsx ./scripts/generate-app/index.ts",
+		"generate-readmes": "npx tsx ./scripts/readme-generator/readme-generator.ts",
 		"prepare": "husky"
 	},
 	"devDependencies": {
@@ -41,6 +42,7 @@
 		"ai": "^4.1.39",
 		"chalk": "^5.4.1",
 		"dayjs": "^1.11.13",
+		"dotenv": "^16.4.7",
 		"ejs": "^3.1.10",
 		"eventsource-parser": "^3.0.0",
 		"hono": "^4.7.1",
@@ -52,7 +54,6 @@
 		"zod": "^3.24.2"
 	},
 	"workspaces": [
-		"workers/*",
 		"libs/*",
 		"apps/*"
 	]

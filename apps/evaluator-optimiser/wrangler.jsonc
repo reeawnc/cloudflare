@@ -4,43 +4,6 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2025-01-29",
 	"compatibility_flags": ["nodejs_compat"],
-	"vars": {
-		"ENVIRONMENT": "production"
-	},
-	"env": {
-		"development": {
-			"name": "evaluator-optimiser-dev",
-			"vars": {
-				"ENVIRONMENT": "development"
-			},
-			"ai": {
-				"binding": "AI"
-			},
-			"workflows": [
-				{
-					"name": "evaluator-optimiser-workflow",
-					"binding": "EVALUATOR_OPTIMISER_WORKFLOW",
-					"class_name": "EvaluatorOptimiserWorkflow"
-				}
-			]
-		},
-		"staging": {
-			"name": "evaluator-optimiser-staging",
-			"vars": {
-				"ENVIRONMENT": "staging"
-			},
-			"ai": {
-				"binding": "AI"
-			},
-			"workflows": [
-				{
-					"name": "evaluator-optimiser-workflow",
-					"binding": "EVALUATOR_OPTIMISER_WORKFLOW",
-					"class_name": "EvaluatorOptimiserWorkflow"
-				}
-			]
-		}
-	},
 	"observability": {
 		"enabled": true
 	},

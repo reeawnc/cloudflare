@@ -4,43 +4,6 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2025-01-29",
 	"compatibility_flags": ["nodejs_compat"],
-	"vars": {
-		"ENVIRONMENT": "production"
-	},
-	"env": {
-		"development": {
-			"name": "parallelisation-dev",
-			"vars": {
-				"ENVIRONMENT": "development"
-			},
-			"ai": {
-				"binding": "AI"
-			},
-			"workflows": [
-				{
-					"name": "parallelisation-workflow",
-					"binding": "PARALLELISATION_WORKFLOW",
-					"class_name": "ParallelisationWorkflow"
-				}
-			]
-		},
-		"staging": {
-			"name": "parallelisation-staging",
-			"vars": {
-				"ENVIRONMENT": "staging"
-			},
-			"ai": {
-				"binding": "AI"
-			},
-			"workflows": [
-				{
-					"name": "parallelisation-workflow",
-					"binding": "PARALLELISATION_WORKFLOW",
-					"class_name": "ParallelisationWorkflow"
-				}
-			]
-		}
-	},
 	"observability": {
 		"enabled": true
 	},
