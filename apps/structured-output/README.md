@@ -1,6 +1,6 @@
 # Structured Output
 
-Structured Output is a web application designed to generate structured data objects from natural language prompts. It leverages AI models to interpret and transform user inputs into predefined JSON structures, making it ideal for applications requiring structured data generation from unstructured text.
+This project is designed to test the structured output of a local development server. It includes integration tests to ensure that the server returns the correct JSON object structure.
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -8,97 +8,65 @@ Structured Output is a web application designed to generate structured data obje
 3. [Architecture](#architecture)
 
 ## Overview
-Structured Output serves the purpose of converting natural language prompts into structured JSON objects. The application uses AI models to process the input and generate outputs that conform to a specified schema. This functionality is particularly useful in scenarios where structured data is needed from unstructured inputs, such as recipe generation, form filling, and more.
+The purpose of this project is to validate the structured output of a local development server. It uses integration tests to ensure that the server returns JSON objects that match a predefined schema. The project is built using Vitest for testing and Zod for schema validation.
 
 ## Usage
-To start the project locally, use the following command:
+To start the project locally and run the integration tests, use the following command:
 
 ```bash
-npx nx dev structured-output
+npx nx test structured-output
 ```
 
 ### NPM Scripts
-- **deploy**: Deploys the application using Wrangler.
-  ```bash
-  npx nx deploy structured-output
-  ```
-- **dev**: Starts the development server using Wrangler.
-  ```bash
-  npx nx dev structured-output
-  ```
-- **lint**: Lints the source code using Biome.
-  ```bash
-  npx nx lint structured-output
-  ```
-- **start**: Alias for `dev`, starts the development server.
-  ```bash
-  npx nx start structured-output
-  ```
-- **test**: Runs the test suite using Vitest.
-  ```bash
-  npx nx test structured-output
-  ```
-- **test:ci**: Runs the test suite in CI mode.
-  ```bash
-  npx nx test:ci structured-output
-  ```
-- **type-check**: Performs TypeScript type checking.
-  ```bash
-  npx nx type-check structured-output
-  ```
+- **test**: Runs the integration tests to validate the server's structured output.
 
 ### API Interaction
-The application exposes an API with the following endpoint:
+The project interacts with a local development server API. Below is the API call used in the tests:
 
-- **POST /**: Generates a structured JSON object from a given prompt.
-  - **Request Format**:
-    ```json
-    {
-      "prompt": "Create a recipe for sourdough bread."
+- **Endpoint**: `/`
+- **Method**: `POST`
+- **Request Headers**: `Content-Type: application/json`
+- **Request Body**:
+  ```json
+  {
+    "prompt": "Create a recipe for sourdough bread."
+  }
+  ```
+- **Response Format**:
+  ```json
+  {
+    "recipe": {
+      "name": "string",
+      "ingredients": [
+        { "name": "string", "amount": "string" }
+      ],
+      "steps": ["string"]
     }
-    ```
-  - **Response Format**:
-    ```json
-    {
-      "recipe": {
-        "name": "Sourdough Bread",
-        "ingredients": [
-          { "name": "Flour", "amount": "500g" },
-          { "name": "Water", "amount": "300ml" }
-        ],
-        "steps": [
-          "Mix ingredients",
-          "Let dough rise",
-          "Bake in oven"
-        ]
-      }
-    }
-    ```
-  - **Curl Command**:
-    ```bash
-    curl -X POST \
+  }
+  ```
+- **Curl Command**:
+  ```bash
+  curl -X POST \
     -H "Content-Type: application/json" \
     -d '{"prompt": "Create a recipe for sourdough bread."}' \
-    http://localhost:8787/
-    ```
+    http://localhost:3000/
+  ```
 
 ## Architecture
-Structured Output is built as a serverless application using Cloudflare Workers. The main components include:
+The project is structured as an application that tests the output of a local server. It uses the following components:
 
-- **Hono Framework**: Used for building the API endpoints.
-- **Workers AI Provider**: Integrates AI capabilities for processing prompts.
-- **Zod**: Utilized for schema validation of the generated JSON objects.
+- **DevServerTestHelper**: A utility to start and stop the local development server.
+- **Integration Tests**: Tests that validate the server's response against a predefined schema using Zod.
 
 ### System Diagram
 ```mermaid
 graph TD;
-    A[User] -->|Sends Prompt| B[API Endpoint]
-    B -->|Processes Request| C[AI Model]
-    C -->|Generates Output| D[JSON Object]
-    D -->|Returns Response| A
+    A[Client] -->|POST Request| B[Local Dev Server];
+    B -->|Response| C[Integration Test];
+    C -->|Validation| D[Schema (Zod)];
+    D -->|Result| E[Test Outcome];
 ```
 
-### Tool Use Pattern
-The application employs the Tool Use Pattern by dynamically interacting with AI models to generate structured data. This pattern involves identifying the task, invoking the appropriate AI model, and integrating the returned data into the workflow.
+This project does not use LLMs or AI, so no agentic patterns are highlighted.
 
-<!-- Last updated: 038947bb9b4fd6d8d05f28479e966cd36b43658e -->
+<!-- Last updated: 0308b1a3da967e903a9ef2c03aa3e4608ce199e9 -->
