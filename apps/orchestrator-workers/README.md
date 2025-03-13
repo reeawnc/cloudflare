@@ -1,58 +1,107 @@
 # Orchestrator Workers
 
-Welcome to **Orchestrator Workers**! This project is a Cloudflare Workers-based orchestrator designed to break down complex coding tasks into manageable subtasks, distribute them among specialised "worker" AI models, and then synthesise the final result into a comprehensive solution.
+This project is designed to manage complex coding tasks by breaking them down into subtasks, executing them in parallel, and synthesizing the results. It leverages AI models to orchestrate and execute these tasks efficiently.
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Usage](#usage)
-3. [Architecture](#architecture)
+- [Overview](#overview)
+- [Usage](#usage)
+- [Architecture](#architecture)
 
 ## Overview
-The Orchestrator Workers project aims to efficiently handle complex coding tasks by leveraging a workflow orchestration pattern. It uses a large language model to decompose tasks into subtasks, executes these subtasks in parallel using smaller models, and aggregates the results into a final solution. This approach ensures both efficiency and high-quality output.
+The Orchestrator Workers project is a cloud-based application that utilizes AI to manage and execute complex coding tasks. It breaks down tasks into smaller subtasks, processes them in parallel using specialized AI models, and then synthesizes the results into a comprehensive output. This approach enhances efficiency and accuracy in handling large-scale coding operations.
 
 ## Usage
-To start the project locally, run the following command:
-
-```bash
+To start the project locally, use the following command:
+```
 npx nx dev orchestrator-workers
 ```
 
-This command starts a local server using `wrangler dev`, accessible at `http://127.0.0.1:8787`.
+### NPM Scripts
+- **deploy**: Deploys the application using Wrangler.
+  ```
+npx nx deploy orchestrator-workers
+```
+- **dev**: Starts the development server.
+  ```
+npx nx dev orchestrator-workers
+```
+- **lint**: Lints the codebase for errors and warnings.
+  ```
+npx nx lint orchestrator-workers
+```
+- **start**: Starts the application in development mode.
+  ```
+npx nx start orchestrator-workers
+```
+- **test**: Runs the test suite.
+  ```
+npx nx test orchestrator-workers
+```
+- **test:ci**: Runs the test suite in CI mode.
+  ```
+npx nx test:ci orchestrator-workers
+```
+- **type-check**: Checks TypeScript types.
+  ```
+npx nx type-check orchestrator-workers
+```
 
 ### API Endpoints
-- **POST** `/` - Create a new workflow instance by sending a JSON payload with a `prompt` property.
-- **GET** `/:id` - Retrieve the status of an existing workflow instance by its ID.
+- **POST /**: Triggers a new workflow instance. Expects a JSON payload with a `prompt` property.
+  ```bash
+  curl -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"prompt": "Your task description here"}' \
+    http://localhost:8787/
+  ```
+  **Response**:
+  ```json
+  {
+    "id": "instance-id",
+    "details": "status-details"
+  }
+  ```
 
-#### Example API Calls
-
-**Create a New Workflow Instance**
-
-```bash
-curl -X POST http://127.0.0.1:8787/ \
-     -H "Content-Type: application/json" \
-     -d '{"prompt":"Build a TypeScript project with multiple steps..."}'
-```
-
-**Check the Status of an Existing Workflow Instance**
-
-```bash
-curl -X GET http://127.0.0.1:8787/<workflow-instance-id>
-```
+- **GET /:id**: Fetches the status of an existing workflow instance by its ID.
+  ```bash
+  curl -X GET http://localhost:8787/{id}
+  ```
+  **Response**:
+  ```json
+  {
+    "status": "current-status"
+  }
+  ```
 
 ## Architecture
-The architecture of Orchestrator Workers is based on a multi-step orchestration pattern combined with parallelised subtask execution. The main components include:
+The architecture of the Orchestrator Workers project is designed to efficiently manage and execute complex tasks using AI models. The system is divided into three main components:
 
-1. **High-Level Planning** - A large model identifies the subtasks required to solve the user-provided prompt.
-2. **Specialised Execution** - Each subtask is executed by a more specialised (and faster) model in parallel.
-3. **Aggregated Synthesis** - The large model merges these partial solutions into a single, comprehensive answer.
+1. **Orchestrator**: Generates subtasks from a given prompt using a large AI model.
+2. **Workers**: Execute each subtask in parallel using smaller, specialized AI models.
+3. **Aggregator**: Synthesizes the responses from the workers into a final result.
 
-### Workflow Diagram
+### System Diagram
 ```mermaid
-flowchart LR
-    A[Receive prompt POST /] --> B{Generate subtasks using bigModel}
-    B --> C[Execute each subtask in parallel using smallModel]
-    C --> D[Synthesise final result using bigModel]
-    D --> E[Respond with final aggregated answer]
+graph TD;
+    A[User Request] -->|POST /| B{Orchestrator}
+    B -->|Generate Subtasks| C[Workers]
+    C -->|Execute Subtasks| D[Aggregator]
+    D -->|Synthesize Results| E[Final Output]
 ```
 
-This project showcases the **Orchestrator-Workers** pattern, where a central orchestrating LLM dynamically assigns subtasks to worker LLMs, ensuring efficient task decomposition and execution.
+### Agentic Patterns
+The project employs the **Orchestrator-Workers** pattern, where a central orchestrating AI dynamically assigns subtasks to worker AIs. This pattern is ideal for complex tasks with unpredictable subtask decomposition.
+
+#### Orchestrator-Workers Pattern
+```mermaid
+graph TD;
+    A[Orchestrator] -->|Assign Subtasks| B[Worker 1]
+    A -->|Assign Subtasks| C[Worker 2]
+    A -->|Assign Subtasks| D[Worker 3]
+    B -->|Return Results| E[Aggregator]
+    C -->|Return Results| E
+    D -->|Return Results| E
+    E -->|Synthesize| F[Final Output]
+```
+
+<!-- Last updated: 038947bb9b4fd6d8d05f28479e966cd36b43658e -->

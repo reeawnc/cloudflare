@@ -1,6 +1,6 @@
 # Tool Calling Stream
 
-Tool Calling Stream is a project designed to provide a streaming interface for AI models, allowing for dynamic tool usage and interaction. It leverages the Hono framework to create a server that can handle AI model requests and stream responses back to the client.
+Tool Calling Stream is a project designed to provide a streaming interface for AI models, allowing them to interact with external tools dynamically. The project leverages AI models to process user prompts and execute tasks such as fetching weather information.
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -8,59 +8,88 @@ Tool Calling Stream is a project designed to provide a streaming interface for A
 3. [Architecture](#architecture)
 
 ## Overview
-The Tool Calling Stream project serves as a streaming interface for AI models, specifically designed to handle requests and provide responses in a streaming manner. It utilizes the Hono framework to set up a server that can process AI model interactions, allowing for dynamic tool usage such as weather information retrieval. The project is structured to support various environments, including production, development, and staging.
+The Tool Calling Stream project serves as a streaming interface for AI models, enabling them to interact with external tools in real-time. The primary functionality includes processing user prompts and executing tasks like retrieving weather data. The architecture is built using the Hono framework, with AI models provided by Workers AI.
 
 ## Usage
-To start the project locally, you can use the following npm scripts:
+To start the project locally, use the following command:
+```
+npx nx dev tool-calling-stream
+```
+This command runs the project in development mode using Wrangler.
 
-- `npx nx dev tool-calling-stream`: Starts the development server using Wrangler.
-- `npx nx deploy tool-calling-stream`: Deploys the application using Wrangler.
-- `npx nx lint tool-calling-stream`: Lints the source code using Biome, ensuring code quality and consistency.
-- `npx nx start tool-calling-stream`: An alias for starting the development server.
-- `npx nx test tool-calling-stream`: Runs the test suite using Vitest.
-- `npx nx test:ci tool-calling-stream`: Runs the test suite in continuous integration mode, without watching for changes.
-- `npx nx type-check tool-calling-stream`: Performs TypeScript type checking without emitting output files.
+### NPM Scripts
+- **deploy**: Deploys the project using Wrangler.
+  ```
+npx nx deploy tool-calling-stream
+  ```
+- **dev**: Starts the project in development mode.
+  ```
+npx nx dev tool-calling-stream
+  ```
+- **lint**: Lints the source code using Biome.
+  ```
+npx nx lint tool-calling-stream
+  ```
+- **start**: Alias for `dev`, starts the project in development mode.
+  ```
+npx nx start tool-calling-stream
+  ```
+- **test**: Runs the test suite using Vitest.
+  ```
+npx nx test tool-calling-stream
+  ```
+- **test:ci**: Runs the test suite in CI mode.
+  ```
+npx nx test:ci tool-calling-stream
+  ```
+- **type-check**: Performs TypeScript type checking.
+  ```
+npx nx type-check tool-calling-stream
+  ```
 
-### API Interaction
+### API Usage
 The project exposes an API with the following endpoints:
 
 #### POST /
-- **Description**: Streams AI model responses based on the provided prompt.
+- **Description**: Processes a user prompt and returns a streaming response.
 - **Request Format**:
   ```json
   {
-    "prompt": "Your prompt here"
+    "prompt": "What is the weather in London?"
   }
   ```
-- **Response Format**: Streams text responses from the AI model.
+- **Response Format**: Streaming response with weather information.
 - **Curl Command**:
   ```bash
   curl -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "What is the weather in London?"}' \
-  http://localhost:8787/
+    -H "Content-Type: application/json" \
+    -d '{"prompt": "What is the weather in London?"}' \
+    http://localhost:8787/
   ```
 
 ## Architecture
-The architecture of the Tool Calling Stream project is designed to handle AI model requests and stream responses efficiently. It uses the Hono framework to manage HTTP requests and responses, and integrates with AI models to provide dynamic tool usage.
+The architecture of the Tool Calling Stream project is designed to facilitate real-time interaction between AI models and external tools. The system is built using the Hono framework and integrates with Workers AI for model execution.
 
 ### System Diagram
 ```mermaid
 graph TD;
-    A[Client] -->|HTTP Request| B[Hono Server];
-    B -->|Process Request| C[AI Model];
-    C -->|Stream Response| B;
-    B -->|HTTP Response| A;
+    A[User] -->|Sends Prompt| B[Hono Server];
+    B -->|Processes Prompt| C[Workers AI];
+    C -->|Executes Task| D[External Tool];
+    D -->|Returns Result| B;
+    B -->|Streams Response| A;
 ```
 
-### Tool Use Pattern
-The project employs the Tool Use Pattern, where the AI model dynamically interacts with external tools to extend its capabilities. In this case, the AI model can fetch weather information based on user prompts.
+### Agentic Patterns
+The project utilizes the **Tool Use Pattern**, where the AI model dynamically interacts with external tools to extend its capabilities. This pattern involves identifying tasks, invoking appropriate tools, and integrating returned data into the workflow.
 
+#### Tool Use Pattern Diagram
 ```mermaid
 graph TD;
-    A[AI Model] -->|Identify Task| B[Weather Tool];
-    B -->|Fetch Weather Data| A;
-    A -->|Integrate Data| C[Response Stream];
+    A[AI Model] -->|Identify Task| B[Tool Invocation];
+    B -->|Execute Tool| C[External API];
+    C -->|Return Data| A;
+    A -->|Integrate Data| D[User Response];
 ```
 
-This pattern allows the AI model to enhance its responses by incorporating real-time data from external sources, providing more accurate and relevant information to users.
+<!-- Last updated: 038947bb9b4fd6d8d05f28479e966cd36b43658e -->

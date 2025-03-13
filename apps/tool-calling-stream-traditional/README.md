@@ -1,6 +1,6 @@
 # Tool Calling Stream Traditional
 
-Welcome to **Tool Calling Stream Traditional**, a Cloudflare Worker that demonstrates how a Large Language Model (LLM) can decide whether to call an external "tool" during the conversation flow. It then returns the result in a streamed response. This worker includes an example "weather tool" for illustrative purposes and shows how you might build a flexible workflow when combining AI inference and tool-calling.
+This project is a serverless application designed to interact with AI models and tools, specifically for fetching weather information based on user input. It leverages the Hono framework and Cloudflare Workers to provide a scalable and efficient solution.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -8,117 +8,83 @@ Welcome to **Tool Calling Stream Traditional**, a Cloudflare Worker that demonst
 - [Architecture](#architecture)
 
 ## Overview
-This worker:
-1. Accepts a prompt from the user.
-2. Passes the prompt to an LLM capable of calling tools.
-3. Inspects the tool calls chosen by the LLM.
-4. Mocks a response from the "weather tool" for demonstration.
-5. Streams the final AI response back to the client.
-
-### Key Highlights
-- **Tool-calling**: The AI can invoke specific tools based on the conversation context.  
-- **Streaming**: The final output from the LLM is streamed back for a more dynamic user experience.  
-- **Multiple Environments**: Easily configurable for `production`, `staging`, and `development`.
-
-Below is a quick diagram illustrating the flow:
-
-```mermaid
-graph LR
-    A[User Prompt] --> B[LLM Invoked]
-    B --> C{Does LLM call a tool}
-    C -- Yes --> D[AI selects Tool e.g. "get_weather"]
-    D --> E[Weather Data Mocked]
-    C -- No --> F[No Tool Called]
-    E --> F[Assemble Response]
-    F --> G[Stream Final Response to User]
-```
+The Tool Calling Stream Traditional project is built to demonstrate the integration of AI models with external tools in a serverless environment. The primary functionality is to process user prompts, determine the appropriate tool to use, and fetch weather information for a specified location. The architecture is designed to handle requests efficiently using Cloudflare Workers and the Hono framework.
 
 ## Usage
-
-### Local Development
-To run the Worker in local development mode:
+To start the project locally, use the following command:
 ```bash
 npx nx dev tool-calling-stream-traditional
 ```
-This command uses **Wrangler** under the hood (`wrangler dev -e development`) to spin up a local server.
 
-Alternatively, you may also use:
+### NPM Scripts
+- **deploy**: Deploys the application using Wrangler.
+  ```bash
+  npx nx deploy tool-calling-stream-traditional
+  ```
+- **dev**: Starts the development server using Wrangler.
+  ```bash
+  npx nx dev tool-calling-stream-traditional
+  ```
+- **lint**: Lints the source code using Biome.
+  ```bash
+  npx nx lint tool-calling-stream-traditional
+  ```
+- **start**: Alias for the dev script.
+  ```bash
+  npx nx start tool-calling-stream-traditional
+  ```
+- **test**: Runs the test suite using Vitest.
+  ```bash
+  npx nx test tool-calling-stream-traditional
+  ```
+- **test:ci**: Runs the test suite in CI mode using Vitest.
+  ```bash
+  npx nx test:ci tool-calling-stream-traditional
+  ```
+- **type-check**: Performs TypeScript type checking.
+  ```bash
+  npx nx type-check tool-calling-stream-traditional
+  ```
+
+### API Interaction
+The project exposes an API endpoint to interact with the AI model and tools.
+
+#### POST /
+- **Request**:
+  - **Body**: `{ "prompt": "<user_prompt>" }`
+- **Response**:
+  - **Body**: Weather information based on the specified location.
+
+**Example cURL Command**:
 ```bash
-npx nx start tool-calling-stream-traditional
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "What's the weather in London?"}' \
+  http://localhost:8787/
 ```
-Both commands are equivalent here; pick whichever you prefer.
-
-Once running, you can send an HTTP `POST` request to `http://localhost:8787/` with a JSON payload containing:
-```json
-{
-  "prompt": "What is the weather in London?"
-}
-```
-The Worker will:
-1. Forward the user prompt to the LLM.
-2. Potentially call the `get_weather` tool if needed.
-3. Return a streamed response indicating the AI’s final message.
-
-### Deploying
-
-You can deploy to one of the configured environments using the following scripts:
-
-**Production**:
-```bash
-npx nx deploy:production tool-calling-stream-traditional
-```
-
-**Staging**:
-```bash
-npx nx deploy:staging tool-calling-stream-traditional
-```
-
-This will use Wrangler to deploy your Worker to your configured Cloudflare account, applying the environment-specific settings in `wrangler.jsonc`.
-
-### Testing and Linting
-
-1. **Unit Tests**
-   ```bash
-   npx nx test tool-calling-stream-traditional
-   ```
-   This runs Vitest in watch=false mode.
-
-2. **Linting**
-   ```bash
-   npx nx lint tool-calling-stream-traditional
-   ```
-   Uses Biome to check for code cleanliness. Warnings are treated as errors.
-
-3. **Type Checking**
-   ```bash
-   npx nx type-check tool-calling-stream-traditional
-   ```
-   Ensures TypeScript definitions are consistent.
 
 ## Architecture
+The architecture of the Tool Calling Stream Traditional project is centered around serverless principles, utilizing Cloudflare Workers and the Hono framework to handle HTTP requests and interact with AI models.
 
 ### System Diagram
-
 ```mermaid
-flowchart TD
-    A[User Prompt] --> B[LLM]
-    B --> C{Tool Decision}
-    C -- Yes --> D[Invoke Weather Tool]
-    D --> E[Mock Weather Data]
-    C -- No --> F[Skip Tool]
-    E --> G[Stream Response]
-    F --> G
-    G --> H[User Receives Response]
+graph TD;
+    A[User] -->|HTTP Request| B[Cloudflare Worker]
+    B -->|Invoke| C[AI Model]
+    C -->|Fetch| D[Weather Tool]
+    D -->|Return| B
+    B -->|HTTP Response| A
 ```
 
 ### Tool Use Pattern
-The project employs the **Tool Use Pattern**, where the LLM dynamically interacts with external tools. This pattern involves identifying tasks, invoking appropriate tools, and integrating returned data into the workflow. In this project, the LLM decides whether to call the "get_weather" tool based on the user's prompt and streams the final response back to the user.
+This project employs the Tool Use Pattern, where the AI model dynamically interacts with external tools to extend its capabilities. In this case, the AI model identifies the need to fetch weather information and invokes the appropriate tool to obtain the data.
 
 ```mermaid
-graph TD
-    A[Identify Task] --> B[Invoke Tool]
-    B --> C[Integrate Data]
-    C --> D[Stream Response]
+graph TD;
+    A[AI Model] -->|Identify Task| B[Weather Tool]
+    B -->|Fetch Data| C[Weather API]
+    C -->|Return Data| B
+    B -->|Integrate Data| A
 ```
 
-This README provides a comprehensive guide to understanding and using the **Tool Calling Stream Traditional** project, highlighting its architecture and usage patterns.
+<!-- Last updated: 038947bb9b4fd6d8d05f28479e966cd36b43658e -->
