@@ -1,6 +1,6 @@
 # Structured Output
 
-Structured Output is a project designed to generate structured data objects from natural language prompts using AI models. It leverages the power of large language models to interpret and transform user inputs into predefined data structures, making it ideal for applications requiring structured data generation from unstructured text.
+Structured Output is a web application designed to generate structured data objects from natural language prompts. It leverages AI models to interpret and transform user inputs into predefined JSON structures, making it ideal for applications requiring structured data generation from unstructured text.
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -8,9 +8,7 @@ Structured Output is a project designed to generate structured data objects from
 3. [Architecture](#architecture)
 
 ## Overview
-The Structured Output project aims to provide a seamless interface for generating structured data from natural language prompts. It utilizes AI models to parse and convert text inputs into structured JSON objects, specifically designed for applications like recipe generation, where the output needs to adhere to a specific schema.
-
-The project is built using the Hono framework and integrates with AI models via the Workers AI provider. It includes a RESTful API that accepts POST requests with prompts and returns structured JSON objects.
+Structured Output serves the purpose of converting natural language prompts into structured JSON objects. The application uses AI models to process the input and generate outputs that conform to a specified schema. This functionality is particularly useful in scenarios where structured data is needed from unstructured inputs, such as recipe generation, form filling, and more.
 
 ## Usage
 To start the project locally, use the following command:
@@ -49,11 +47,10 @@ npx nx dev structured-output
   npx nx type-check structured-output
   ```
 
-### API Usage
-The project exposes a RESTful API with the following endpoint:
+### API Interaction
+The application exposes an API with the following endpoint:
 
-- **POST /**
-  - **Description**: Generates a structured data object from a given prompt.
+- **POST /**: Generates a structured JSON object from a given prompt.
   - **Request Format**:
     ```json
     {
@@ -71,8 +68,8 @@ The project exposes a RESTful API with the following endpoint:
         ],
         "steps": [
           "Mix ingredients",
-          "Knead dough",
-          "Let it rise"
+          "Let dough rise",
+          "Bake in oven"
         ]
       }
     }
@@ -86,29 +83,22 @@ The project exposes a RESTful API with the following endpoint:
     ```
 
 ## Architecture
-The architecture of the Structured Output project is designed to efficiently handle natural language processing tasks and generate structured outputs. It consists of the following main components:
+Structured Output is built as a serverless application using Cloudflare Workers. The main components include:
 
-- **Hono Framework**: Serves as the web server framework, handling HTTP requests and responses.
-- **Workers AI Provider**: Integrates AI models to process prompts and generate structured data.
-- **Zod Schema Validation**: Ensures the generated data adheres to the predefined schema.
+- **Hono Framework**: Used for building the API endpoints.
+- **Workers AI Provider**: Integrates AI capabilities for processing prompts.
+- **Zod**: Utilized for schema validation of the generated JSON objects.
 
 ### System Diagram
 ```mermaid
 graph TD;
-    A[Client] --> B[Hono Server];
-    B --> C[Workers AI Provider];
-    C --> D[AI Model];
-    D --> E[Structured Data Output];
-    B --> F[Zod Schema Validation];
-    F --> E;
+    A[User] -->|Sends Prompt| B[API Endpoint]
+    B -->|Processes Request| C[AI Model]
+    C -->|Generates Output| D[JSON Object]
+    D -->|Returns Response| A
 ```
 
 ### Tool Use Pattern
-The project employs the Tool Use Pattern, where the AI model dynamically interacts with external tools (in this case, the Workers AI provider) to extend its capabilities. This pattern involves identifying the task, invoking the appropriate tool, and integrating the returned data into the workflow.
+The application employs the Tool Use Pattern by dynamically interacting with AI models to generate structured data. This pattern involves identifying the task, invoking the appropriate AI model, and integrating the returned data into the workflow.
 
-```mermaid
-graph TD;
-    A[Identify Task] --> B[Invoke AI Model];
-    B --> C[Generate Structured Data];
-    C --> D[Integrate Data into Workflow];
-```
+<!-- Last updated: 038947bb9b4fd6d8d05f28479e966cd36b43658e -->

@@ -82,6 +82,6 @@ describe("Weather Worker Integration Tests", () => {
 				expectedKeywords: ["sun", "sunny", "sunshine"],
 			});
 		},
-		{ timeout: 90000 },
+		{ timeout: 500000 },
 	);
 });

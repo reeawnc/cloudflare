@@ -322,7 +322,9 @@ function findPackageJsonFiles(dir: string): string[] {
 function buildProjectMap(): Map<string, string> {
 	const projectMap = new Map<string, string>();
 	// Start the search from the current working directory.
-	const packageJsonFiles = findPackageJsonFiles(process.cwd());
+	const packageJsonFiles = findPackageJsonFiles(
+		path.join(process.cwd(), "apps"),
+	);
 	for (const file of packageJsonFiles) {
 		try {
 			const packageData = JSON.parse(fs.readFileSync(file, "utf-8"));

@@ -1,6 +1,6 @@
 # Agent Task Manager
 
-Agent Task Manager is an intelligent task management system that leverages AI to manage tasks dynamically. It can add, delete, and list tasks based on user prompts, making it a versatile tool for task automation and management.
+Agent Task Manager is an intelligent task management system that leverages AI to manage tasks dynamically. It can add, delete, and list tasks based on user prompts, making it a versatile tool for task automation.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -8,7 +8,7 @@ Agent Task Manager is an intelligent task management system that leverages AI to
 - [Architecture](#architecture)
 
 ## Overview
-The Agent Task Manager is designed to automate task management using AI. It utilizes a task manager agent that can interpret user prompts to perform actions such as adding, deleting, or listing tasks. The system is built on a durable object architecture, ensuring state persistence and scalability.
+The Agent Task Manager is designed to automate task management using AI. It interacts with users through prompts to perform actions such as adding, deleting, or listing tasks. The system is built using a Durable Object architecture, ensuring stateful interactions and scalability.
 
 ## Usage
 To start the project locally, use the following command:
@@ -21,11 +21,11 @@ npx nx dev agent-task-manager
   ```
 npx nx deploy agent-task-manager
 ```
-- **dev**: Starts the development server using Wrangler.
+- **dev**: Starts the development server.
   ```
 npx nx dev agent-task-manager
 ```
-- **lint**: Lints the source code using Biome.
+- **lint**: Lints the source code and throws errors on warnings.
   ```
 npx nx lint agent-task-manager
 ```
@@ -33,11 +33,11 @@ npx nx lint agent-task-manager
   ```
 npx nx start agent-task-manager
 ```
-- **test**: Runs the test suite using Vitest.
+- **test**: Runs the test suite.
   ```
 npx nx test agent-task-manager
 ```
-- **test:ci**: Runs the test suite in CI mode using Vitest.
+- **test:ci**: Runs the test suite in CI mode.
   ```
 npx nx test:ci agent-task-manager
 ```
@@ -47,87 +47,71 @@ npx nx type-check agent-task-manager
 ```
 
 ### API Interaction
-The project exposes an API endpoint to interact with the task manager agent.
+The project exposes an API endpoint to interact with the task manager:
 
-#### Add a Task
-To add a task, send a POST request with the following format:
-
-**Request**
-```json
-{
-  "agentId": "your-agent-id",
-  "prompt": "add a new task"
-}
-```
-
-**Curl Command**
-```bash
-curl -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"agentId": "your-agent-id", "prompt": "add a new task"}' \
-  http://localhost:8787/
-```
-
-#### Delete a Task
-To delete a task, send a POST request with the following format:
-
-**Request**
-```json
-{
-  "agentId": "your-agent-id",
-  "prompt": "delete task"
-}
-```
-
-**Curl Command**
-```bash
-curl -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"agentId": "your-agent-id", "prompt": "delete task"}' \
-  http://localhost:8787/
-```
-
-#### List Tasks
-To list tasks, send a POST request with the following format:
-
-**Request**
-```json
-{
-  "agentId": "your-agent-id",
-  "prompt": "list tasks"
-}
-```
-
-**Curl Command**
-```bash
-curl -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"agentId": "your-agent-id", "prompt": "list tasks"}' \
-  http://localhost:8787/
-```
+- **POST /**: Interact with the task manager agent.
+  - **Request**:
+    ```json
+    {
+      "agentId": "string",
+      "prompt": "string"
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "message": "string",
+      "task": {
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "completed": "boolean",
+        "createdAt": "number"
+      }
+    }
+    ```
+  - **Curl Command**:
+    ```bash
+    curl -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"agentId": "your-agent-id", "prompt": "your-prompt"}' \
+    http://localhost:8787/
+    ```
 
 ## Architecture
-The Agent Task Manager is structured around a durable object architecture, which allows for persistent state management and scalability. The main components include the TaskManagerAgent, which handles task operations, and the API layer, which facilitates interaction with the agent.
+The Agent Task Manager is structured as a cloud-based application using Durable Objects to maintain state across sessions. The main components include the TaskManagerAgent, which handles task operations, and the API server, which facilitates communication with clients.
 
 ### System Diagram
 ```mermaid
 graph TD;
-    A[User] -->|Sends Prompt| B[API Layer];
-    B -->|Processes Request| C[TaskManagerAgent];
-    C -->|Manages Tasks| D[Durable Object Storage];
-    D -->|Stores State| C;
+    A[Client] --> B[API Server];
+    B --> C[TaskManagerAgent];
+    C --> D[Task Storage];
 ```
 
 ### Agentic Patterns
-The project employs the Tool Use Pattern, where the TaskManagerAgent dynamically interacts with AI models to determine task actions based on user prompts.
+The project utilizes the following agentic patterns:
 
 #### Tool Use Pattern
+The TaskManagerAgent dynamically interacts with AI models to process user prompts and manage tasks.
+
 ```mermaid
 graph TD;
     A[User Prompt] --> B[TaskManagerAgent];
-    B -->|Identifies Task| C[AI Model];
-    C -->|Returns Action| B;
-    B -->|Executes Action| D[Task List];
+    B --> C[AI Model];
+    C --> D[Task Action];
 ```
 
-This pattern allows the agent to extend its capabilities by leveraging AI to interpret and act on user inputs dynamically.
+#### Planning Pattern
+The agent formulates plans to manage tasks based on user input, ensuring efficient task handling.
+
+```mermaid
+graph TD;
+    A[Define Goal] --> B[Analyse Resources];
+    B --> C[Generate Plan];
+    C --> D[Execute Plan];
+```
+
+This README provides a comprehensive guide to understanding and using the Agent Task Manager project, highlighting its capabilities and architecture.
+
+<!-- Last updated: 038947bb9b4fd6d8d05f28479e966cd36b43658e -->
