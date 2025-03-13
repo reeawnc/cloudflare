@@ -18,7 +18,7 @@ npx nx dev agent-task-manager
 
 ### NPM Scripts
 - **deploy**: Deploys the application using Wrangler.
-  ```
+```
 npx nx deploy agent-task-manager
 ```
 - **dev**: Starts the development server.
