@@ -10,22 +10,5 @@
 	},
 	"observability": {
 		"enabled": true
-	},
-	"vars": {
-		"ENVIRONMENT": "production"
-	},
-	"env": {
-		"development": {
-			"name": "ui-worker-dev",
-			"vars": {
-				"ENVIRONMENT": "development"
-			}
-		},
-		"staging": {
-			"name": "ui-worker-staging",
-			"vars": {
-				"ENVIRONMENT": "staging"
-			}
-		}
 	}
 }

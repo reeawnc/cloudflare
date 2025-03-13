@@ -1,8 +1,11 @@
-# Text Generation Worker
+# Text Generation
 
 Welcome to **Text Generation**, a Cloudflare Worker that leverages powerful Large Language Models (LLMs) via [`workers-ai-provider`](https://developers.cloudflare.com/workers/ai/) to generate human-like text on demand. This worker is orchestrated through Nx, making development, testing, and deployment straightforward. Below you will find everything you need to get started, from installation to usage.
 
----
+## Table of Contents
+- [Overview](#overview)
+- [Usage](#usage)
+- [Architecture](#architecture)
 
 ## Overview
 
@@ -14,37 +17,22 @@ Essentially, the process is:
 3. The AI model produces a response.
 4. The response is returned as JSON to the user.
 
----
+## Usage
 
-## Repository Structure
-
-- **`apps/text-generation/`**  
-  The main directory for this worker, containing:
-  - `wrangler.jsonc` configuration for Cloudflare Worker deployment.
-  - `package.json` scripts for building, deploying, and running locally.
-  - `vitest.config.ts` for test settings.
-  - `src/` folder containing:
-    - `index.ts`: Entry point of the worker.
-    - `types/` folder for TypeScript type definitions.
-
----
-
-## How to Use
-
-### 1. Development
+### Development
 
 1. Ensure you have all dependencies installed (run `npm install` in your repository root).
 2. Start your local development server:
    ```bash
    npx nx dev text-generation
    ```
-Under the hood, this calls:
+   Under the hood, this calls:
    ```bash
    wrangler dev -e development
    ```
-The Worker will start locally at `http://localhost:8787` by default.
+   The Worker will start locally at `http://localhost:8787` by default.
 
-### 2. Sending Requests
+### Sending Requests
 
 To interact with the worker, simply send a `POST` request to `http://localhost:8787/`, with a JSON body:
 
@@ -62,7 +50,7 @@ The worker will respond with JSON containing the generated text. For instance:
 }
 ```
 
-### 3. Testing
+### Testing
 
 This worker includes a minimal test setup using [Vitest](https://vitest.dev/). To run tests:
 
@@ -70,7 +58,7 @@ This worker includes a minimal test setup using [Vitest](https://vitest.dev/). T
 npx nx test text-generation
 ```
 
-### 4. Linting and Type Checking
+### Linting and Type Checking
 
 To ensure your code remains consistent and bug-free, use the following:
 
@@ -82,7 +70,7 @@ npx nx lint text-generation
 npx nx type-check text-generation
 ```
 
-### 5. Deployments
+### Deployments
 
 Deployment is managed by [Wrangler](https://developers.cloudflare.com/workers/wrangler/). You can deploy to **production** or **staging**. The relevant scripts are found in `package.json`:
 
@@ -91,38 +79,24 @@ Deployment is managed by [Wrangler](https://developers.cloudflare.com/workers/wr
 npx nx deploy:production text-generation
 
 # Staging
-  
+npx nx deploy:staging text-generation
 ```
 
 These commands correlate to the respective environments outlined in your `wrangler.jsonc`.
 
----
+## Architecture
 
-## Environment Configuration
+### System Diagram
 
-All environment variables are declared in `wrangler.jsonc` under the `vars` property. For instance:
-```jsonc
-{
-  "vars": {
-    "ENVIRONMENT": "production"
-  },
-  "env": {
-    "development": {
-      "name": "text-generation-dev",
-      "vars": {
-        "ENVIRONMENT": "development"
-      },
-      "ai": {
-        "binding": "AI"
-      }
-    }
-  }
-}
+```mermaid
+graph TD;
+    A[User] -->|POST Request| B[Cloudflare Worker];
+    B -->|Prompt| C[AI Model];
+    C -->|Generated Text| B;
+    B -->|JSON Response| A;
 ```
 
----
-
-## Workflow Pattern
+### Workflow Pattern
 
 Here is a simplified sequence diagram to illustrate the worker’s internal flow:
 
@@ -145,26 +119,6 @@ sequenceDiagram
 5. **Worker** returns the text as JSON.
 
 This simple agentic pattern leverages Cloudflare’s AI binding (`AI`) to offload the heavy lifting of text generation.
-
----
-
-## Technical Highlights
-
-1. **Cloudflare AI Integration**:  
-   This project demonstrates how to integrate Cloudflare’s new AI capabilities into a Worker, enabling powerful text generation features without needing external API calls to third-party providers.
-
-2. **TypeScript Types**:  
-   Clear and strict TypeScript types are set up in `types/` for a more robust and maintainable codebase.
-
-3. **Simple to Extend**:  
-   If you wish to use a different model, simply change the model identifier in the `generateText` call:
-
-   ```ts
-   generateText({
-     model: workersai("model-identifier-here"),
-     prompt,
-   });
-   ```
 
 ---
 

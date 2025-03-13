@@ -6,29 +6,6 @@
 	"observability": {
 		"enabled": true
 	},
-	"vars": {
-		"ENVIRONMENT": "production"
-	},
-	"env": {
-		"development": {
-			"name": "tool-calling-stream-traditional-dev",
-			"vars": {
-				"ENVIRONMENT": "development"
-			},
-			"ai": {
-				"binding": "AI"
-			}
-		},
-		"staging": {
-			"name": "tool-calling-stream-traditional-staging",
-			"vars": {
-				"ENVIRONMENT": "staging"
-			},
-			"ai": {
-				"binding": "AI"
-			}
-		}
-	},
 	"ai": {
 		"binding": "AI"
 	}

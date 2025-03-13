@@ -4,29 +4,6 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2025-01-29",
 	"compatibility_flags": ["nodejs_compat"],
-	"vars": {
-		"ENVIRONMENT": "production"
-	},
-	"env": {
-		"development": {
-			"name": "tool-calling-dev",
-			"vars": {
-				"ENVIRONMENT": "development"
-			},
-			"ai": {
-				"binding": "AI"
-			}
-		},
-		"staging": {
-			"name": "tool-calling-staging",
-			"vars": {
-				"ENVIRONMENT": "staging"
-			},
-			"ai": {
-				"binding": "AI"
-			}
-		}
-	},
 	"observability": {
 		"enabled": true
 	},
