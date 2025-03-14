@@ -18,7 +18,7 @@ export async function extractScheduleId(
 
 			Prompt: "${query}"
 
-			Current tasks: ${JSON.stringify(schedules)}
+			Current schedules: ${JSON.stringify(schedules)}
 
 			Respond with a JSON object of the form:
 

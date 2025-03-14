@@ -15,12 +15,35 @@ The Agent Scheduler is an application that uses a combination of AI models and a
 
 ### System Diagram
 ```mermaid
-graph TD;
-    A[User Query] -->|POST /query| B{SchedulerAgent}
-    B -->|Determine Action| C[AI Model]
-    C -->|Extract Action Type| D[Schedule Management]
-    D -->|Add/Cancel/List| E[Confirmation]
-    E -->|POST /confirmations/:confirmationId| F[User Confirmation]
+flowchart TD
+    A[POST /query ]
+    C[Extract action from query]
+    D[Action is list]
+    E[Return list of schedules]
+    F[Action is none]
+    G[Return feedback message]
+    H[Action is add]
+    I[Extract details and create add confirmation]
+    J[Update state and return confirmation]
+    K[Action is cancel]
+    L[Extract schedule id and check schedule]
+    M[Schedule found]
+    N[Create cancel confirmation]
+    O[Update state and return confirmation]
+    
+    A --> C
+    C --> D
+    D -- Yes --> E
+    C --> F
+    F -- Yes --> G
+    C --> H
+    H -- Yes --> I
+    I --> J
+    C --> K
+    K -- Yes --> L
+    L -- Yes --> M
+    M --> N
+    N --> O
 ```
 
 ### Agentic Patterns
