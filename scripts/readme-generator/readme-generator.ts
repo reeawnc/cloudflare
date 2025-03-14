@@ -67,7 +67,7 @@ The following sections must be included in the README.md file:
 ## Architecture Instructions
 - Only if the project is an 'app', create a system diagram using the Mermaid syntax. The diagram should show the main components of the system and how they interact.
 - Only if the project uses LLMs or AI in some way, highlight any of the patterns described below in the Agentic Patterns Cheatsheet. Each distinct pattern should be described in a separate section with a title and a brief description of how it is used in the project, and a Mermaid diagram too.
-- All mermaid diagrams should relate to specific code patterns, not just generic explanations of the pattern itself. Always relate it to the code or specific functionality. 
+- All mermaid diagrams should relate to specific code patterns, not just generic explanations of the pattern itself. Always relate it to the code or specific functionality.
 
 ### Mermaid Diagrams
 - mermaid diagrams MUST NOT contain parentheses in the descriptions. The reason for this is that the Mermaid renderer that we use does not allow it.
