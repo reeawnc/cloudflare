@@ -13,7 +13,7 @@ The Agent Scheduler is built to facilitate dynamic scheduling tasks by interpret
 ## Architecture
 The Agent Scheduler is an application that uses a combination of AI models and a durable object pattern to manage scheduling tasks. The core component is the `SchedulerAgent`, which handles the state and logic for scheduling operations.
 
-### System Diagram
+### Flow Chart
 ```mermaid
 flowchart TD
     A[POST /query ]
