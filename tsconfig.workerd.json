@@ -4,20 +4,20 @@
 		"types": ["./types/workerd.d.ts"]
 	},
 	"include": [
-		"./apps/agent-task-manager/src/**/*.ts",
-		"./apps/agent-task-manager-human-in-the-loop/src/**/*.ts",
-		"./apps/agent-scheduler/src/**/*.ts",
-		"./apps/evaluator-optimiser/src/**/*.ts",
-		"./apps/model-scraper/src/**/*.ts",
-		"./apps/orchestrator-workers/src/**/*.ts",
-		"./apps/parallelisation/src/**/*.ts",
-		"./apps/prompt-chaining/src/**/*.ts",
-		"./apps/routing/src/**/*.ts",
-		"./apps/structured-output/src/**/*.ts",
-		"./apps/text-generation/src/**/*.ts",
-		"./apps/tool-calling-stream-traditional/src/**/*.ts",
-		"./apps/tool-calling-stream/src/**/*.ts",
-		"./apps/tool-calling/src/**/*.ts",
-		"./apps/ui-worker/src/server/**/*.ts"
+		"./demos/agent-task-manager/src/**/*.ts",
+		"./demos/agent-task-manager-human-in-the-loop/src/**/*.ts",
+		"./demos/agent-scheduler/src/**/*.ts",
+		"./demos/evaluator-optimiser/src/**/*.ts",
+		"./demos/model-scraper/src/**/*.ts",
+		"./demos/orchestrator-workers/src/**/*.ts",
+		"./demos/parallelisation/src/**/*.ts",
+		"./demos/prompt-chaining/src/**/*.ts",
+		"./demos/routing/src/**/*.ts",
+		"./demos/structured-output/src/**/*.ts",
+		"./demos/text-generation/src/**/*.ts",
+		"./demos/tool-calling-stream-traditional/src/**/*.ts",
+		"./demos/tool-calling-stream/src/**/*.ts",
+		"./demos/tool-calling/src/**/*.ts",
+		"./demos/ui-worker/src/server/**/*.ts"
 	]
 }
