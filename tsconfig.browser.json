@@ -10,7 +10,7 @@
 		"noUncheckedSideEffectImports": true
 	},
 	"include": [
-		"./apps/ui-worker/src/client/**/*.ts",
-		"./apps/ui-worker/src/client/**/*.tsx"
+		"./demos/ui-worker/src/client/**/*.ts",
+		"./demos/ui-worker/src/client/**/*.tsx"
 	]
 }

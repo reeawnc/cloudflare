@@ -84,7 +84,7 @@ async function main(): Promise<void> {
 	// Prompt for the new project location.
 	const newLocation = await text({
 		message: "Enter the full path for the new project location:",
-		initialValue: "./apps/",
+		initialValue: "./demos/",
 	});
 
 	if (isCancel(newLocation)) {
