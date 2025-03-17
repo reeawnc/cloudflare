@@ -1,14 +1,12 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
-	"name": "<%= projectName -%>",
+	"name": "text-generation-stream",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-02-24",
 	"observability": {
 		"enabled": true
+	},
+	"ai": {
+		"binding": "AI"
 	}
-    <% if (provider === 'workers-ai') { %>,
-    "ai": {
-        "binding": "AI"
-    }
-    <% } -%>
 }
