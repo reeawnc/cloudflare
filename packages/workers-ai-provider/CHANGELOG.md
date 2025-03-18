@@ -1,22 +1,10 @@
 # workers-ai-provider
 
-## 0.2.1
+## 0.2.0
 
-### Patch Changes
+### Minor Changes
 
-- sdf
-
-## 0.2.1
-
-### Patch Changes
-
-- sdf
-
-## 0.2.1
-
-### Patch Changes
-
-- asdf
+- [#41](https://github.com/cloudflare/workers-ai-provider/pull/41) [`5bffa40`](https://github.com/cloudflare/workers-ai-provider/commit/5bffa404bfa2f70487d1c663481201b6b202351c) Thanks [@andyjessop](https://github.com/andyjessop)! - feat: adds the ability to use the provider outside of the workerd environment by providing Cloudflare accountId/apiKey credentials.
 
 ## 0.1.3
 
