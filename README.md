@@ -1,6 +1,6 @@
-# AI Mono Repository
+# Cloudflare AI
 
-This repository is a monorepo managed with [Nx](https://nx.dev). It contains multiple apps, workers, and libraries that work together to deliver AI-powered features. The repository provides generators, standardised commands, and deployment workflows for efficient development and continuous integration.
+This repository is a monorepo managed with [Nx](https://nx.dev). It contains multiple apps, workers, and libraries that work together to deliver AI-powered features on Cloudflare. The repository provides generators, standardised commands, and deployment workflows for efficient development and continuous integration.
 
 ## Usage
 
