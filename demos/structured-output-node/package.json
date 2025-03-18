@@ -1,0 +1,9 @@
+{
+	"name": "structured-output-node",
+	"type": "module",
+	"scripts": {
+		"dev": "npx tsx ./src/index.ts",
+		"lint": "biome lint --error-on-warnings ./src",
+		"type-check": "tsc --noEmit"
+	}
+}
