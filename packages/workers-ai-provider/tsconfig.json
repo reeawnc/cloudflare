@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.workerd.json",
+	"compilerOptions": {
+		"types": [
+			"../../types/workerd.d.ts"
+		],
+		"noEmit": false
+	},
+	"include": [
+		"src/**/*.ts"
+	],
+}

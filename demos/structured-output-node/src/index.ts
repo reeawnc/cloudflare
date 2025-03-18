@@ -1,4 +1,4 @@
-import {createWorkersAI} from "workers-ai-provider";
+import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 import {generateObject} from "ai";
 import z from "zod";
 

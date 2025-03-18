@@ -6,7 +6,7 @@ import type { Variables } from "./types/hono.ts";
 import { createOpenAI } from "@ai-sdk/openai";
 <% } -%>
 <% if (provider === 'workers-ai') { -%>
-import { createWorkersAI } from "workers-ai-provider";
+import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 <% } -%>
 import { generateObject } from "ai";
 import z from "zod";

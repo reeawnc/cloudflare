@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    permissions:
+      contents: write
+
+    if: ${{ github.repository_owner == 'cloudflare' }}
+    timeout-minutes: 5
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get changed packages
+        description: Get the list of changed packages
+        id: changeset
+        run: |
+          npx changeset status --output test.json
+          echo "::set-output name=changed_packages::$(jq -r '.releases[].name' test.json | tr '\n' ' ')"
+
+      - name: Test and Build
+        run: npx nx run-many -t lint test:ci type-check build -p "${{ steps.changeset.outputs.changed_packages }}"
+
+      - id: changesets
+        uses: changesets/action@v1
+        with:
+          version: ./.github/version-and-install.sh
+          publish: npx changeset publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.WORKERS_AI_PROVIDER_GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          NPM_PUBLISH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

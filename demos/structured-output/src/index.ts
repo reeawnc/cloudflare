@@ -1,7 +1,7 @@
 import { generateObject } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { createWorkersAI } from "workers-ai-provider";
+import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 import z from "zod";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";

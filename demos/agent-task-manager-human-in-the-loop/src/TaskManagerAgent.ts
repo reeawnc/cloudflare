@@ -1,6 +1,6 @@
 import { Agent } from "agents-sdk";
 import { generateObject } from "ai";
-import { createWorkersAI } from "workers-ai-provider";
+import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 import z from "zod";
 
 /**

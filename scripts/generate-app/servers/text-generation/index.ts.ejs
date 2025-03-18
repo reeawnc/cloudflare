@@ -5,7 +5,7 @@ import { generateText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 <% } -%>
 <% if (provider === 'workers-ai') { -%>
-import { createWorkersAI } from "workers-ai-provider";
+import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 <% } -%>
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
