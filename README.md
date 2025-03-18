@@ -10,6 +10,10 @@ This repository contains various packages and apps related consuming Cloudflare'
 - packages [Packages that can be published to npm]
 ```
 
+### Packages
+
+- [`workers-ai-provider`](./packages/workers-ai-provider/README.md): A custom provider that enables [Workers AI](https://ai.cloudflare.com/)'s models for the [Vercel AI SDK](https://sdk.vercel.ai/).
+
 ## Local Development
 
 1. Clone the repository.
