@@ -12,7 +12,6 @@ jobs:
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
     steps:
       # Checkout the repository
       - name: Checkout code
@@ -38,4 +37,4 @@ jobs:
       # Run Nx tasks including the staging deployment and extract the URL.
       - name: Run Nx tasks including staging deployment
         id: checks
-        run: npx nx run-many -t lint test:ci type-check build
+        run: npx nx run-many -t lint test:smoke type-check build

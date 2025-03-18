@@ -7,6 +7,7 @@
 		"start": "wrangler dev",
 		"test": "vitest",
 		"test:ci": "vitest --watch=false",
+		"test:smoke": "vitest --watch=false --config=vitest.smoke.config.ts",
 		"type-check": "tsc --noEmit"
 	}
 }
