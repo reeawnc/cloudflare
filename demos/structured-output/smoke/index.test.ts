@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import z from "zod";
-import { DevServerTestHelper } from "../../../libs/test-utils/src/DevServerTestHelper";
+import { DevServerTestHelper } from "test-utils/src/DevServerTestHelper.ts";
 
 const TEST_ITERATIONS = 4;
 const PASSING_THRESHOLD = 0.75; // 75% pass rate required
