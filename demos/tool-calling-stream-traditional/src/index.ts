@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import type { Env } from "./types/env.ts";
 import type { Variables } from "./types/hono.ts";
 
+console.log('test')
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());
 

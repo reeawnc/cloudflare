@@ -1,6 +1,5 @@
 {
 	"name": "evaluator-optimiser",
-	"version": "0.0.1",
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
