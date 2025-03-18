@@ -23,7 +23,7 @@ Then in your Worker, import the factory function and create a new AI provider:
 
 ```ts
 // index.ts
-import { createWorkersAI } from "workers-ai-provider";
+import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 import { streamText } from "ai";
 
 type Env = {
