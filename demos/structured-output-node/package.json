@@ -1,0 +1,13 @@
+{
+	"name": "structured-output-node",
+	"type": "module",
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "npx tsx ./src/index.ts",
+		"lint": "biome lint --error-on-warnings ./src",
+		"start": "wrangler dev",
+		"test": "vitest",
+		"test:ci": "vitest --watch=false",
+		"type-check": "tsc --noEmit"
+	}
+}

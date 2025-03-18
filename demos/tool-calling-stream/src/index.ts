@@ -12,7 +12,7 @@ app.get("/", (c) => c.json("ok"));
 
 app.post("/", async (c) => {
 	const { prompt } = (await c.req.json()) as { prompt: string };
-	const workersai = createWorkersAI({ binding: c.env.AI });
+	const workersai = createWorkersAI({ apiKey: c.env.CLOUDFLARE_API_TOKEN, accountId: c.env.CLOUDFLARE_ACCOUNT_ID });
 	const model = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
 
 	const result = streamText({
