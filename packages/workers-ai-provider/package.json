@@ -15,7 +15,9 @@
   "authors": "Sunil Pai <spai@cloudflare.com>",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf dist && tsup src/index.ts --dts --sourcemap --format esm --target es2020"
+    "build": "rm -rf dist && tsup src/index.ts --dts --sourcemap --format esm --target es2020",
+    "test:ci": "vitest --watch=false",
+    "test": "vitest"
   },
   "files": [
     "dist",
