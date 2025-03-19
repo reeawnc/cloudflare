@@ -20,5 +20,11 @@
 				"noNonNullAssertion": "off"
 			}
 		}
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 4,
+		"lineWidth": 100
 	}
 }

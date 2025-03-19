@@ -1,8 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import type { Env } from "./types/env.ts";
-import type { Variables } from "./types/hono.ts";
-export { OrchestratorWorkersWorkflow } from "./orchestrator-workers-workflow.ts";
+import type { Variables } from "./types/hono";
+export { OrchestratorWorkersWorkflow } from "./orchestrator-workers-workflow";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());

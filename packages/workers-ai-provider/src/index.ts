@@ -1,7 +1,7 @@
-import { WorkersAIChatLanguageModel } from "./workersai-chat-language-model.ts";
-import type { WorkersAIChatSettings } from "./workersai-chat-settings.ts";
-import type { TextGenerationModels } from "./workersai-models.ts";
-import { createRun } from "./utils.ts";
+import { WorkersAIChatLanguageModel } from "./workersai-chat-language-model";
+import type { WorkersAIChatSettings } from "./workersai-chat-settings";
+import type { TextGenerationModels } from "./workersai-models";
+import { createRun } from "./utils";
 
 export type WorkersAISettings =
   ({

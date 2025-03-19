@@ -4,13 +4,13 @@ import {
   type LanguageModelV1StreamPart,
   UnsupportedFunctionalityError,
 } from "@ai-sdk/provider";
-import { convertToWorkersAIChatMessages } from "./convert-to-workersai-chat-messages.ts";
-import type { WorkersAIChatSettings } from "./workersai-chat-settings.ts";
-import type { TextGenerationModels } from "./workersai-models.ts";
+import { convertToWorkersAIChatMessages } from "./convert-to-workersai-chat-messages";
+import type { WorkersAIChatSettings } from "./workersai-chat-settings";
+import type { TextGenerationModels } from "./workersai-models";
 
 import { events } from "fetch-event-stream";
-import { mapWorkersAIUsage } from "./map-workersai-usage.ts";
-import type { WorkersAIChatPrompt } from "./workersai-chat-prompt.ts";
+import { mapWorkersAIUsage } from "./map-workersai-usage";
+import type { WorkersAIChatPrompt } from "./workersai-chat-prompt";
 
 type WorkersAIChatConfig = {
   provider: string;

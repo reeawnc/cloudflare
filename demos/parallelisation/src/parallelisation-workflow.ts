@@ -6,7 +6,6 @@ import {
 import { generateObject } from "ai";
 import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 import z from "zod";
-import type { Env } from "./types/env.ts";
 
 export type ParallelisationWorkflowParams = {
 	prompt: string;
