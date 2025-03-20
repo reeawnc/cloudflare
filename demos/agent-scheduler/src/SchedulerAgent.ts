@@ -1,5 +1,5 @@
 import { Agent, type Schedule } from "agents-sdk";
-import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
+import { createWorkersAI } from "workers-ai-provider";
 import { extractActionType } from "./llm/extract-action-type";
 import { extractAlarmMessage } from "./llm/extract-alarm-message";
 import { extractAlarmType } from "./llm/extract-alarm-type";

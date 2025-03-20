@@ -1,7 +1,7 @@
 import { generateText, tool } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
+import { createWorkersAI } from "workers-ai-provider";
 import z from "zod";
 import type { Variables } from "./types/hono";
 

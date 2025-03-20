@@ -1,10 +1,6 @@
-import {
-	WorkflowEntrypoint,
-	type WorkflowEvent,
-	type WorkflowStep,
-} from "cloudflare:workers";
+import { WorkflowEntrypoint, type WorkflowEvent, type WorkflowStep } from "cloudflare:workers";
 import { generateObject } from "ai";
-import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
+import { createWorkersAI } from "workers-ai-provider";
 import z from "zod";
 
 export type RoutingWorkflowParams = {
@@ -19,10 +15,7 @@ const finalOutputSchema = z.object({
 	result: z.string(),
 });
 
-export class RoutingWorkflow extends WorkflowEntrypoint<
-	Env,
-	RoutingWorkflowParams
-> {
+export class RoutingWorkflow extends WorkflowEntrypoint<Env, RoutingWorkflowParams> {
 	async run(event: WorkflowEvent<{ prompt: string }>, step: WorkflowStep) {
 		const { prompt } = event.payload;
 
@@ -56,10 +49,7 @@ export class RoutingWorkflow extends WorkflowEntrypoint<
 
 		return {
 			grade: gradeObj,
-			selectedModel:
-				gradeObj.grade > 50
-					? "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
-					: "@cf/meta/llama-3.1-8b-instruct",
+			selectedModel: gradeObj.grade > 50 ? "@cf/meta/llama-3.3-70b-instruct-fp8-fast" : "@cf/meta/llama-3.1-8b-instruct",
 			finalOutput: finalObj,
 		};
 	}

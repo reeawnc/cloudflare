@@ -1,6 +1,6 @@
 import { Agent } from "agents-sdk";
 import { generateObject } from "ai";
-import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
+import { createWorkersAI } from "workers-ai-provider";
 import z from "zod";
 
 interface Task {
@@ -20,11 +20,7 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 		tasks: [],
 	};
 
-	async query(
-		query: string,
-	): Promise<
-		{ message?: string } | Task | Task[] | boolean | string | undefined
-	> {
+	async query(query: string): Promise<{ message?: string } | Task | Task[] | boolean | string | undefined> {
 		const workersai = createWorkersAI({ binding: this.env.AI });
 		const aiModel = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
 
