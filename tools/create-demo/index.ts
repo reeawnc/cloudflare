@@ -4,13 +4,18 @@ import chalk from "chalk";
 import { copyDirectoryOrFile } from "./utils";
 import { exec, execSync } from "node:child_process";
 
-async function main(): Promise<void> {
-	intro("Create a new demo project");
+const DEMO_PATH_PREFIX = "./demos/";
+const projectNameArg = process.argv[2];
 
-	const projectPath = (await text({
-		message: "Enter the full path for the new project location:",
-		initialValue: "./demos/",
-	})) as string;
+async function main(): Promise<void> {
+	intro("Creating a new demo project");
+
+	const projectPath = projectNameArg
+		? `${DEMO_PATH_PREFIX}${projectNameArg}`
+		: ((await text({
+				message: "Enter the full path for the new project location:",
+				initialValue: DEMO_PATH_PREFIX,
+			})) as string);
 
 	const withClient = await confirm({
 		message: "Create scaffolding for client side?",

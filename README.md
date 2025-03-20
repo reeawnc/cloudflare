@@ -1,16 +1,8 @@
 # Cloudflare AI
 
-This repository contains various packages and apps related consuming Cloudflare's AI offerings on the client-side. It is a monorepo powered by [Nx](https://nx.dev/) and [Changesets](https://github.com/changesets/changesets).
+This repository contains various packages and demo apps related consuming Cloudflare's AI offerings on the client-side. It is a monorepo powered by [Nx](https://nx.dev/) and [Changesets](https://github.com/changesets/changesets).
 
-## What's in the Repo
-
-```
-- demos [Apps that demonstrate Cloudflare AI capabilities]
-- libs [Shared libraries for demos and packages]
-- packages [Packages that can be published to npm]
-```
-
-### Packages
+## Packages
 
 - [`workers-ai-provider`](./packages/workers-ai-provider/README.md): A custom provider that enables [Workers AI](https://ai.cloudflare.com/)'s models for the [Vercel AI SDK](https://sdk.vercel.ai/).
 
@@ -69,6 +61,20 @@ This repository contains various packages and apps related consuming Cloudflare'
   - `test:smoke`: Runs smoke tests.
   - `type-check`: Performs TypeScript type checks.
 
+## Creating a New Demo App
+
+In order to scaffold a new demo app, you can use the `create-demo` script. This script will create a new demo app in the `demos` directory.
+
+```bash
+npm run create-demo <demo-name>
+```
+
+After creating the app, `npm install` will be run to install the dependencies, and `npx nx cf-typegen <demo-name>` will be run to generate the types for the demo app. Then it's simply a case of starting the app with:
+
+```bash
+npx nx dev <demo-name>
+```
+
 ## Contributing
 
 We appreciate contributions and encourage pull requests. Please follow these guidelines:
@@ -99,53 +105,6 @@ This repository uses [Changesets](https://github.com/changesets/changesets) to m
   - Publish any package that has a version number to npm. (Demos and other internal items do not require versioning.)
 
 3. **Publication**: The release workflow (`.github/workflows/release.yml`) will run on every push to `main`. It ensures each published package is tagged and released on npm. Any package with a version field in its `package.json` will be included in this process.
-
-## Various Repo Notes
-
-### Hoisted Dependencies
-
-In this monorepo, we rely on hoisting to place common dependencies in the root `node_modules`, thereby simplifying version management. This practice means:
-
-- Shared dependencies appear only once at the root.
-- Individual package or library directories usually contain only project-specific dependencies.
-
-Should you encounter version conflicts or require specific dependency versions, adjustments can be made on a per-package basis, but in general, we keep everything consolidated at the root wherever possible.
-
-### Relative paths
-
-In this monorepo, relative paths are used for imports in order to simplify the tool-chain. This means that when you import a module, you should use the relative path from the file where you're importing it. For example:
-
-```ts
-import { myFunction } from '../my-package/src/myFunction';
-```
-
-### TSConfig
-
-There are several `tsconfig` files at the root that cover the various environments that each package or file is supposed to run in. In most cases, this means that you don't need a tsconfig in each package, but sometimes it's unavoidable, especially in published packages.
-
-The way that it is setup, each file by default is included in the `tsconfig.node.json` config. So this will apply to everything in the package. If the `src` for the package is not supposed to run in Node, then you can add it to the relevant `tsconfig`. For example:
-
-```txt
-- my-browser-based-app
-  - src
-    - index.ts
-  some-node-config-or-script.ts
-  package.json
-```
-Here, the `some-node-config-or-script.ts` file falls correctly under the `tsconfig.node.json` config, but we can add the `src` folder to the `tsconfig.browser.json` config.
-
-```jsonc
-{
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    ...
-  },
-  "include": [
-    "./demos/my-browser-based-app/src/client/**/*.ts",
-    "./demos/my-browser-based-app/src/client/**/*.tsx",
-  ]
-}
-```
 
 ---
 
