@@ -1,8 +1,4 @@
-import type {
-	Hono,
-	Context as HonoContext,
-	MiddlewareHandler as HonoMiddlewareHandler,
-} from "hono";
+import type { Hono, Context as HonoContext, MiddlewareHandler as HonoMiddlewareHandler } from "hono";
 
 export type Variables = Record<string, string>;
 

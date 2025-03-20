@@ -1,14 +1,5 @@
 import { useChat } from "@ai-sdk/react";
-import {
-	Center,
-	Paper,
-	Text,
-	TextInput,
-	Button,
-	Group,
-	ScrollArea,
-	Stack,
-} from "@mantine/core";
+import { Center, Paper, Text, TextInput, Button, Group, ScrollArea, Stack } from "@mantine/core";
 
 const ChatUI: React.FC = () => {
 	const { messages, input, handleSubmit, handleInputChange } = useChat({
@@ -23,12 +14,7 @@ const ChatUI: React.FC = () => {
 					<Stack gap="xs">
 						{messages.map((message) => (
 							<Paper key={message.id} p="xs" shadow="xs">
-								<Text>
-									{message.role === "user"
-										? "User"
-										: "Assistant"}
-									:
-								</Text>
+								<Text>{message.role === "user" ? "User" : "Assistant"}:</Text>
 								<Text>{message.content}</Text>
 							</Paper>
 						))}

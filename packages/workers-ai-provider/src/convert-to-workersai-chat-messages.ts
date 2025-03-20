@@ -1,13 +1,8 @@
-import {
-	type LanguageModelV1Prompt,
-	UnsupportedFunctionalityError,
-} from "@ai-sdk/provider";
+import { type LanguageModelV1Prompt, UnsupportedFunctionalityError } from "@ai-sdk/provider";
 import type { WorkersAIChatPrompt } from "./workersai-chat-prompt";
 
 // TODO
-export function convertToWorkersAIChatMessages(
-	prompt: LanguageModelV1Prompt
-): WorkersAIChatPrompt {
+export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): WorkersAIChatPrompt {
 	const messages: WorkersAIChatPrompt = [];
 
 	for (const { role, content } of prompt) {
@@ -70,9 +65,7 @@ export function convertToWorkersAIChatMessages(
 						}
 						default: {
 							const exhaustiveCheck = part;
-							throw new Error(
-								`Unsupported part: ${exhaustiveCheck}`
-							);
+							throw new Error(`Unsupported part: ${exhaustiveCheck}`);
 						}
 					}
 				}
@@ -82,15 +75,11 @@ export function convertToWorkersAIChatMessages(
 					content: text,
 					tool_calls:
 						toolCalls.length > 0
-							? toolCalls.map(
-									({
-										function: { name, arguments: args },
-									}) => ({
-										id: "null",
-										type: "function",
-										function: { name, arguments: args },
-									})
-							  )
+							? toolCalls.map(({ function: { name, arguments: args } }) => ({
+									id: "null",
+									type: "function",
+									function: { name, arguments: args },
+								}))
 							: undefined,
 				});
 

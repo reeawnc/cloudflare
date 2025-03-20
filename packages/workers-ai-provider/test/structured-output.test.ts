@@ -24,13 +24,7 @@ const structuredOutputHandler = http.post(
 							{ name: "onion", amount: "1 medium" },
 							{ name: "garlic", amount: "2 cloves" },
 						],
-						steps: [
-							"Cook spaghetti.",
-							"Fry onion & garlic.",
-							"Add minced beef.",
-							"Simmer with sauce.",
-							"Serve.",
-						],
+						steps: ["Cook spaghetti.", "Fry onion & garlic.", "Add minced beef.", "Simmer with sauce.", "Serve."],
 					},
 				}),
 			},
@@ -38,7 +32,7 @@ const structuredOutputHandler = http.post(
 			errors: [],
 			messages: [],
 		});
-	}
+	},
 );
 
 const server = setupServer(structuredOutputHandler);
@@ -51,9 +45,7 @@ describe("Structured Output Tests", () => {
 	const recipeSchema = z.object({
 		recipe: z.object({
 			name: z.string(),
-			ingredients: z.array(
-				z.object({ name: z.string(), amount: z.string() })
-			),
+			ingredients: z.array(z.object({ name: z.string(), amount: z.string() })),
 			steps: z.array(z.string()),
 		}),
 	});

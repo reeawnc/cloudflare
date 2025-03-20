@@ -1,6 +1,4 @@
-export function mapWorkersAIUsage(
-	output: AiTextGenerationOutput | AiTextToImageOutput
-) {
+export function mapWorkersAIUsage(output: AiTextGenerationOutput | AiTextToImageOutput) {
 	const usage = (
 		output as {
 			usage: { prompt_tokens: number; completion_tokens: number };

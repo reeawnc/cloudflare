@@ -1,10 +1,6 @@
 export type WorkersAIChatPrompt = Array<WorkersAIChatMessage>;
 
-export type WorkersAIChatMessage =
-	| WorkersAISystemMessage
-	| WorkersAIUserMessage
-	| WorkersAIAssistantMessage
-	| WorkersAIToolMessage;
+export type WorkersAIChatMessage = WorkersAISystemMessage | WorkersAIUserMessage | WorkersAIAssistantMessage | WorkersAIToolMessage;
 
 export interface WorkersAISystemMessage {
 	role: "system";

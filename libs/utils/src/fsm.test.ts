@@ -81,12 +81,7 @@ test("exit and entry hooks are called in correct order", async () => {
 	await machine.run();
 	expect(callOrder).toEqual(["exitIdle", "enterRunning"]);
 	await machine.stop();
-	expect(callOrder).toEqual([
-		"exitIdle",
-		"enterRunning",
-		"exitRunning",
-		"enterIdle",
-	]);
+	expect(callOrder).toEqual(["exitIdle", "enterRunning", "exitRunning", "enterIdle"]);
 });
 
 test("should ignore when transition called from invalid state", async () => {
@@ -110,9 +105,7 @@ test("should throw error if transition function returns non-string", async () =>
 	} as const;
 	// @ts-expect-error
 	const machine = generateMachine(config);
-	expect(machine.badTransition()).rejects.toThrow(
-		/did not return a valid state string/
-	);
+	expect(machine.badTransition()).rejects.toThrow(/did not return a valid state string/);
 });
 
 test("synchronous hooks are called", async () => {
@@ -172,12 +165,7 @@ test("async transition function rejection prevents state update", async () => {
 				action: "fail",
 				from: "start",
 				to: async () => {
-					await new Promise((_, reject) =>
-						setTimeout(
-							() => reject(new Error("transition fail")),
-							10
-						)
-					);
+					await new Promise((_, reject) => setTimeout(() => reject(new Error("transition fail")), 10));
 					return "should-not-be-returned";
 				},
 			},
@@ -224,9 +212,7 @@ test("async transition returns non-string", async () => {
 	} as const;
 	// @ts-expect-error
 	const machine = generateMachine(config);
-	expect(machine.badAsync()).rejects.toThrow(
-		/did not return a valid state string/
-	);
+	expect(machine.badAsync()).rejects.toThrow(/did not return a valid state string/);
 	expect(machine.state).toBe("init");
 });
 
@@ -305,12 +291,7 @@ test("queued transitions: concurrent transitions are executed sequentially", asy
 	const p1 = machine.first();
 	const p2 = machine.second();
 	await Promise.all([p1, p2]);
-	expect(order).toEqual([
-		"first start",
-		"first end",
-		"second start",
-		"second end",
-	]);
+	expect(order).toEqual(["first start", "first end", "second start", "second end"]);
 	expect(machine.state).toBe("end");
 });
 
@@ -344,11 +325,6 @@ test("queued transitions: transitions invoked consecutively are executed in orde
 	const machine = generateMachine(config);
 	void machine.turnOn();
 	await machine.turnOff();
-	expect(order).toEqual([
-		"turnOn start",
-		"turnOn end",
-		"turnOff start",
-		"turnOff end",
-	]);
+	expect(order).toEqual(["turnOn start", "turnOn end", "turnOff start", "turnOff end"]);
 	expect(machine.state).toBe("off");
 });

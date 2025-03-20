@@ -27,7 +27,5 @@ app.get("/", async (c) => {
 			${html([await marked(homeMarkdown)])}
 		</div>
 	`;
-	return c.html(
-		layout(await content, "MCP Remote Auth Demo - Home", isLoggedIn)
-	);
+	return c.html(layout(await content, "MCP Remote Auth Demo - Home", isLoggedIn));
 });

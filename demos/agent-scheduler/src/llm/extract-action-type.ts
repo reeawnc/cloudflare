@@ -2,11 +2,7 @@ import { generateObject, type LanguageModel } from "ai";
 import z from "zod";
 import type { Schedule } from "agents-sdk";
 
-export async function extractActionType(
-	model: LanguageModel,
-	query: string,
-	schedules: Schedule[]
-) {
+export async function extractActionType(model: LanguageModel, query: string, schedules: Schedule[]) {
 	const { object } = await generateObject({
 		model,
 		schema: z.object({

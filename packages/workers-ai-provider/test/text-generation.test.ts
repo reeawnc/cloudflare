@@ -12,7 +12,7 @@ const textGenerationHandler = http.post(
 	`https://api.cloudflare.com/client/v4/accounts/${TEST_ACCOUNT_ID}/ai/run/${TEST_MODEL}`,
 	async () => {
 		return HttpResponse.json({ result: { response: "Hello" } });
-	}
+	},
 );
 
 const server = setupServer(textGenerationHandler);

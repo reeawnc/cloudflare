@@ -35,18 +35,12 @@ export type WorkersAISettings = (
 };
 
 export interface WorkersAI {
-	(
-		modelId: TextGenerationModels,
-		settings?: WorkersAIChatSettings
-	): WorkersAIChatLanguageModel;
+	(modelId: TextGenerationModels, settings?: WorkersAIChatSettings): WorkersAIChatLanguageModel;
 
 	/**
 	 * Creates a model for text generation.
 	 **/
-	chat(
-		modelId: TextGenerationModels,
-		settings?: WorkersAIChatSettings
-	): WorkersAIChatLanguageModel;
+	chat(modelId: TextGenerationModels, settings?: WorkersAIChatSettings): WorkersAIChatLanguageModel;
 }
 
 /**
@@ -73,24 +67,16 @@ export function createWorkersAI(options: WorkersAISettings): WorkersAI {
 	/**
 	 * Helper function to create a chat model instance.
 	 */
-	const createChatModel = (
-		modelId: TextGenerationModels,
-		settings: WorkersAIChatSettings = {}
-	) =>
+	const createChatModel = (modelId: TextGenerationModels, settings: WorkersAIChatSettings = {}) =>
 		new WorkersAIChatLanguageModel(modelId, settings, {
 			provider: "workersai.chat",
 			binding,
 			gateway: options.gateway,
 		});
 
-	const provider = function (
-		modelId: TextGenerationModels,
-		settings?: WorkersAIChatSettings
-	) {
+	const provider = function (modelId: TextGenerationModels, settings?: WorkersAIChatSettings) {
 		if (new.target) {
-			throw new Error(
-				"The WorkersAI model function cannot be called with the new keyword."
-			);
+			throw new Error("The WorkersAI model function cannot be called with the new keyword.");
 		}
 		return createChatModel(modelId, settings);
 	};

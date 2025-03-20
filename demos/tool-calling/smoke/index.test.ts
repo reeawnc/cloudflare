@@ -44,9 +44,7 @@ describe("Weather Worker Integration Tests", () => {
 				const data = await response.json<{ text: string }>();
 				const content = data.text.toLowerCase();
 
-				const hasExpectedKeyword = expectedKeywords.some((keyword) =>
-					content.includes(keyword),
-				);
+				const hasExpectedKeyword = expectedKeywords.some((keyword) => content.includes(keyword));
 
 				results.push(hasExpectedKeyword);
 			} catch (error) {

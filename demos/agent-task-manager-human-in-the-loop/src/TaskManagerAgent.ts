@@ -49,14 +49,7 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 	 * Processes a user query and decides whether to add a task, delete a task, list tasks,
 	 * or do nothing. Instead of immediately performing add/delete, it creates a Confirmation.
 	 */
-	async query(
-		query: string
-	): Promise<
-		| { confirmation?: Confirmation; message?: string }
-		| Task[]
-		| string
-		| undefined
-	> {
+	async query(query: string): Promise<{ confirmation?: Confirmation; message?: string } | Task[] | string | undefined> {
 		const workersai = createWorkersAI({ binding: this.env.AI });
 		const aiModel = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
 
@@ -200,14 +193,9 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 	 * @param userConfirmed - Whether to proceed with the action (`true`) or reject it (`false`).
 	 * @returns The result of the action that was confirmed, or a message if rejected/not found.
 	 */
-	confirm(
-		confirmationId: string,
-		userConfirmed: boolean
-	): Task | string | false | undefined {
+	confirm(confirmationId: string, userConfirmed: boolean): Task | string | false | undefined {
 		// Find the confirmation in the state.
-		const confirmation = this.state.confirmations.find(
-			(c) => c.id === confirmationId
-		);
+		const confirmation = this.state.confirmations.find((c) => c.id === confirmationId);
 
 		if (!confirmation) {
 			return "No matching confirmation found.";
@@ -219,14 +207,8 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 		if (userConfirmed) {
 			if (confirmation.action === "add" && confirmation.title) {
 				// Replay the add operation.
-				result = this.addTask(
-					confirmation.title,
-					confirmation.description
-				);
-			} else if (
-				confirmation.action === "delete" &&
-				confirmation.taskId
-			) {
+				result = this.addTask(confirmation.title, confirmation.description);
+			} else if (confirmation.action === "delete" && confirmation.taskId) {
 				// Replay the delete operation.
 				result = this.deleteTask(confirmation.taskId);
 			}
@@ -236,9 +218,7 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 		}
 
 		// Remove the used (or rejected) confirmation from the array.
-		const remainingConfirmations = this.state.confirmations.filter(
-			(c) => c.id !== confirmationId
-		);
+		const remainingConfirmations = this.state.confirmations.filter((c) => c.id !== confirmationId);
 
 		this.setState({
 			...this.state,
@@ -282,9 +262,7 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 	 */
 	deleteTask(taskId: string): string | false {
 		const initialLength = this.state.tasks.length;
-		const filteredTasks = this.state.tasks.filter(
-			(task) => task.id !== taskId
-		);
+		const filteredTasks = this.state.tasks.filter((task) => task.id !== taskId);
 
 		if (initialLength === filteredTasks.length) {
 			// No task removed, so it was not found.

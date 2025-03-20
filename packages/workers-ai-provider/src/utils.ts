@@ -7,11 +7,7 @@
  * @returns An function matching `Ai['run']`.
  */
 export function createRun(accountId: string, apiKey: string): AiRun {
-	return async <Name extends keyof AiModels>(
-		model: Name,
-		inputs: AiModels[Name]["inputs"],
-		options?: AiOptions | undefined
-	) => {
+	return async <Name extends keyof AiModels>(model: Name, inputs: AiModels[Name]["inputs"], options?: AiOptions | undefined) => {
 		const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
 		const body = JSON.stringify(inputs);
 
@@ -51,20 +47,20 @@ interface AiRun {
 	<Name extends keyof AiModels>(
 		model: Name,
 		inputs: AiModels[Name]["inputs"],
-		options: AiOptions & { returnRawResponse: true }
+		options: AiOptions & { returnRawResponse: true },
 	): Promise<Response>;
 
 	// (2) Return a stream if the input has `stream: true`.
 	<Name extends keyof AiModels>(
 		model: Name,
 		inputs: AiModels[Name]["inputs"] & { stream: true },
-		options?: AiOptions
+		options?: AiOptions,
 	): Promise<ReadableStream<Uint8Array>>;
 
 	// (3) Return the post-processed outputs by default.
 	<Name extends keyof AiModels>(
 		model: Name,
 		inputs: AiModels[Name]["inputs"],
-		options?: AiOptions
+		options?: AiOptions,
 	): Promise<AiModels[Name]["postProcessedOutputs"]>;
 }

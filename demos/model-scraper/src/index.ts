@@ -41,7 +41,7 @@ app.post("/query", async (c) => {
 		structured: z.boolean(),
 	});
 	const criteriaPrompt = `Please evaluate the following prompt:\n\n${JSON.stringify(
-		prompt
+		prompt,
 	)}\n\nReturn a JSON object with a boolean field "structured" that is true if the prompt would be best returned as a JSON structured response, or false if it should just return a text-based response.`;
 	const { object: evaluationObject } = await generateObject({
 		model,
@@ -99,9 +99,7 @@ app.get("/models_by_task", async (c) => {
 	}
 	const modelsObj: Record<string, any> = JSON.parse(modelsData);
 
-	const filtered = Object.values(modelsObj).filter(
-		(model: any) => model.task && model.task.id === taskId
-	);
+	const filtered = Object.values(modelsObj).filter((model: any) => model.task && model.task.id === taskId);
 	return c.json(filtered);
 });
 
@@ -150,9 +148,7 @@ function supportsToolCalling(model: any): boolean {
 
 	if (inputSchema.oneOf && Array.isArray(inputSchema.oneOf)) {
 		console.log(true);
-		return inputSchema.oneOf.some(
-			(option: any) => option.properties?.tools
-		);
+		return inputSchema.oneOf.some((option: any) => option.properties?.tools);
 	}
 	return false;
 }
@@ -168,8 +164,7 @@ type GitHubFile = {
  * and the parsed JSON object as the value.
  */
 async function fetchModelsAsJsonMap(token: string): Promise<Map<string, any>> {
-	const apiUrl =
-		"https://api.github.com/repos/cloudflare/cloudflare-docs/contents/src/content/workers-ai-models?ref=production";
+	const apiUrl = "https://api.github.com/repos/cloudflare/cloudflare-docs/contents/src/content/workers-ai-models?ref=production";
 
 	// Map to store the filename and parsed JSON object.
 	const fileMap = new Map<string, any>();
@@ -186,9 +181,7 @@ async function fetchModelsAsJsonMap(token: string): Promise<Map<string, any>> {
 			},
 		});
 		if (!response.ok) {
-			throw new Error(
-				`Failed to fetch folder contents: ${response.status} - ${response.statusText}`
-			);
+			throw new Error(`Failed to fetch folder contents: ${response.status} - ${response.statusText}`);
 		}
 
 		const folderContents = (await response.json()) as GitHubFile[];
@@ -206,16 +199,11 @@ async function fetchModelsAsJsonMap(token: string): Promise<Map<string, any>> {
 					},
 				});
 				if (!fileResponse.ok) {
-					console.error(
-						`Failed to fetch file ${file.name}: ${fileResponse.status} - ${fileResponse.statusText}`
-					);
+					console.error(`Failed to fetch file ${file.name}: ${fileResponse.status} - ${fileResponse.statusText}`);
 					continue;
 				}
 				const fileContents = await fileResponse.json();
-				const filenameWithoutExtension = file.name
-					.split(".")
-					.slice(0, -1)
-					.join("");
+				const filenameWithoutExtension = file.name.split(".").slice(0, -1).join("");
 				fileMap.set(filenameWithoutExtension, fileContents);
 			}
 		}

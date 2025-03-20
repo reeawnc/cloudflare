@@ -4,7 +4,7 @@
 		"enabled": true
 	},
 	"files": {
-		"ignore": ["node_modules/**/*", ".wrangler/**/*"]
+		"ignore": ["node_modules/**/*", ".wrangler/**/*", "worker-configuration.d.ts"]
 	},
 	"linter": {
 		"enabled": true,
@@ -25,6 +25,6 @@
 		"enabled": true,
 		"indentStyle": "tab",
 		"indentWidth": 4,
-		"lineWidth": 140
+		"lineWidth": 100
 	}
 }

@@ -5,17 +5,13 @@
 type CamelCase<S extends string> = S extends `${infer P}_${infer R}`
 	? `${Lowercase<P>}${Capitalize<CamelCase<R>>}`
 	: S extends `${infer P}-${infer R}`
-	? `${Lowercase<P>}${Capitalize<CamelCase<R>>}`
-	: S;
+		? `${Lowercase<P>}${Capitalize<CamelCase<R>>}`
+		: S;
 
 /**
  * Utility type to convert a union type to an intersection type.
  */
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-	k: infer I
-) => void
-	? I
-	: never;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
 /**
  * Interface defining a single transition configuration.
@@ -51,9 +47,7 @@ export interface FSMConfig {
  * If the "to" property is a function, its parameter types are inferred; otherwise,
  * the method takes no parameters.
  */
-type FSMTransitionMethod<T extends TransitionConfig> = T["to"] extends (
-	...args: infer P
-) => any
+type FSMTransitionMethod<T extends TransitionConfig> = T["to"] extends (...args: infer P) => any
 	? { [K in CamelCase<T["action"]>]: (...args: P) => Promise<void> }
 	: { [K in CamelCase<T["action"]>]: () => Promise<void> };
 
@@ -61,11 +55,7 @@ type FSMTransitionMethod<T extends TransitionConfig> = T["to"] extends (
  * Utility type that aggregates all transition methods from the FSM configuration.
  */
 type FSMTransitionMethods<T extends FSMConfig> = UnionToIntersection<
-	T["transitions"][number] extends infer Tr
-		? Tr extends TransitionConfig
-			? FSMTransitionMethod<Tr>
-			: never
-		: never
+	T["transitions"][number] extends infer Tr ? (Tr extends TransitionConfig ? FSMTransitionMethod<Tr> : never) : never
 >;
 
 /**
@@ -136,9 +126,7 @@ function globToRegExp(glob: string): RegExp {
  * @param config The finite state machine configuration.
  * @returns A state machine object with transition methods and hooks.
  */
-export function generateMachine<T extends FSMConfig>(
-	config: T
-): GeneratedMachine<T> {
+export function generateMachine<T extends FSMConfig>(config: T): GeneratedMachine<T> {
 	// Initialise the machine with the initial state.
 	const machine: any = {
 		state: config.init,
@@ -162,9 +150,7 @@ export function generateMachine<T extends FSMConfig>(
 		// Compute the method name by converting the transition action to camelCase.
 		const methodName = toCamelCase(transition.action);
 		// Precompile a regular expression if the "from" pattern includes a glob wildcard.
-		const patternRegex = transition.from.includes("*")
-			? globToRegExp(transition.from)
-			: null;
+		const patternRegex = transition.from.includes("*") ? globToRegExp(transition.from) : null;
 
 		// Define the state transition method.
 		machine[methodName] = async (...args: any[]): Promise<void> => {
@@ -182,9 +168,7 @@ export function generateMachine<T extends FSMConfig>(
 				}
 
 				// Determine the name of the exit hook for the current state.
-				const exitHookName = `onExit${toPascalCase(
-					transition.from.replace("*", "")
-				)}`;
+				const exitHookName = `onExit${toPascalCase(transition.from.replace("*", ""))}`;
 				const exitHook = machine[exitHookName];
 				if (typeof exitHook === "function") {
 					// Await the exit hook (which may be asynchronous).
@@ -202,9 +186,7 @@ export function generateMachine<T extends FSMConfig>(
 
 				// Validate that the new state is indeed a string.
 				if (typeof newState !== "string") {
-					throw new Error(
-						`Transition '${transition.action}' did not return a valid state string.`
-					);
+					throw new Error(`Transition '${transition.action}' did not return a valid state string.`);
 				}
 
 				// Update the machine's state.
@@ -222,9 +204,7 @@ export function generateMachine<T extends FSMConfig>(
 			// Chain the transition execution onto the mutex (transitionLock).
 			// This ensures that transitions are executed sequentially.
 			// We create a new transition promise by chaining performTransition.
-			const newTransition = transitionLock.then(() =>
-				performTransition()
-			);
+			const newTransition = transitionLock.then(() => performTransition());
 			// Update the transitionLock.
 			// Catch errors so that a rejected transition does not break the chain.
 			transitionLock = newTransition.catch(() => {});
