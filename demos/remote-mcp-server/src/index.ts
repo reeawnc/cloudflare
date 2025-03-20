@@ -2,7 +2,7 @@ import app from "./routes";
 import { DurableMCP } from "workers-mcp";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import OAuthProvider from "workers-mcp/vendor/workers-oauth-provider/oauth-provider.js";
+import OAuthProvider from "@cloudflare/workers-oauth-provider";
 
 export class MyMCP extends DurableMCP {
 	server = new McpServer({

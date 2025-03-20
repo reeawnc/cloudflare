@@ -1,8 +1,8 @@
 // Route: Approve (POST)
 import { html } from "hono/html";
+import { AuthRequest } from "@cloudflare/workers-oauth-provider";
 import { layout } from "../utils";
 import app from "./_app";
-import type { AuthRequest } from "workers-mcp/vendor/workers-oauth-provider/oauth-provider.js";
 
 app.post("/approve", async (c) => {
 	const body = await c.req.parseBody();
