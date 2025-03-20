@@ -1,7 +1,17 @@
 import * as path from "node:path";
-import { cancel, confirm, intro, isCancel, log, outro, spinner, text } from "@clack/prompts";
+import {
+	cancel,
+	confirm,
+	intro,
+	isCancel,
+	log,
+	multiselect,
+	outro,
+	spinner,
+	text,
+} from "@clack/prompts";
 import chalk from "chalk";
-import { copyDirectoryOrFile } from "./utils";
+import { copyDirectoryOrFile, readPackageJson, writePackageJson } from "./utils";
 import { exec, execSync } from "node:child_process";
 
 const DEMO_PATH_PREFIX = "./demos/";
@@ -34,6 +44,20 @@ async function main(): Promise<void> {
 		process.exit(1);
 	}
 
+	const deps = (await multiselect({
+		message: "Select which dependencies to install:",
+		options: [
+			{
+				value: "workers-ai-provider",
+				label: "Workers AI Provider for the Vercel AI SDK (also installs zod and ai)",
+			},
+			{ value: "agents-sdk", label: "Agents SDK" },
+			{ value: "@modelcontextprotocol/sdk", label: "Model Context Protocol SDK" },
+			{ value: "zod", label: "Zod" },
+			{ value: "ai", label: "Vercel AI SDK" },
+		],
+	})) as string[];
+
 	const scaffoldingFolderName = withClient ? "worker-with-client" : "worker";
 	const scaffoldingPath = path.join(__dirname, "scaffolding", scaffoldingFolderName);
 
@@ -46,6 +70,25 @@ async function main(): Promise<void> {
 		log.error("An error occurred while generating the project.");
 		process.exit(1);
 	}
+
+	/*
+	  For each dep, we want to add it to the dependencies object package.json in the projectPath
+	 */
+	const packageJson = await readPackageJson(path.resolve(projectPath, "package.json"));
+	const rootPackageJson = await readPackageJson(
+		path.resolve(__dirname, "..", "..", "package.json"),
+	);
+
+	deps.push("hono");
+	if (deps.includes("workers-ai-provider")) {
+		deps.push("zod");
+		deps.push("ai");
+	}
+
+	for (const dep of deps) {
+		packageJson.dependencies[dep] = rootPackageJson.dependencies[dep];
+	}
+	await writePackageJson(path.resolve(projectPath, "package.json"), packageJson);
 
 	await new Promise((resolve) => {
 		const s = spinner();
@@ -71,10 +114,10 @@ async function main(): Promise<void> {
 		const s = spinner();
 		s.start("Running npx nx cf-typegen...");
 
-		exec("npm install", { cwd: projectPath }, (error, _, stderr) => {
+		exec(`npx nx cf-typegen ${projectName}`, { cwd: projectPath }, (error, _, stderr) => {
 			if (error) {
 				log.error("An error occurred while running npx nx cf-typegen.");
-				s.stop("npm install failed.");
+				s.stop(`npx nx cf-typegen ${projectName} failed.`);
 				process.exit(1);
 			}
 
