@@ -1,0 +1,30 @@
+{
+    "name": "<%= projectName -%>",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "npm run build && vite preview",
+        "deploy": "npm run build && wrangler deploy",
+        "format": "biome lint --error-on-warnings",
+        "test": "vitest",
+        "test:ci": "vitest --watch=false",
+        "cf-typegen": "wrangler types",
+        "lint": "biome lint --error-on-warnings",
+        "type-check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@cloudflare/vitest-pool-workers": "^0.7.5",
+        "@types/react": "^19.0.8",
+		"@types/react-dom": "^19.0.3",
+        "typescript": "^5.5.2",
+        "vitest": "~3.0.7",
+        "wrangler": "^4.2.0"
+    },
+    "dependencies": {
+        "hono": "^4.7.1",
+        "workers-ai-provider": "^0.2.0",
+        "react": "^19.0.0",
+		"react-dom": "^19.0.0"
+    }
+}
