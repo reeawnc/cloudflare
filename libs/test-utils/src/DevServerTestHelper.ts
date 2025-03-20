@@ -23,7 +23,7 @@ export class DevServerTestHelper {
 			{
 				shell: true,
 				stdio: "ignore",
-			},
+			}
 		);
 
 		// 3. Wait until the server is responding.

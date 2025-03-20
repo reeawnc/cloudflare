@@ -16,7 +16,7 @@ export class MyMCP extends DurableMCP {
 			{ a: z.number(), b: z.number() },
 			async ({ a, b }) => ({
 				content: [{ type: "text", text: String(a + b) }],
-			}),
+			})
 		);
 	}
 }

@@ -3,10 +3,13 @@
 	"type": "module",
 	"scripts": {
 		"dev": "npx tsx ./src/index.ts",
-		"lint": "biome lint --error-on-warnings ./src",
+		"lint": "biome lint --error-on-warnings",
+		"lint:fix": "biome lint --fix",
+		"format": "biome format --write",
 		"type-check": "tsc --noEmit"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "^1.8.2",
 		"typescript": "^5.5.2",
 		"vitest": "~3.0.7"
 	},

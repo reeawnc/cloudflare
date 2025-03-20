@@ -3,7 +3,7 @@ import z from "zod";
 
 export async function extractScheduledDate(
 	model: LanguageModel,
-	query: string,
+	query: string
 ) {
 	const { object } = await generateObject({
 		model,

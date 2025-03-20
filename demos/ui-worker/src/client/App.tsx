@@ -23,7 +23,12 @@ const ChatUI: React.FC = () => {
 					<Stack gap="xs">
 						{messages.map((message) => (
 							<Paper key={message.id} p="xs" shadow="xs">
-								<Text>{message.role === "user" ? "User" : "Assistant"}:</Text>
+								<Text>
+									{message.role === "user"
+										? "User"
+										: "Assistant"}
+									:
+								</Text>
 								<Text>{message.content}</Text>
 							</Paper>
 						))}

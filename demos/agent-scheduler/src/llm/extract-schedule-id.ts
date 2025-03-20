@@ -5,7 +5,7 @@ import type { Schedule } from "agents-sdk";
 export async function extractScheduleId(
 	model: LanguageModel,
 	query: string,
-	schedules: Schedule[],
+	schedules: Schedule[]
 ) {
 	const { object } = await generateObject({
 		model,

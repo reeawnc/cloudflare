@@ -111,7 +111,7 @@ test("should throw error if transition function returns non-string", async () =>
 	// @ts-expect-error
 	const machine = generateMachine(config);
 	expect(machine.badTransition()).rejects.toThrow(
-		/did not return a valid state string/,
+		/did not return a valid state string/
 	);
 });
 
@@ -173,7 +173,10 @@ test("async transition function rejection prevents state update", async () => {
 				from: "start",
 				to: async () => {
 					await new Promise((_, reject) =>
-						setTimeout(() => reject(new Error("transition fail")), 10),
+						setTimeout(
+							() => reject(new Error("transition fail")),
+							10
+						)
 					);
 					return "should-not-be-returned";
 				},
@@ -222,7 +225,7 @@ test("async transition returns non-string", async () => {
 	// @ts-expect-error
 	const machine = generateMachine(config);
 	expect(machine.badAsync()).rejects.toThrow(
-		/did not return a valid state string/,
+		/did not return a valid state string/
 	);
 	expect(machine.state).toBe("init");
 });

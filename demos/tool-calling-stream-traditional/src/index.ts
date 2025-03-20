@@ -7,8 +7,7 @@ app.use(cors());
 
 const weatherTool = {
 	name: "get_weather",
-	description:
-		"Gets the weather for a specified location",
+	description: "Gets the weather for a specified location",
 	parameters: {
 		type: "object",
 		properties: {
@@ -31,15 +30,22 @@ app.post("/", async (c) => {
 		{
 			messages,
 			tools,
-		},
+		}
 	);
 
-	if ((response instanceof ReadableStream)) {
+	if (response instanceof ReadableStream) {
 		throw new Error("This shouldn't happen");
 	}
 
-	const selected_tool = response.tool_calls?.[0] as { name: string, arguments: { location: string }};
-	const res = selected_tool?.name === "get_weather" && selected_tool.arguments.location === "London" ? "Raining" : "Sunny";
+	const selected_tool = response.tool_calls?.[0] as {
+		name: string;
+		arguments: { location: string };
+	};
+	const res =
+		selected_tool?.name === "get_weather" &&
+		selected_tool.arguments.location === "London"
+			? "Raining"
+			: "Sunny";
 
 	const finalResponse = await c.env.AI.run(
 		"@cf/meta/llama-3.3-70b-instruct-fp8-fast",
@@ -57,7 +63,7 @@ app.post("/", async (c) => {
 			],
 			tools,
 			stream: true,
-		},
+		}
 	);
 
 	if (!(finalResponse instanceof ReadableStream)) {
@@ -65,7 +71,6 @@ app.post("/", async (c) => {
 	}
 
 	return new Response(finalResponse);
-
 });
 
 export default {

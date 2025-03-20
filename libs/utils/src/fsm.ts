@@ -5,14 +5,14 @@
 type CamelCase<S extends string> = S extends `${infer P}_${infer R}`
 	? `${Lowercase<P>}${Capitalize<CamelCase<R>>}`
 	: S extends `${infer P}-${infer R}`
-		? `${Lowercase<P>}${Capitalize<CamelCase<R>>}`
-		: S;
+	? `${Lowercase<P>}${Capitalize<CamelCase<R>>}`
+	: S;
 
 /**
  * Utility type to convert a union type to an intersection type.
  */
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-	k: infer I,
+	k: infer I
 ) => void
 	? I
 	: never;
@@ -137,7 +137,7 @@ function globToRegExp(glob: string): RegExp {
  * @returns A state machine object with transition methods and hooks.
  */
 export function generateMachine<T extends FSMConfig>(
-	config: T,
+	config: T
 ): GeneratedMachine<T> {
 	// Initialise the machine with the initial state.
 	const machine: any = {
@@ -182,7 +182,9 @@ export function generateMachine<T extends FSMConfig>(
 				}
 
 				// Determine the name of the exit hook for the current state.
-				const exitHookName = `onExit${toPascalCase(transition.from.replace("*", ""))}`;
+				const exitHookName = `onExit${toPascalCase(
+					transition.from.replace("*", "")
+				)}`;
 				const exitHook = machine[exitHookName];
 				if (typeof exitHook === "function") {
 					// Await the exit hook (which may be asynchronous).
@@ -201,7 +203,7 @@ export function generateMachine<T extends FSMConfig>(
 				// Validate that the new state is indeed a string.
 				if (typeof newState !== "string") {
 					throw new Error(
-						`Transition '${transition.action}' did not return a valid state string.`,
+						`Transition '${transition.action}' did not return a valid state string.`
 					);
 				}
 
@@ -220,7 +222,9 @@ export function generateMachine<T extends FSMConfig>(
 			// Chain the transition execution onto the mutex (transitionLock).
 			// This ensures that transitions are executed sequentially.
 			// We create a new transition promise by chaining performTransition.
-			const newTransition = transitionLock.then(() => performTransition());
+			const newTransition = transitionLock.then(() =>
+				performTransition()
+			);
 			// Update the transitionLock.
 			// Catch errors so that a rejected transition does not break the chain.
 			transitionLock = newTransition.catch(() => {});

@@ -2,7 +2,7 @@
 import { html } from "hono/html";
 import { layout } from "../utils";
 import app from "./_app";
-import { AuthRequest } from "workers-mcp/vendor/workers-oauth-provider/oauth-provider.js";
+import type { AuthRequest } from "workers-mcp/vendor/workers-oauth-provider/oauth-provider.js";
 
 app.post("/approve", async (c) => {
 	const body = await c.req.parseBody();
@@ -26,7 +26,9 @@ app.post("/approve", async (c) => {
 
 		const oauthReqInfo = await c.env.OAUTH_KV.get<AuthRequest>(
 			`login:${randomString}`,
-			{ type: "json" },
+			{
+				type: "json",
+			}
 		);
 		console.log({ oauthReqInfo2: oauthReqInfo });
 		if (!oauthReqInfo) {
@@ -44,7 +46,7 @@ app.post("/approve", async (c) => {
 				props: {
 					userEmail: email,
 				},
-			},
+			}
 		);
 		redirectUrl = redirectTo;
 	} else {
@@ -90,7 +92,7 @@ app.post("/approve", async (c) => {
 		layout(
 			content,
 			"MCP Remote Auth Demo - Authorization Status",
-			c.get("isLoggedIn"),
-		),
+			c.get("isLoggedIn")
+		)
 	);
 });

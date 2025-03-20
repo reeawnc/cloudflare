@@ -40,7 +40,9 @@ app.post("/query", async (c) => {
 	const criteriaSchema = z.object({
 		structured: z.boolean(),
 	});
-	const criteriaPrompt = `Please evaluate the following prompt:\n\n${JSON.stringify(prompt)}\n\nReturn a JSON object with a boolean field "structured" that is true if the prompt would be best returned as a JSON structured response, or false if it should just return a text-based response.`;
+	const criteriaPrompt = `Please evaluate the following prompt:\n\n${JSON.stringify(
+		prompt
+	)}\n\nReturn a JSON object with a boolean field "structured" that is true if the prompt would be best returned as a JSON structured response, or false if it should just return a text-based response.`;
 	const { object: evaluationObject } = await generateObject({
 		model,
 		schema: criteriaSchema,
@@ -98,7 +100,7 @@ app.get("/models_by_task", async (c) => {
 	const modelsObj: Record<string, any> = JSON.parse(modelsData);
 
 	const filtered = Object.values(modelsObj).filter(
-		(model: any) => model.task && model.task.id === taskId,
+		(model: any) => model.task && model.task.id === taskId
 	);
 	return c.json(filtered);
 });
@@ -148,7 +150,9 @@ function supportsToolCalling(model: any): boolean {
 
 	if (inputSchema.oneOf && Array.isArray(inputSchema.oneOf)) {
 		console.log(true);
-		return inputSchema.oneOf.some((option: any) => option.properties?.tools);
+		return inputSchema.oneOf.some(
+			(option: any) => option.properties?.tools
+		);
 	}
 	return false;
 }
@@ -183,7 +187,7 @@ async function fetchModelsAsJsonMap(token: string): Promise<Map<string, any>> {
 		});
 		if (!response.ok) {
 			throw new Error(
-				`Failed to fetch folder contents: ${response.status} - ${response.statusText}`,
+				`Failed to fetch folder contents: ${response.status} - ${response.statusText}`
 			);
 		}
 
@@ -203,7 +207,7 @@ async function fetchModelsAsJsonMap(token: string): Promise<Map<string, any>> {
 				});
 				if (!fileResponse.ok) {
 					console.error(
-						`Failed to fetch file ${file.name}: ${fileResponse.status} - ${fileResponse.statusText}`,
+						`Failed to fetch file ${file.name}: ${fileResponse.status} - ${fileResponse.statusText}`
 					);
 					continue;
 				}
