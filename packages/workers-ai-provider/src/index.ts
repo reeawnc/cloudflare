@@ -40,7 +40,10 @@ export interface WorkersAI {
 	/**
 	 * Creates a model for text generation.
 	 **/
-	chat(modelId: TextGenerationModels, settings?: WorkersAIChatSettings): WorkersAIChatLanguageModel;
+	chat(
+		modelId: TextGenerationModels,
+		settings?: WorkersAIChatSettings,
+	): WorkersAIChatLanguageModel;
 }
 
 /**

@@ -27,7 +27,11 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 
 	private readonly config: WorkersAIChatConfig;
 
-	constructor(modelId: TextGenerationModels, settings: WorkersAIChatSettings, config: WorkersAIChatConfig) {
+	constructor(
+		modelId: TextGenerationModels,
+		settings: WorkersAIChatSettings,
+		config: WorkersAIChatConfig,
+	) {
 		this.modelId = modelId;
 		this.settings = settings;
 		this.config = config;
@@ -130,7 +134,9 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		}
 	}
 
-	async doGenerate(options: Parameters<LanguageModelV1["doGenerate"]>[0]): Promise<Awaited<ReturnType<LanguageModelV1["doGenerate"]>>> {
+	async doGenerate(
+		options: Parameters<LanguageModelV1["doGenerate"]>[0],
+	): Promise<Awaited<ReturnType<LanguageModelV1["doGenerate"]>>> {
 		const { args, warnings } = this.getArgs(options);
 
 		const output = await this.config.binding.run(
@@ -169,7 +175,9 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		};
 	}
 
-	async doStream(options: Parameters<LanguageModelV1["doStream"]>[0]): Promise<Awaited<ReturnType<LanguageModelV1["doStream"]>>> {
+	async doStream(
+		options: Parameters<LanguageModelV1["doStream"]>[0],
+	): Promise<Awaited<ReturnType<LanguageModelV1["doStream"]>>> {
 		const { args, warnings } = this.getArgs(options);
 
 		// [1] When the latest message is not a tool response, we use the regular generate function

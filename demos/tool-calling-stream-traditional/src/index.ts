@@ -38,7 +38,10 @@ app.post("/", async (c) => {
 		name: string;
 		arguments: { location: string };
 	};
-	const res = selected_tool?.name === "get_weather" && selected_tool.arguments.location === "London" ? "Raining" : "Sunny";
+	const res =
+		selected_tool?.name === "get_weather" && selected_tool.arguments.location === "London"
+			? "Raining"
+			: "Sunny";
 
 	const finalResponse = await c.env.AI.run("@cf/meta/llama-3.3-70b-instruct-fp8-fast", {
 		messages: [

@@ -2,7 +2,11 @@
 import { html } from "hono/html";
 import type { HtmlEscapedString } from "hono/utils/html";
 
-export const layout = (content: HtmlEscapedString | string, title: string, isLoggedIn: boolean) => html`
+export const layout = (
+	content: HtmlEscapedString | string,
+	title: string,
+	isLoggedIn: boolean,
+) => html`
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>

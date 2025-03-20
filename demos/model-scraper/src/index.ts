@@ -99,7 +99,9 @@ app.get("/models_by_task", async (c) => {
 	}
 	const modelsObj: Record<string, any> = JSON.parse(modelsData);
 
-	const filtered = Object.values(modelsObj).filter((model: any) => model.task && model.task.id === taskId);
+	const filtered = Object.values(modelsObj).filter(
+		(model: any) => model.task && model.task.id === taskId,
+	);
 	return c.json(filtered);
 });
 
@@ -164,7 +166,8 @@ type GitHubFile = {
  * and the parsed JSON object as the value.
  */
 async function fetchModelsAsJsonMap(token: string): Promise<Map<string, any>> {
-	const apiUrl = "https://api.github.com/repos/cloudflare/cloudflare-docs/contents/src/content/workers-ai-models?ref=production";
+	const apiUrl =
+		"https://api.github.com/repos/cloudflare/cloudflare-docs/contents/src/content/workers-ai-models?ref=production";
 
 	// Map to store the filename and parsed JSON object.
 	const fileMap = new Map<string, any>();
@@ -181,7 +184,9 @@ async function fetchModelsAsJsonMap(token: string): Promise<Map<string, any>> {
 			},
 		});
 		if (!response.ok) {
-			throw new Error(`Failed to fetch folder contents: ${response.status} - ${response.statusText}`);
+			throw new Error(
+				`Failed to fetch folder contents: ${response.status} - ${response.statusText}`,
+			);
 		}
 
 		const folderContents = (await response.json()) as GitHubFile[];
@@ -199,7 +204,9 @@ async function fetchModelsAsJsonMap(token: string): Promise<Map<string, any>> {
 					},
 				});
 				if (!fileResponse.ok) {
-					console.error(`Failed to fetch file ${file.name}: ${fileResponse.status} - ${fileResponse.statusText}`);
+					console.error(
+						`Failed to fetch file ${file.name}: ${fileResponse.status} - ${fileResponse.statusText}`,
+					);
 					continue;
 				}
 				const fileContents = await fileResponse.json();

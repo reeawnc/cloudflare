@@ -53,7 +53,9 @@ describe("Weather Worker Streaming Integration Tests", () => {
 					}
 				}
 
-				const hasExpectedKeyword = expectedKeywords.some((keyword) => content.toLowerCase().includes(keyword));
+				const hasExpectedKeyword = expectedKeywords.some((keyword) =>
+					content.toLowerCase().includes(keyword),
+				);
 
 				results.push(hasExpectedKeyword);
 			} catch (error) {

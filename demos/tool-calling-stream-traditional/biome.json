@@ -4,7 +4,12 @@
 		"enabled": true
 	},
 	"files": {
-		"ignore": ["node_modules/**/*", ".wrangler/**/*", "worker-configuration.d.ts"]
+		"ignore": ["worker-configuration.d.ts"]
+	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
 	},
 	"linter": {
 		"enabled": true,

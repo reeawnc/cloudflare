@@ -165,7 +165,9 @@ test("async transition function rejection prevents state update", async () => {
 				action: "fail",
 				from: "start",
 				to: async () => {
-					await new Promise((_, reject) => setTimeout(() => reject(new Error("transition fail")), 10));
+					await new Promise((_, reject) =>
+						setTimeout(() => reject(new Error("transition fail")), 10),
+					);
 					return "should-not-be-returned";
 				},
 			},

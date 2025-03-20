@@ -57,7 +57,9 @@ app.post("/approve", async (c) => {
 			<div class="mb-4">
 				<span
 					class="inline-block p-3 ${
-						status === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+						status === "success"
+							? "bg-green-100 text-green-800"
+							: "bg-red-100 text-red-800"
 					} rounded-full"
 				>
 					${status === "success" ? "✓" : "✗"}
@@ -83,5 +85,7 @@ app.post("/approve", async (c) => {
 		</div>
 	`;
 
-	return c.html(layout(content, "MCP Remote Auth Demo - Authorization Status", c.get("isLoggedIn")));
+	return c.html(
+		layout(content, "MCP Remote Auth Demo - Authorization Status", c.get("isLoggedIn")),
+	);
 });

@@ -15,7 +15,10 @@ const finalOutputSchema = z.object({
 	finalResult: z.string(),
 });
 
-export class ParallelisationWorkflow extends WorkflowEntrypoint<Env, ParallelisationWorkflowParams> {
+export class ParallelisationWorkflow extends WorkflowEntrypoint<
+	Env,
+	ParallelisationWorkflowParams
+> {
 	async run(event: WorkflowEvent<ParallelisationWorkflowParams>, step: WorkflowStep) {
 		const { prompt } = event.payload;
 

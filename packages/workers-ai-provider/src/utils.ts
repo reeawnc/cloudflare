@@ -7,7 +7,11 @@
  * @returns An function matching `Ai['run']`.
  */
 export function createRun(accountId: string, apiKey: string): AiRun {
-	return async <Name extends keyof AiModels>(model: Name, inputs: AiModels[Name]["inputs"], options?: AiOptions | undefined) => {
+	return async <Name extends keyof AiModels>(
+		model: Name,
+		inputs: AiModels[Name]["inputs"],
+		options?: AiOptions | undefined,
+	) => {
 		const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
 		const body = JSON.stringify(inputs);
 

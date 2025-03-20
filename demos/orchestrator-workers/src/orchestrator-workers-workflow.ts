@@ -19,7 +19,10 @@ const aggregatorSchema = z.object({
 	finalResult: z.string(),
 });
 
-export class OrchestratorWorkersWorkflow extends WorkflowEntrypoint<Env, OrchestratorWorkersWorkflowParams> {
+export class OrchestratorWorkersWorkflow extends WorkflowEntrypoint<
+	Env,
+	OrchestratorWorkersWorkflowParams
+> {
 	async run(event: WorkflowEvent<OrchestratorWorkersWorkflowParams>, step: WorkflowStep) {
 		const { prompt } = event.payload;
 

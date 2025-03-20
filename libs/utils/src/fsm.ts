@@ -11,7 +11,9 @@ type CamelCase<S extends string> = S extends `${infer P}_${infer R}`
 /**
  * Utility type to convert a union type to an intersection type.
  */
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
+	? I
+	: never;
 
 /**
  * Interface defining a single transition configuration.
@@ -55,7 +57,11 @@ type FSMTransitionMethod<T extends TransitionConfig> = T["to"] extends (...args:
  * Utility type that aggregates all transition methods from the FSM configuration.
  */
 type FSMTransitionMethods<T extends FSMConfig> = UnionToIntersection<
-	T["transitions"][number] extends infer Tr ? (Tr extends TransitionConfig ? FSMTransitionMethod<Tr> : never) : never
+	T["transitions"][number] extends infer Tr
+		? Tr extends TransitionConfig
+			? FSMTransitionMethod<Tr>
+			: never
+		: never
 >;
 
 /**
@@ -186,7 +192,9 @@ export function generateMachine<T extends FSMConfig>(config: T): GeneratedMachin
 
 				// Validate that the new state is indeed a string.
 				if (typeof newState !== "string") {
-					throw new Error(`Transition '${transition.action}' did not return a valid state string.`);
+					throw new Error(
+						`Transition '${transition.action}' did not return a valid state string.`,
+					);
 				}
 
 				// Update the machine's state.

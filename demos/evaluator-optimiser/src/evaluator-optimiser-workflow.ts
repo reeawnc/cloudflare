@@ -23,7 +23,10 @@ const optimizedSchema = z.object({
 	optimizedDraft: z.string(),
 });
 
-export class EvaluatorOptimiserWorkflow extends WorkflowEntrypoint<Env, EvaluatorOptimiserWorkflowParams> {
+export class EvaluatorOptimiserWorkflow extends WorkflowEntrypoint<
+	Env,
+	EvaluatorOptimiserWorkflowParams
+> {
 	async run(event: WorkflowEvent<EvaluatorOptimiserWorkflowParams>, step: WorkflowStep) {
 		const { prompt } = event.payload;
 

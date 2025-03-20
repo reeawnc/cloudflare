@@ -49,7 +49,9 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 	 * Processes a user query and decides whether to add a task, delete a task, list tasks,
 	 * or do nothing. Instead of immediately performing add/delete, it creates a Confirmation.
 	 */
-	async query(query: string): Promise<{ confirmation?: Confirmation; message?: string } | Task[] | string | undefined> {
+	async query(
+		query: string,
+	): Promise<{ confirmation?: Confirmation; message?: string } | Task[] | string | undefined> {
 		const workersai = createWorkersAI({ binding: this.env.AI });
 		const aiModel = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
 
@@ -218,7 +220,9 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 		}
 
 		// Remove the used (or rejected) confirmation from the array.
-		const remainingConfirmations = this.state.confirmations.filter((c) => c.id !== confirmationId);
+		const remainingConfirmations = this.state.confirmations.filter(
+			(c) => c.id !== confirmationId,
+		);
 
 		this.setState({
 			...this.state,
