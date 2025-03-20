@@ -17,14 +17,10 @@ export class DevServerTestHelper {
 		this.serverUrl = `http://localhost:${this.port}`;
 
 		// 2. Spawn the dev server, discarding its output.
-		this.serverProcess = spawn(
-			"npm",
-			["run", "dev", "--", `--port=${this.port}`],
-			{
-				shell: true,
-				stdio: "ignore",
-			},
-		);
+		this.serverProcess = spawn("npm", ["run", "dev", "--", `--port=${this.port}`], {
+			shell: true,
+			stdio: "ignore",
+		});
 
 		// 3. Wait until the server is responding.
 		await waitOn({ resources: [this.serverUrl] });

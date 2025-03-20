@@ -6,13 +6,16 @@
 		"build": "vite build",
 		"preview": "npm run build && vite preview",
 		"deploy": "npm run build && wrangler deploy",
+		"format": "biome format --write",
 		"test": "vitest",
 		"test:ci": "vitest --watch=false",
 		"cf-typegen": "wrangler types",
-		"lint": "biome lint --error-on-warnings ./src",
+		"lint": "biome lint --error-on-warnings",
+		"lint:fix": "biome lint --fix",
 		"type-check": "tsc --noEmit"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "^1.8.2",
 		"@cloudflare/vitest-pool-workers": "^0.7.5",
 		"vitest": "~3.0.7",
 		"wrangler": "^4.2.0"

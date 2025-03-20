@@ -49,7 +49,10 @@ export class RoutingWorkflow extends WorkflowEntrypoint<Env, RoutingWorkflowPara
 
 		return {
 			grade: gradeObj,
-			selectedModel: gradeObj.grade > 50 ? "@cf/meta/llama-3.3-70b-instruct-fp8-fast" : "@cf/meta/llama-3.1-8b-instruct",
+			selectedModel:
+				gradeObj.grade > 50
+					? "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+					: "@cf/meta/llama-3.1-8b-instruct",
 			finalOutput: finalObj,
 		};
 	}

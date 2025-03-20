@@ -9,8 +9,5 @@
 		"jsx": "react-jsx",
 		"noUncheckedSideEffectImports": true
 	},
-	"include": [
-		"./demos/ui-worker/src/client/**/*.ts",
-		"./demos/ui-worker/src/client/**/*.tsx"
-	]
+	"include": ["./demos/ui-worker/src/client/**/*.ts", "./demos/ui-worker/src/client/**/*.tsx"]
 }

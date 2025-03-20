@@ -1,10 +1,7 @@
 import { generateObject, type LanguageModel } from "ai";
 import z from "zod";
 
-export async function extractScheduledDate(
-	model: LanguageModel,
-	query: string,
-) {
+export async function extractScheduledDate(model: LanguageModel, query: string) {
 	const { object } = await generateObject({
 		model,
 		schema: z.object({

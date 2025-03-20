@@ -20,7 +20,9 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 		tasks: [],
 	};
 
-	async query(query: string): Promise<{ message?: string } | Task | Task[] | boolean | string | undefined> {
+	async query(
+		query: string,
+	): Promise<{ message?: string } | Task | Task[] | boolean | string | undefined> {
 		const workersai = createWorkersAI({ binding: this.env.AI });
 		const aiModel = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
 

@@ -11,9 +11,7 @@ type CamelCase<S extends string> = S extends `${infer P}_${infer R}`
 /**
  * Utility type to convert a union type to an intersection type.
  */
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-	k: infer I,
-) => void
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
 	? I
 	: never;
 
@@ -51,9 +49,7 @@ export interface FSMConfig {
  * If the "to" property is a function, its parameter types are inferred; otherwise,
  * the method takes no parameters.
  */
-type FSMTransitionMethod<T extends TransitionConfig> = T["to"] extends (
-	...args: infer P
-) => any
+type FSMTransitionMethod<T extends TransitionConfig> = T["to"] extends (...args: infer P) => any
 	? { [K in CamelCase<T["action"]>]: (...args: P) => Promise<void> }
 	: { [K in CamelCase<T["action"]>]: () => Promise<void> };
 
@@ -136,9 +132,7 @@ function globToRegExp(glob: string): RegExp {
  * @param config The finite state machine configuration.
  * @returns A state machine object with transition methods and hooks.
  */
-export function generateMachine<T extends FSMConfig>(
-	config: T,
-): GeneratedMachine<T> {
+export function generateMachine<T extends FSMConfig>(config: T): GeneratedMachine<T> {
 	// Initialise the machine with the initial state.
 	const machine: any = {
 		state: config.init,
@@ -162,9 +156,7 @@ export function generateMachine<T extends FSMConfig>(
 		// Compute the method name by converting the transition action to camelCase.
 		const methodName = toCamelCase(transition.action);
 		// Precompile a regular expression if the "from" pattern includes a glob wildcard.
-		const patternRegex = transition.from.includes("*")
-			? globToRegExp(transition.from)
-			: null;
+		const patternRegex = transition.from.includes("*") ? globToRegExp(transition.from) : null;
 
 		// Define the state transition method.
 		machine[methodName] = async (...args: any[]): Promise<void> => {

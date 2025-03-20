@@ -1,3 +1,6 @@
 {
-  "name": "middleware"
+	"name": "middleware",
+	"scripts": {
+		"format": "biome format --write"
+	}
 }

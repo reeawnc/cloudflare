@@ -51,12 +51,7 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 	 */
 	async query(
 		query: string,
-	): Promise<
-		| { confirmation?: Confirmation; message?: string }
-		| Task[]
-		| string
-		| undefined
-	> {
+	): Promise<{ confirmation?: Confirmation; message?: string } | Task[] | string | undefined> {
 		const workersai = createWorkersAI({ binding: this.env.AI });
 		const aiModel = workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast");
 
@@ -200,14 +195,9 @@ export class TaskManagerAgent extends Agent<{ AI: Ai }, TaskManagerState> {
 	 * @param userConfirmed - Whether to proceed with the action (`true`) or reject it (`false`).
 	 * @returns The result of the action that was confirmed, or a message if rejected/not found.
 	 */
-	confirm(
-		confirmationId: string,
-		userConfirmed: boolean,
-	): Task | string | false | undefined {
+	confirm(confirmationId: string, userConfirmed: boolean): Task | string | false | undefined {
 		// Find the confirmation in the state.
-		const confirmation = this.state.confirmations.find(
-			(c) => c.id === confirmationId,
-		);
+		const confirmation = this.state.confirmations.find((c) => c.id === confirmationId);
 
 		if (!confirmation) {
 			return "No matching confirmation found.";

@@ -160,12 +160,12 @@ export const layout = (
 								? html`<span
 									class="px-4 py-2 bg-green-100 text-green-800 rounded-md"
 									>Logged in</span
-								>`
+							  >`
 								: html`<a
 									href="/register"
 									class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors font-medium"
 									>Login</a
-								>`
+							  >`
 						}
 					</div>
 				</div>

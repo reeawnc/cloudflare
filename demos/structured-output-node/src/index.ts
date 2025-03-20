@@ -1,5 +1,5 @@
 import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
-import {generateObject} from "ai";
+import { generateObject } from "ai";
 import z from "zod";
 
 if (!process.env.CLOUDFLARE_API_TOKEN) {
@@ -22,9 +22,7 @@ const { object } = await generateObject({
 	schema: z.object({
 		recipe: z.object({
 			name: z.string(),
-			ingredients: z.array(
-				z.object({ name: z.string(), amount: z.string() }),
-			),
+			ingredients: z.array(z.object({ name: z.string(), amount: z.string() })),
 			steps: z.array(z.string()),
 		}),
 	}),

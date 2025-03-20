@@ -1,6 +1,7 @@
 {
 	"name": "utils",
 	"scripts": {
+		"format": "biome format --write",
 		"test": "vitest",
 		"test:ci": "vitest --watch=false"
 	}

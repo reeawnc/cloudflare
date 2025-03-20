@@ -9,13 +9,16 @@
 		"deploy": "npm run build && npm run deploy:production",
 		"deploy:production": "wrangler deploy -e production",
 		"deploy:staging": "wrangler deploy -e staging",
+		"format": "biome format --write",
 		"test": "vitest",
 		"cf-typegen": "wrangler types",
-		"lint": "biome lint --error-on-warnings ./src",
+		"lint": "biome lint --error-on-warnings",
+		"lint:fix": "biome lint --fix",
 		"test:ci": "vitest --watch=false",
 		"type-check": "tsc --noEmit"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "^1.8.2",
 		"@cloudflare/vitest-pool-workers": "^0.7.5",
 		"typescript": "^5.5.2",
 		"vitest": "~3.0.7",

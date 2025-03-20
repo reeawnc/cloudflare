@@ -200,9 +200,7 @@ async function main() {
 			if (fs.existsSync(readmePath)) {
 				const readmeContent = fs.readFileSync(readmePath, "utf-8");
 				// Use regex to extract commit SHA from a comment in the form: <!-- Last updated: <sha> -->
-				const match = readmeContent.match(
-					/<!--\s*Last\s+updated:\s*([a-f0-9]+)\s*-->/i,
-				);
+				const match = readmeContent.match(/<!--\s*Last\s+updated:\s*([a-f0-9]+)\s*-->/i);
 				if (match?.[1]) {
 					baseCommit = match[1];
 				}
@@ -249,9 +247,7 @@ async function main() {
 
 			// If no files have changed, skip updating this project.
 			if (projectFiles.length === 0) {
-				console.log(
-					`No changes detected for project "${project}". Skipping update.`,
-				);
+				console.log(`No changes detected for project "${project}". Skipping update.`);
 				continue;
 			}
 
@@ -341,9 +337,7 @@ function findPackageJsonFiles(dir: string): string[] {
 function buildProjectMap(): Map<string, string> {
 	const projectMap = new Map<string, string>();
 	// Start the search from the current working directory.
-	const packageJsonFiles = findPackageJsonFiles(
-		path.join(process.cwd(), "apps"),
-	);
+	const packageJsonFiles = findPackageJsonFiles(path.join(process.cwd(), "apps"));
 	for (const file of packageJsonFiles) {
 		try {
 			const packageData = JSON.parse(fs.readFileSync(file, "utf-8"));

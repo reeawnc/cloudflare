@@ -4,7 +4,12 @@
 		"enabled": true
 	},
 	"files": {
-		"ignore": ["node_modules/**/*", ".wrangler/**/*"]
+		"ignore": ["worker-configuration.d.ts"]
+	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
 	},
 	"linter": {
 		"enabled": true,
@@ -23,8 +28,7 @@
 	},
 	"formatter": {
 		"enabled": true,
-		"indentStyle": "tab",
 		"indentWidth": 4,
-		"lineWidth": 140
+		"lineWidth": 100
 	}
 }
