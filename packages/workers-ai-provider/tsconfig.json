@@ -1,5 +1,5 @@
 {
-	"extends": "../../tsconfig.workerd.json",
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"types": [
 			"../../types/workerd.d.ts"

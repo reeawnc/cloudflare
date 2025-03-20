@@ -3,8 +3,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 import z from "zod";
-import type { Env } from "./types/env.ts";
-import type { Variables } from "./types/hono.ts";
+import type { Variables } from "./types/hono";
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use(cors());

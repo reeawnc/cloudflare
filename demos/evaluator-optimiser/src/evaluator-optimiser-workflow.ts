@@ -1,12 +1,7 @@
-import {
-	WorkflowEntrypoint,
-	type WorkflowEvent,
-	type WorkflowStep,
-} from "cloudflare:workers";
+import { WorkflowEntrypoint, type WorkflowEvent, type WorkflowStep } from "cloudflare:workers";
 import { generateObject } from "ai";
 import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 import z from "zod";
-import type { Env } from "./types/env.ts";
 
 export type EvaluatorOptimiserWorkflowParams = {
 	prompt: string;
@@ -28,14 +23,8 @@ const optimizedSchema = z.object({
 	optimizedDraft: z.string(),
 });
 
-export class EvaluatorOptimiserWorkflow extends WorkflowEntrypoint<
-	Env,
-	EvaluatorOptimiserWorkflowParams
-> {
-	async run(
-		event: WorkflowEvent<EvaluatorOptimiserWorkflowParams>,
-		step: WorkflowStep,
-	) {
+export class EvaluatorOptimiserWorkflow extends WorkflowEntrypoint<Env, EvaluatorOptimiserWorkflowParams> {
+	async run(event: WorkflowEvent<EvaluatorOptimiserWorkflowParams>, step: WorkflowStep) {
 		const { prompt } = event.payload;
 
 		const workersai = createWorkersAI({ binding: this.env.AI });

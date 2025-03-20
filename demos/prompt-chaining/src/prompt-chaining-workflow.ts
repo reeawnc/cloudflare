@@ -1,12 +1,7 @@
-import {
-	WorkflowEntrypoint,
-	type WorkflowEvent,
-	type WorkflowStep,
-} from "cloudflare:workers";
+import { WorkflowEntrypoint, type WorkflowEvent, type WorkflowStep } from "cloudflare:workers";
 import { generateObject } from "ai";
 import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 import z from "zod";
-import type { Env } from "./types/env.ts";
 
 export type PromptChainingWorkflowParams = {
 	prompt: string;
@@ -24,14 +19,8 @@ const documentationSchema = z.object({
 	documentation: z.string(),
 });
 
-export class PromptChainingWorkflow extends WorkflowEntrypoint<
-	Env,
-	PromptChainingWorkflowParams
-> {
-	async run(
-		event: WorkflowEvent<PromptChainingWorkflowParams>,
-		step: WorkflowStep,
-	) {
+export class PromptChainingWorkflow extends WorkflowEntrypoint<Env, PromptChainingWorkflowParams> {
+	async run(event: WorkflowEvent<PromptChainingWorkflowParams>, step: WorkflowStep) {
 		const { prompt } = event.payload;
 
 		const workersai = createWorkersAI({ binding: this.env.AI });
@@ -64,18 +53,15 @@ export class PromptChainingWorkflow extends WorkflowEntrypoint<
 		}
 
 		// Step 3: Generate the full technical documentation using the approved outline.
-		const documentationObj = await step.do(
-			"generate documentation",
-			async () => {
-				const documentationPrompt = `Using the following approved outline for technical documentation:\n\n${JSON.stringify(outlineObj)}\n\nPlease generate the full technical documentation in a detailed and organised manner.`;
-				const { object } = await generateObject({
-					model,
-					schema: documentationSchema,
-					prompt: documentationPrompt,
-				});
-				return object;
-			},
-		);
+		const documentationObj = await step.do("generate documentation", async () => {
+			const documentationPrompt = `Using the following approved outline for technical documentation:\n\n${JSON.stringify(outlineObj)}\n\nPlease generate the full technical documentation in a detailed and organised manner.`;
+			const { object } = await generateObject({
+				model,
+				schema: documentationSchema,
+				prompt: documentationPrompt,
+			});
+			return object;
+		});
 
 		return {
 			outline: outlineObj,

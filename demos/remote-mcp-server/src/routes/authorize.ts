@@ -7,7 +7,7 @@ app.get("/authorize", async (c) => {
 	const oauthReqInfo = await c.env.OAUTH_PROVIDER.parseAuthRequest(c.req.raw);
 	const randomString = crypto.randomUUID();
 	console.log({ oauthReqInfo, randomString });
-	let value = JSON.stringify(oauthReqInfo);
+	const value = JSON.stringify(oauthReqInfo);
 	console.log({ value });
 	await c.env.OAUTH_KV.put(`login:${randomString}`, value, {
 		expirationTtl: 600,
@@ -62,8 +62,9 @@ app.get("/authorize", async (c) => {
 					name="randomString"
 					value="${randomString}"
 				/>
-				${isLoggedIn
-					? html`
+				${
+					isLoggedIn
+						? html`
 							<input
 								type="hidden"
 								name="email"
@@ -86,7 +87,7 @@ app.get("/authorize", async (c) => {
 								Reject
 							</button>
 						`
-					: html`
+						: html`
 							<div class="space-y-4">
 								<div>
 									<label
@@ -133,16 +134,11 @@ app.get("/authorize", async (c) => {
 							>
 								Reject
 							</button>
-						`}
+						`
+				}
 			</form>
 		</div>
 	`;
 
-	return c.html(
-		layout(
-			await content,
-			"MCP Remote Auth Demo - Authorization",
-			isLoggedIn,
-		),
-	);
+	return c.html(layout(await content, "MCP Remote Auth Demo - Authorization", isLoggedIn));
 });

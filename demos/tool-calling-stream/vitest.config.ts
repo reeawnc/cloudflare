@@ -1,8 +1,8 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig, configDefaults } from "vitest/config";
 
 export default defineConfig({
 	test: {
 		passWithNoTests: true,
-		exclude: ["**/smoke/**"],
+		exclude: [...configDefaults.exclude, "**/smoke/**"],
 	},
 });

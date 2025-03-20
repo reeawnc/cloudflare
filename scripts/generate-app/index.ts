@@ -140,7 +140,7 @@ async function main(): Promise<void> {
 			? `${newLocation}/src/server/**/*.ts`
 			: `${newLocation}/src/**/*.ts`;
 
-		await updateTsconfig(path.join(__dirname, "../../tsconfig.workerd.json"), [
+		await updateTsconfig(path.join(__dirname, "../../tsconfig.worker.json"), [
 			serverGlob,
 		]);
 

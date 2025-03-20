@@ -3,7 +3,6 @@ import type {
 	Context as HonoContext,
 	MiddlewareHandler as HonoMiddlewareHandler,
 } from "hono";
-import type { Env } from "./env";
 
 export type Variables = Record<string, string>;
 

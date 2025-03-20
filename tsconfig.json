@@ -4,7 +4,6 @@
 	"files": [],
 	"references": [
 		{ "path": "./tsconfig.browser.json" },
-		{ "path": "./tsconfig.workerd.json" },
 		{ "path": "./tsconfig.node.json" }
 	]
 }
