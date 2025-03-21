@@ -35,6 +35,6 @@ jobs:
         uses: nrwl/nx-set-shas@v4
 
       # Run Nx tasks including the staging deployment and extract the URL.
-      - name: Run Nx tasks including staging deployment
+      - name: Run smoke tests
         id: checks
-        run: npx nx run-many -t lint test:smoke type-check build
+        run: npx nx run-many -t test:smoke

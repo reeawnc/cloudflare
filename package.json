@@ -5,6 +5,7 @@
 		"create-demo": "npx tsx ./tools/create-demo/index.ts",
 		"prepare": "husky",
 		"format": "biome format --write",
+		"lint": "biome lint",
 		"lint:fix": "biome lint --fix"
 	},
 	"devDependencies": {
