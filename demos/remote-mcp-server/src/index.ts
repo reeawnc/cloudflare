@@ -1,4 +1,4 @@
-import app from "./routes";
+import app from "./app";
 import { DurableMCP } from "workers-mcp";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
