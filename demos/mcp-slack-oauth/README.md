@@ -13,7 +13,6 @@ This is a Model Context Protocol (MCP) server that provides read-only access to 
 - `whoami`: Get information about your Slack user
 - `listChannels`: Get a list of channels from your Slack workspace
 - `getChannelMessages`: Get recent messages from a specific channel
-- `getDailyUpdate`: Get a daily summary of important Slack messages
 - `postMessage`: Attempt to post a message (will fail with read-only permissions)
 
 ## Setup
@@ -124,12 +123,13 @@ The OAuth Provider library serves as a complete OAuth 2.1 server implementation 
 - Managing the connection to GitHub's OAuth services
 - Securely storing tokens and authentication state in KV storage
 
-#### Durable MCP
-Durable MCP extends the base MCP functionality with Cloudflare's Durable Objects, providing:
+#### McpAgent
+McpAgent extends the base MCP functionality with Cloudflare's Agents SDK, providing:
 - Persistent state management for your MCP server
 - Secure storage of authentication context between requests
-- Access to authenticated user information via `this.props`
+- Access to authenticated user information via this.props
 - Support for conditional tool availability based on user identity
+- Integration with Cloudflare's Agent platform for extended AI capabilities
 
 #### MCP Remote
 The MCP Remote library enables your server to expose tools that can be invoked by MCP clients like the Inspector. It:
