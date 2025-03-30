@@ -13,6 +13,9 @@
 			"tag": "v1"
 		}
 	],
+	"compatibility_flags": [
+		"nodejs_compat_v2"
+	],
 	"durable_objects": {
 		"bindings": [
 			{
