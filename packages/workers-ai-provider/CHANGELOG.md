@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.2.2
+
+### Patch Changes
+
+- [#65](https://github.com/cloudflare/ai/pull/65) [`b17cf52`](https://github.com/cloudflare/ai/commit/b17cf52757e51eb30da25370319daf8efc43791e) Thanks [@andyjessop](https://github.com/andyjessop)! - fix: gracefully handles streaming chunk without response property
+
 ## 0.2.1
 
 ### Patch Changes
