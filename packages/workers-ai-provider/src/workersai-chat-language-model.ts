@@ -257,7 +257,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 						if (chunk.usage) {
 							usage = mapWorkersAIUsage(chunk);
 						}
-						chunk.response.length &&
+						chunk.response?.length &&
 							controller.enqueue({
 								type: "text-delta",
 								textDelta: chunk.response,
