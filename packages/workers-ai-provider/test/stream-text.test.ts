@@ -8,7 +8,6 @@ const TEST_ACCOUNT_ID = "test-account-id";
 const TEST_API_KEY = "test-api-key";
 const TEST_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
-// This is our default streaming handler for the first test
 const defaultStreamingHandler = http.post(
 	`https://api.cloudflare.com/client/v4/accounts/${TEST_ACCOUNT_ID}/ai/run/${TEST_MODEL}`,
 	async () => {
@@ -37,7 +36,6 @@ describe("Workers AI - Streaming Text Tests", () => {
 	afterAll(() => server.close());
 
 	it("should stream text using Workers AI provider (via streamText)", async () => {
-		// 1) Uses the default handler above
 		const workersai = createWorkersAI({
 			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
@@ -57,7 +55,6 @@ describe("Workers AI - Streaming Text Tests", () => {
 	});
 
 	it("should handle chunk without 'response' field gracefully", async () => {
-		// 2) Override the default handler specifically for THIS test:
 		server.use(
 			http.post(
 				`https://api.cloudflare.com/client/v4/accounts/${TEST_ACCOUNT_ID}/ai/run/${TEST_MODEL}`,
@@ -82,14 +79,11 @@ describe("Workers AI - Streaming Text Tests", () => {
 			),
 		);
 
-		// Create the Workers AI instance again
 		const workersai = createWorkersAI({
 			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
 		});
 
-		// Now call streamText again, but this time
-		// the MSW server returns our new SSE chunks
 		const result = streamText({
 			model: workersai(TEST_MODEL),
 			prompt: "test chunk without response",
@@ -97,12 +91,9 @@ describe("Workers AI - Streaming Text Tests", () => {
 
 		let finalText = "";
 		for await (const chunk of result.textStream) {
-			// Our library code only enqueues chunk.response,
-			// so that second data chunk won't appear in the text.
 			finalText += chunk;
 		}
 
-		// Expect only the "Hello chunk1" portion in final text
 		expect(finalText).toBe("Hello chunk1");
 	});
 });
