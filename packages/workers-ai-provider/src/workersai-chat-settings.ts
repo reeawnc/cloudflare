@@ -10,4 +10,9 @@ export interface WorkersAIChatSettings {
 	 * @deprecated
 	 */
 	gateway?: GatewayOptions;
+
+	/**
+	 * Passthrough settings that are provided directly to the run function.
+	 */
+	[key: string]: unknown;
 }

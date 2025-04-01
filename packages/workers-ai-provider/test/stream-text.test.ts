@@ -1,5 +1,5 @@
 import { streamText } from "ai";
-import { http } from "msw";
+import { http, type DefaultBodyType } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { createWorkersAI } from "../src/index";
@@ -95,5 +95,61 @@ describe("Workers AI - Streaming Text Tests", () => {
 		}
 
 		expect(finalText).toBe("Hello chunk1");
+	});
+
+	it("passes through additional options to the AI run method", async () => {
+		let capturedOptions: null | DefaultBodyType = null;
+
+		server.use(
+			http.post(
+				`https://api.cloudflare.com/client/v4/accounts/${TEST_ACCOUNT_ID}/ai/run/${TEST_MODEL}`,
+				async ({ request }) => {
+					const body = await request.json();
+					capturedOptions = body;
+
+					return new Response(
+						[`data: {"response":"Hello with options"}\n\n`, "data: [DONE]\n\n"].join(
+							"",
+						),
+						{
+							status: 200,
+							headers: {
+								"Content-Type": "text/event-stream",
+								"Transfer-Encoding": "chunked",
+							},
+						},
+					);
+				},
+			),
+		);
+
+		const workersai = createWorkersAI({
+			apiKey: TEST_API_KEY,
+			accountId: TEST_ACCOUNT_ID,
+		});
+
+		// Create a model with custom options
+		const model = workersai(TEST_MODEL, {
+			someOption: "value",
+			anotherCustomOption: 42,
+		});
+
+		const result = streamText({
+			model: model,
+			prompt: "Test with custom options",
+		});
+
+		// Consume the stream
+		let text = "";
+		for await (const chunk of result.textStream) {
+			text += chunk;
+		}
+
+		console.log(capturedOptions);
+
+		expect(text).toBe("Hello with options");
+		// Verify that our custom options were passed in the request
+		expect(capturedOptions).toHaveProperty("someOption", "value");
+		expect(capturedOptions).toHaveProperty("anotherCustomOption", 42);
 	});
 });
