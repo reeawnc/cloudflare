@@ -1,3 +1,4 @@
+import { TextEncoder } from "node:util";
 import { streamText } from "ai";
 import { http, type DefaultBodyType } from "msw";
 import { setupServer } from "msw/node";
@@ -30,7 +31,7 @@ const defaultStreamingHandler = http.post(
 
 const server = setupServer(defaultStreamingHandler);
 
-describe("Workers AI - Streaming Text Tests", () => {
+describe("REST API - Streaming Text Tests", () => {
 	beforeAll(() => server.listen());
 	afterEach(() => server.resetHandlers());
 	afterAll(() => server.close());
@@ -97,15 +98,16 @@ describe("Workers AI - Streaming Text Tests", () => {
 		expect(finalText).toBe("Hello chunk1");
 	});
 
-	it("passes through additional options to the AI run method", async () => {
+	it("should pass through additional options to the AI run method", async () => {
 		let capturedOptions: null | DefaultBodyType = null;
 
 		server.use(
 			http.post(
 				`https://api.cloudflare.com/client/v4/accounts/${TEST_ACCOUNT_ID}/ai/run/${TEST_MODEL}`,
 				async ({ request }) => {
-					const body = await request.json();
-					capturedOptions = body;
+					// get passthrough params from url query
+					const url = new URL(request.url);
+					capturedOptions = Object.fromEntries(url.searchParams.entries());
 
 					return new Response(
 						[`data: {"response":"Hello with options"}\n\n`, "data: [DONE]\n\n"].join(
@@ -128,10 +130,10 @@ describe("Workers AI - Streaming Text Tests", () => {
 			accountId: TEST_ACCOUNT_ID,
 		});
 
-		// Create a model with custom options
 		const model = workersai(TEST_MODEL, {
-			someOption: "value",
-			anotherCustomOption: 42,
+			aString: "a",
+			aBool: true,
+			aNumber: 1,
 		});
 
 		const result = streamText({
@@ -139,17 +141,104 @@ describe("Workers AI - Streaming Text Tests", () => {
 			prompt: "Test with custom options",
 		});
 
-		// Consume the stream
 		let text = "";
 		for await (const chunk of result.textStream) {
 			text += chunk;
 		}
 
-		console.log(capturedOptions);
-
 		expect(text).toBe("Hello with options");
-		// Verify that our custom options were passed in the request
-		expect(capturedOptions).toHaveProperty("someOption", "value");
-		expect(capturedOptions).toHaveProperty("anotherCustomOption", 42);
+		expect(capturedOptions).toHaveProperty("aString", "a");
+		expect(capturedOptions).toHaveProperty("aBool", "true");
+		expect(capturedOptions).toHaveProperty("aNumber", "1");
 	});
 });
+
+describe("Binding - Streaming Text Tests", () => {
+	it("should handle chunk without 'response' field gracefully in mock", async () => {
+		const workersai = createWorkersAI({
+			binding: {
+				run: async (modelName: string, inputs: any, options?: any) => {
+					return mockStream([
+						{ response: "Hello " },
+						{ tool_calls: [], p: "no response" },
+						{ response: "world!" },
+						"[DONE]",
+					]);
+				},
+			},
+		});
+
+		const result = streamText({
+			model: workersai(TEST_MODEL),
+			prompt: "Test chunk without response",
+		});
+
+		let finalText = "";
+		for await (const chunk of result.textStream) {
+			finalText += chunk;
+		}
+
+		// The second chunk is missing 'response', so it is skipped
+		// The first and third chunks are appended => "Hello world!"
+		expect(finalText).toBe("Hello world!");
+	});
+
+	it("should pass through additional options to the AI run method in the mock", async () => {
+		let capturedOptions: any = null;
+
+		const workersai = createWorkersAI({
+			binding: {
+				run: async (modelName: string, inputs: any, options?: any) => {
+					capturedOptions = options;
+					return mockStream([{ response: "Hello with options" }, "[DONE]"]);
+				},
+			},
+		});
+
+		const model = workersai(TEST_MODEL, {
+			aString: "a",
+			aBool: true,
+			aNumber: 1,
+		});
+
+		const result = streamText({
+			model: model,
+			prompt: "Test with custom options",
+		});
+
+		let text = "";
+		for await (const chunk of result.textStream) {
+			text += chunk;
+		}
+
+		expect(text).toBe("Hello with options");
+		expect(capturedOptions).toHaveProperty("aString", "a");
+		expect(capturedOptions).toHaveProperty("aBool", true);
+		expect(capturedOptions).toHaveProperty("aNumber", 1);
+	});
+});
+
+/**
+ * Helper to produce SSE lines in a Node ReadableStream.
+ * This is the crucial part: each line is preceded by "data: ",
+ * followed by JSON or [DONE], then a newline+newline.
+ */
+function mockStream(sseLines: any[]): ReadableStream<Uint8Array> {
+	const encoder = new TextEncoder();
+	return new ReadableStream<Uint8Array>({
+		start(controller) {
+			for (const line of sseLines) {
+				// Typically "line" is either an object or "[DONE]"
+				if (typeof line === "string") {
+					// e.g. the [DONE] marker
+					controller.enqueue(encoder.encode(`data: ${line}\n\n`));
+				} else {
+					// Convert JS object (e.g. { response: "Hello " }) to JSON
+					const jsonText = JSON.stringify(line);
+					controller.enqueue(encoder.encode(`data: ${jsonText}\n\n`));
+				}
+			}
+			controller.close();
+		},
+	});
+}

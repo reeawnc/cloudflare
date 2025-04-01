@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest";
-import { setupServer } from "msw/node";
-import { http, HttpResponse } from "msw";
-import { createWorkersAI } from "../src/index";
 import { generateText } from "ai";
+import { http, HttpResponse } from "msw";
+import { setupServer } from "msw/node";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { createWorkersAI } from "../src/index";
 
 const TEST_ACCOUNT_ID = "test-account-id";
 const TEST_API_KEY = "test-api-key";
@@ -17,7 +17,7 @@ const textGenerationHandler = http.post(
 
 const server = setupServer(textGenerationHandler);
 
-describe("Text Generation Tests", () => {
+describe("REST API - Text Generation Tests", () => {
 	beforeAll(() => server.listen());
 	afterEach(() => server.resetHandlers());
 	afterAll(() => server.close());
@@ -31,6 +31,25 @@ describe("Text Generation Tests", () => {
 			model: workersai(TEST_MODEL),
 			prompt: "Write a greeting",
 		});
+		expect(result.text).toBe("Hello");
+	});
+});
+
+describe("Binding - Text Generation Tests", () => {
+	it("should generate text (non-streaming)", async () => {
+		const workersai = createWorkersAI({
+			binding: {
+				run: async (modelName: string, inputs: any, options?: any) => {
+					return { response: "Hello" };
+				},
+			},
+		});
+
+		const result = await generateText({
+			model: workersai(TEST_MODEL),
+			prompt: "Write a greeting",
+		});
+
 		expect(result.text).toBe("Hello");
 	});
 });

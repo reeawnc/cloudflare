@@ -60,9 +60,28 @@ export function createRun(config: CreateRunConfig): AiRun {
 	return async function run<Name extends keyof AiModels>(
 		model: Name,
 		inputs: AiModels[Name]["inputs"],
-		options?: AiOptions,
+		options?: AiOptions &
+			// Define the passthroughOptions as toStringable
+			Record<
+				string,
+				{
+					toString(): string;
+				}
+			>,
 	): Promise<Response | ReadableStream<Uint8Array> | AiModels[Name]["postProcessedOutputs"]> {
-		const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
+		const { gateway, prefix, extraHeaders, returnRawResponse, ...passthroughOptions } =
+			options || {};
+
+		const urlParams = new URLSearchParams();
+		for (const [key, value] of Object.entries(passthroughOptions)) {
+			const valueStr = value.toString();
+			if (!valueStr) {
+				continue;
+			}
+			urlParams.append(key, valueStr);
+		}
+
+		const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}${urlParams ? `?${urlParams}` : ""}`;
 
 		// Merge default and custom headers.
 		const headers = {
@@ -80,7 +99,7 @@ export function createRun(config: CreateRunConfig): AiRun {
 		});
 
 		// (1) If the user explicitly requests the raw Response, return it as-is.
-		if (options?.returnRawResponse) {
+		if (returnRawResponse) {
 			return response;
 		}
 
