@@ -1,5 +1,6 @@
 {
 	"name": "parallelisation",
+	"private": true,
 	"type": "module",
 	"scripts": {
 		"dev": "vite",

@@ -1,5 +1,6 @@
 {
 	"name": "agent-task-manager-human-in-the-loop",
+	"private": true,
 	"type": "module",
 	"scripts": {
 		"dev": "vite",

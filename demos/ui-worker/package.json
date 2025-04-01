@@ -1,5 +1,6 @@
 {
 	"name": "ui-worker",
+	"private": true,
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
