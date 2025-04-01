@@ -1,5 +1,6 @@
 {
 	"name": "model-scraper",
+	"private": true,
 	"type": "module",
 	"scripts": {
 		"dev": "CLOUDFLARE_ENV=development vite",
