@@ -29,6 +29,8 @@ export interface AiRun {
 	): Promise<AiModels[Name]["postProcessedOutputs"]>;
 }
 
+type StringLike = string | { toString(): string };
+
 /**
  * Parameters for configuring the Cloudflare-based AI runner.
  */
@@ -60,14 +62,7 @@ export function createRun(config: CreateRunConfig): AiRun {
 	return async function run<Name extends keyof AiModels>(
 		model: Name,
 		inputs: AiModels[Name]["inputs"],
-		options?: AiOptions &
-			// Define the passthroughOptions as toStringable
-			Record<
-				string,
-				{
-					toString(): string;
-				}
-			>,
+		options?: AiOptions & Record<string, StringLike>,
 	): Promise<Response | ReadableStream<Uint8Array> | AiModels[Name]["postProcessedOutputs"]> {
 		const { gateway, prefix, extraHeaders, returnRawResponse, ...passthroughOptions } =
 			options || {};
