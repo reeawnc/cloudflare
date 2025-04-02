@@ -3,7 +3,7 @@ import { McpAgent } from "agents/mcp";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { WebClient } from "@slack/web-api";
-import { Props, refreshSlackToken, SlackHandler } from "./slack-handler";
+import { type Props, refreshSlackToken, SlackHandler } from "./slack-handler";
 
 // To restrict access to specific users only, add their Slack userIDs to this Set.
 // Leave it empty to allow access to all authenticated users.
@@ -11,7 +11,7 @@ const ALLOWED_USERIDS = new Set([
 	// Example: 'U01234567',
 ]);
 
-export class SlackMCP extends McpAgent<Env, {}, Props> {
+export class SlackMCP extends McpAgent<Env, unknown, Props> {
 	server = new McpServer({
 		name: "Slack Assistant MCP",
 		version: "1.0.0",
