@@ -29,7 +29,7 @@ export interface AiRun {
 	): Promise<AiModels[Name]["postProcessedOutputs"]>;
 }
 
-type StringLike = string | { toString(): string };
+export type StringLike = string | { toString(): string };
 
 /**
  * Parameters for configuring the Cloudflare-based AI runner.
