@@ -69,11 +69,18 @@ export function createRun(config: CreateRunConfig): AiRun {
 
 		const urlParams = new URLSearchParams();
 		for (const [key, value] of Object.entries(passthroughOptions)) {
-			const valueStr = value.toString();
-			if (!valueStr) {
-				continue;
+			// throw a useful error if the value is not to-stringable
+			try {
+				const valueStr = value.toString();
+				if (!valueStr) {
+					continue;
+				}
+				urlParams.append(key, valueStr);
+			} catch (error) {
+				throw new Error(
+					`Value for option '${key}' is not able to be coerced into a string.`,
+				);
 			}
-			urlParams.append(key, valueStr);
 		}
 
 		const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}${urlParams ? `?${urlParams}` : ""}`;
