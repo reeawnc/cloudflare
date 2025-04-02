@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.3.0
+
+### Minor Changes
+
+- [#72](https://github.com/cloudflare/ai/pull/72) [`9b8dfc1`](https://github.com/cloudflare/ai/commit/9b8dfc1adc94079728634994d6afe81028ea11d8) Thanks [@andyjessop](https://github.com/andyjessop)! - feat: allow passthrough options as model settings
+
 ## 0.2.2
 
 ### Patch Changes
