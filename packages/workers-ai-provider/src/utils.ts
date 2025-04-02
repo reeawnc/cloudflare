@@ -29,6 +29,8 @@ export interface AiRun {
 	): Promise<AiModels[Name]["postProcessedOutputs"]>;
 }
 
+export type StringLike = string | { toString(): string };
+
 /**
  * Parameters for configuring the Cloudflare-based AI runner.
  */
@@ -60,9 +62,28 @@ export function createRun(config: CreateRunConfig): AiRun {
 	return async function run<Name extends keyof AiModels>(
 		model: Name,
 		inputs: AiModels[Name]["inputs"],
-		options?: AiOptions,
+		options?: AiOptions & Record<string, StringLike>,
 	): Promise<Response | ReadableStream<Uint8Array> | AiModels[Name]["postProcessedOutputs"]> {
-		const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
+		const { gateway, prefix, extraHeaders, returnRawResponse, ...passthroughOptions } =
+			options || {};
+
+		const urlParams = new URLSearchParams();
+		for (const [key, value] of Object.entries(passthroughOptions)) {
+			// throw a useful error if the value is not to-stringable
+			try {
+				const valueStr = value.toString();
+				if (!valueStr) {
+					continue;
+				}
+				urlParams.append(key, valueStr);
+			} catch (error) {
+				throw new Error(
+					`Value for option '${key}' is not able to be coerced into a string.`,
+				);
+			}
+		}
+
+		const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}${urlParams ? `?${urlParams}` : ""}`;
 
 		// Merge default and custom headers.
 		const headers = {
@@ -80,7 +101,7 @@ export function createRun(config: CreateRunConfig): AiRun {
 		});
 
 		// (1) If the user explicitly requests the raw Response, return it as-is.
-		if (options?.returnRawResponse) {
+		if (returnRawResponse) {
 			return response;
 		}
 
