@@ -1,7 +1,19 @@
 import type { AuthRequest, OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { Hono } from "hono";
-import { WebClient } from "@slack/web-api";
 import { getUpstreamAuthorizeUrl } from "./utils";
+import { env } from 'cloudflare:workers'
+
+// Context from the auth process, encrypted & stored in the auth token
+// and provided to the DurableMCP as this.props
+export type Props = {
+	userId: string;
+	userName: string;
+	teamId: string;
+	teamName: string;
+	accessToken: string;
+	refreshToken: string;
+	scope: string;
+};
 
 const app = new Hono<{ Bindings: Env & { OAUTH_PROVIDER: OAuthHelpers } }>();
 
@@ -30,6 +42,21 @@ app.get("/authorize", async (c) => {
 		}),
 	);
 });
+
+type SlackOauthTokenResponse = {
+	ok: true,
+	app_id: string
+	authed_user: { id: string, name?: string },
+	scope: string
+	token_type: string
+	access_token: string
+	bot_user_id: string
+	refresh_token: string
+	expires_in: number
+	team: { id: string, name: string }
+} | {
+	ok: false; error: string
+};
 
 /**
  * OAuth Callback Endpoint
@@ -79,7 +106,7 @@ app.get("/callback", async (c) => {
 		return c.text(`Failed to fetch access token: ${response.status} ${errorText}`, 500);
 	}
 
-	const data = await response.json();
+	const data = await response.json() as SlackOauthTokenResponse;
 	if (!data.ok) {
 		console.log("Slack API error:", data.error);
 		return c.text(`Slack API error: ${data.error || "Unknown error"}`, 500);
@@ -114,11 +141,44 @@ app.get("/callback", async (c) => {
 			teamId,
 			teamName,
 			accessToken,
-			scope,
-		},
+			refreshToken: data.refresh_token,
+			scope
+		} as Props,
 	});
 
 	return Response.redirect(redirectTo);
 });
 
 export const SlackHandler = app;
+
+export const refreshSlackToken = async (refresh_token: string): Promise<Partial<Props>> => {
+	if (!refresh_token) throw new Error(`Cannot refresh Slack upstream token without refresh_token. Check your Slack OAuth app is set to use "token rotation".`)
+
+	const response = await fetch("https://slack.com/api/oauth.v2.access", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded",
+		},
+		body: new URLSearchParams({
+			client_id: env.SLACK_CLIENT_ID,
+			client_secret: env.SLACK_CLIENT_SECRET,
+			grant_type: 'refresh_token',
+			refresh_token,
+		}).toString(),
+	});
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		console.log("Token exchange failed:", response.status, errorText);
+		throw new Error(`Failed to refresh token: ${response.status} ${errorText}`);
+	}
+
+	const data = await response.json() as SlackOauthTokenResponse;
+	if (!data.ok) {
+		console.log("Slack API error:", data.error);
+		throw new Error(`Slack API error: ${data.error || "Unknown error"}`);
+	}
+
+	// Return the updated tokens to be stored in props
+	return {accessToken: data.access_token, refreshToken: data.refresh_token}
+}
