@@ -64,7 +64,7 @@ npm run dev
 
 With MCP Inspector you can connect to the MCP server, list the available tools and call them. Make sure to set the transport type to `sse` and the URL to `http://localhost:8788`.
 
-<img src="../../docs/local.jpg" width="500" alt="MCP Inspector">
+<img src="../../docs/local.jpg" width="750" alt="MCP Inspector">
 
 ## Deploying the MCP Server to Cloudflare
 
@@ -99,4 +99,26 @@ https://mcp-auth0-oidc.<your-subdomain>.workers.dev/sse
 
 This will open a popup where you can sign in after which you'll be able to use all of the tools.
 
-<img src="../../docs/playground.jpg" width="500" alt="Workers AI LLM Playground">
+<img src="../../docs/playground.png" width="750" alt="Workers AI LLM Playground">
+
+## Troubleshooting
+
+If you encounter any issues while setting up or using the MCP server, here are some troubleshooting steps:
+
+**Check Worker Logs**
+
+Visit the [Cloudflare Workers Logs](https://developers.cloudflare.com/workers/observability/logs/) in your dashboard
+
+**Auth0 Dashboard Logs**
+
+- Navigate to the Logs section in your Auth0 Dashboard
+- Review authentication attempts and failures
+
+<img src="../../docs/troubleshooting.png" width="750" alt="Auth0 Logs">
+
+**Common Issues**
+
+- If authentication fails, verify your Auth0 configuration and secrets
+- For connection issues, ensure your Worker is deployed and the domain is correct
+- Check that all callback URLs are properly configured in Auth0
+- Verify the API_BASE_URL matches your deployed API endpoint
