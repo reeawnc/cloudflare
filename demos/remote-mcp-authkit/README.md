@@ -8,7 +8,7 @@ organization permissions.
 
 ## Getting Started
 
-First to create a WorkOS account by signing into the [WorkOS Dashboard.](https://dashboard.workos.com).
+First to create a WorkOS account by signing into the [WorkOS Dashboard](https://dashboard.workos.com).
 
 Next, add the MCP server's callback URL as a Redirect URI under **_Redirects_**
 -> **_Sign in callback_**. If you are testing locally, this will be
