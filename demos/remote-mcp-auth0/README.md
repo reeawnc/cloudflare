@@ -11,8 +11,8 @@ The MCP server (powered by [Cloudflare Workers](https://developers.cloudflare.co
 
 This demo allows an MCP Server to call a protected API on behalf of the authenticated user. To get started you will need the following:
 
-1. Deploy the [Todos API](./packages/todos-api/README.md)
-2. Run the [MCP Server](./packages/mcp-auth0-oidc/README.md)
+1. Deploy the [Todos API](./workers/todos-api/README.md)
+2. Run the [MCP Server](./workers/mcp-auth0-oidc/README.md)
 
 ## Access the remote MCP server from the Cloudflare Workers AI LLM Playground
 

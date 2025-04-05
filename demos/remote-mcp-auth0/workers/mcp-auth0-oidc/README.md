@@ -26,28 +26,40 @@ http://localhost:8788/callback
   `wrangler kv:namespace create "OAUTH_KV"`
 - Update the Wrangler file with the KV ID
 
+## Environment Variables
+
+This MCP Server needs a few environment variables to be configured:
+
+| Setting               | Description                                                                                                                                                                     |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUTH0_DOMAIN`        | The domain of your Auth0 tenant (e.g., `acme.auth0.com`)                                                                                                                        |
+| `AUTH0_CLIENT_ID`     | The Client ID from the Auth0 application you created                                                                                                                            |
+| `AUTH0_CLIENT_SECRET` | The Client Secret from the Auth0 application you created                                                                                                                        |
+| `AUTH0_AUDIENCE`      | The unique identifier for your API which you registered in the Auth0 dashbaord (e.g., `urn:todos-api`)                                                                          |
+| `AUTH0_SCOPE`         | The scopes requested by the MCP Server. Here we request basic profile info (`openid email profile`), refresh token capability (`offline_access`), and API access (`read:todos`) |
+| `NODE_ENV`            | The environment setting - use `development` for local development                                                                                                               |
+| `API_BASE_URL`        | The base URL where your Todos API is running                                                                                                                                    |
+
 ## Development
 
 Create a `.dev.vars` file in the root of the project with the following structure:
 
 ```
-AUTH0_DOMAIN=Your Auth0 domain (eg: acme.auth0.com)
+AUTH0_DOMAIN=yourdomain.us.auth0.com
 AUTH0_CLIENT_ID=The Client ID of the application you created in Auth0
 AUTH0_CLIENT_SECRET=The Client Secret of the application you created in Auth0
 AUTH0_AUDIENCE=urn:todos-api
 AUTH0_SCOPE=openid email profile offline_access read:todos
 NODE_ENV=development
-API_BASE_URL=The base URL of the Todos API (eg: https://todos-api.sandrino.run)
+API_BASE_URL=http://localhost:8789
 ```
-
-The `AUTH0_DOMAIN` is the domain of the Auth0 tenant. The `AUTH0_AUDIENCE` is the audience of the API you created in the Auth0 tenant (eg: `urn:todos-api`).
 
 ### Testing the MCP Server
 
 To start the MCP server, you can use the following command:
 
 ```
-pnpm run dev
+npm run dev
 ```
 
 With MCP Inspector you can connect to the MCP server, list the available tools and call them. Make sure to set the transport type to `sse` and the URL to `http://localhost:8788`.
@@ -70,7 +82,7 @@ wrangler secret put API_BASE_URL
 Once the secrets are set, you can deploy the API with the following command:
 
 ```bash
-pnpm run deploy
+npm run deploy
 ```
 
 In the Auth0 dashboard, also make sure to add a new Callback URL for your deployed MCP server, eg:

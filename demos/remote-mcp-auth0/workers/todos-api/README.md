@@ -30,7 +30,7 @@ That's it! You can now configure your local environment or deploy the API to Clo
 Create a `.dev.vars` file in the root of the project with the following structure:
 
 ```
-AUTH0_DOMAIN=Your Auth0 domain (eg: acme.auth0.com)
+AUTH0_DOMAIN=yourtenant.us.auth0.com
 AUTH0_AUDIENCE=urn:todos-api
 ```
 
@@ -41,7 +41,7 @@ The `AUTH0_DOMAIN` is the domain of the Auth0 tenant. The `AUTH0_AUDIENCE` is th
 To test the API, you can use the following command:
 
 ```
-pnpm run dev
+npm run dev
 ```
 
 This will start the worker and you can make requests to it. In the Auth0 dashboard there is a **Test** tab in the API where you can get an `access_token` to call the API. Use this to call the API as follows:
