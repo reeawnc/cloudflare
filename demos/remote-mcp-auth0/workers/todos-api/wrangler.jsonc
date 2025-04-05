@@ -3,14 +3,14 @@
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
 {
-  "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "todos-api",
-  "main": "src/index.ts",
-  "compatibility_date": "2025-03-19",
-  "observability": {
-    "enabled": true
-  },
-  "dev": {
-    "port": 8789
-  }
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "todos-api",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-04-01",
+	"observability": {
+		"enabled": true
+	},
+	"dev": {
+		"port": 8789
+	}
 }

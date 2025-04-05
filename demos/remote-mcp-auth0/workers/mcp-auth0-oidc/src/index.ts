@@ -4,7 +4,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import OAuthProvider, { type OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 
 import type { UserProps } from "./types";
-import { authorize, callback, confirmConsent } from "./auth";
+import { authorize, callback, confirmConsent, tokenExchangeCallback } from "./auth";
 
 export class AuthenticatedMCP extends DurableMCP<UserProps, Env> {
 	server = new McpServer({
@@ -82,4 +82,5 @@ export default new OAuthProvider({
 	authorizeEndpoint: "/authorize",
 	tokenEndpoint: "/token",
 	clientRegistrationEndpoint: "/register",
+	tokenExchangeCallback,
 });
