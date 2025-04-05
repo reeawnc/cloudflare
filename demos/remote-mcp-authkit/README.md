@@ -26,9 +26,9 @@ $ npx wrangler secret put WORKOS_CLIENT_ID <your_workos_client_id>
 $ npx wrangler secret put WORKOS_CLIENT_SECRET <your_workos_client_secret>
 ```
 
-**Note:** The `WORKOS_CLIENT_ID` isn't technically a secret and so you may also
-choose to set it via the `wrangler.jsonc`. But `WORKOS_CLIENT_SECRET` is not
-public and should be securely set.
+**Note:** The `WORKOS_CLIENT_ID` isn't technically a secret and so you may also choose
+to set it via your `wrangler.jsonc` configuration file. But `WORKOS_CLIENT_SECRET` is not
+public and should be securely set elsewhere.
 
 And that's it! You can now test out your remote MCP server using the example
 playground below.
