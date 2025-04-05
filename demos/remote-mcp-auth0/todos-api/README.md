@@ -8,11 +8,11 @@ This is a sample API which is protected by Auth0. It is used in the remote MCP d
 
 In the Auth0 dashboard, create a new API in the APIs section.
 
-<img src="../../docs/create-api.jpg" width="500" alt="Create API">
+<img src="../docs/create-api.jpg" width="500" alt="Create API">
 
 Once the API is created, enable "Offline Access" so we can get a refresh token.
 
-<img src="../../docs/offline-access.jpg" width="500" alt="Enable Offline Access">
+<img src="../docs/offline-access.jpg" width="500" alt="Enable Offline Access">
 
 > Note: You can turn off the "Allow Skipping User Consent" if you want to force users to consent to the scopes.
 
@@ -21,7 +21,7 @@ And finally add the following API permissions:
 - `read:todos`
 - `read:billing`
 
-<img src="../../docs/create-permissions.jpg" width="500" alt="Create Permissions">
+<img src="../docs/create-permissions.jpg" width="500" alt="Create Permissions">
 
 That's it! You can now configure your local environment or deploy the API to Cloudflare.
 
@@ -66,5 +66,5 @@ wrangler secret put AUTH0_AUDIENCE
 Once the secrets are set, you can deploy the API with the following command:
 
 ```bash
-pnpm run deploy
+npm run deploy
 ```

@@ -12,7 +12,7 @@ Before you can use the MCP server, you will need to deploy the Todos API as docu
 
 In the Auth0 dashboard, create a new application in the Applications section (type: "Regular Web Application").
 
-<img src="../../docs/create-application.jpg" width="500" alt="Create Application">
+<img src="../docs/create-application.jpg" width="500" alt="Create Application">
 
 Once the application is created, configure the following URL as the callback URL when developing locally:
 
@@ -64,7 +64,7 @@ npm run dev
 
 With MCP Inspector you can connect to the MCP server, list the available tools and call them. Make sure to set the transport type to `sse` and the URL to `http://localhost:8788`.
 
-<img src="../../docs/local.jpg" width="750" alt="MCP Inspector">
+<img src="../docs/local.jpg" width="750" alt="MCP Inspector">
 
 ## Deploying the MCP Server to Cloudflare
 
@@ -99,7 +99,7 @@ https://mcp-auth0-oidc.<your-subdomain>.workers.dev/sse
 
 This will open a popup where you can sign in after which you'll be able to use all of the tools.
 
-<img src="../../docs/playground.png" width="750" alt="Workers AI LLM Playground">
+<img src="../docs/playground.png" width="750" alt="Workers AI LLM Playground">
 
 ## Troubleshooting
 
@@ -114,7 +114,7 @@ Visit the [Cloudflare Workers Logs](https://developers.cloudflare.com/workers/ob
 - Navigate to the Logs section in your Auth0 Dashboard
 - Review authentication attempts and failures
 
-<img src="../../docs/troubleshooting.png" width="750" alt="Auth0 Logs">
+<img src="../docs/troubleshooting.png" width="750" alt="Auth0 Logs">
 
 **Common Issues**
 
