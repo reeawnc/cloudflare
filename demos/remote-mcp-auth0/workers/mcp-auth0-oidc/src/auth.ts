@@ -1,29 +1,33 @@
-import type { Context } from 'hono'
-import { html, raw } from 'hono/html'
-import * as oauth from 'oauth4webapi'
-import { getCookie, setCookie } from 'hono/cookie'
-import type { AuthRequest, OAuthHelpers } from '@cloudflare/workers-oauth-provider'
+import type { Context } from "hono";
+import { html, raw } from "hono/html";
+import * as oauth from "oauth4webapi";
+import { getCookie, setCookie } from "hono/cookie";
+import type { AuthRequest, OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 
-import type { UserProps } from './types'
+import type { UserProps } from "./types";
 
 type Auth0AuthRequest = {
-    mcpAuthRequest: AuthRequest
-    codeVerifier: string
-    codeChallenge: string
-    nonce: string
-    transactionState: string
-    consentToken: string
-}
+	mcpAuthRequest: AuthRequest;
+	codeVerifier: string;
+	codeChallenge: string;
+	nonce: string;
+	transactionState: string;
+	consentToken: string;
+};
 
-export async function getOidcConfig({ issuer, client_id, client_secret }: { issuer: string; client_id: string; client_secret: string }) {
-    const as = await oauth
-        .discoveryRequest(new URL(issuer), { algorithm: 'oidc' })
-        .then((response) => oauth.processDiscoveryResponse(new URL(issuer), response))
+export async function getOidcConfig({
+	issuer,
+	client_id,
+	client_secret,
+}: { issuer: string; client_id: string; client_secret: string }) {
+	const as = await oauth
+		.discoveryRequest(new URL(issuer), { algorithm: "oidc" })
+		.then((response) => oauth.processDiscoveryResponse(new URL(issuer), response));
 
-    const client: oauth.Client = { client_id }
-    const clientAuth = oauth.ClientSecretPost(client_secret)
+	const client: oauth.Client = { client_id };
+	const clientAuth = oauth.ClientSecretPost(client_secret);
 
-    return { as, client, clientAuth }
+	return { as, client, clientAuth };
 }
 
 /**
@@ -35,59 +39,59 @@ export async function getOidcConfig({ issuer, client_id, client_secret }: { issu
  * Then it shows a consent screen before redirecting to Auth0.
  */
 export async function authorize(c: Context<{ Bindings: Env & { OAUTH_PROVIDER: OAuthHelpers } }>) {
-    const mcpClientAuthRequest = await c.env.OAUTH_PROVIDER.parseAuthRequest(c.req.raw)
-    if (!mcpClientAuthRequest.clientId) {
-        return c.text('Invalid request', 400)
-    }
+	const mcpClientAuthRequest = await c.env.OAUTH_PROVIDER.parseAuthRequest(c.req.raw);
+	if (!mcpClientAuthRequest.clientId) {
+		return c.text("Invalid request", 400);
+	}
 
-    const client = await c.env.OAUTH_PROVIDER.lookupClient(mcpClientAuthRequest.clientId)
-    if (!client) {
-        return c.text('Invalid client', 400)
-    }
+	const client = await c.env.OAUTH_PROVIDER.lookupClient(mcpClientAuthRequest.clientId);
+	if (!client) {
+		return c.text("Invalid client", 400);
+	}
 
-    // Generate all that is needed for the Auth0 auth request
-    const codeVerifier = oauth.generateRandomCodeVerifier()
-    const transactionState = oauth.generateRandomState()
-    const consentToken = oauth.generateRandomState() // For CSRF protection on consent form
+	// Generate all that is needed for the Auth0 auth request
+	const codeVerifier = oauth.generateRandomCodeVerifier();
+	const transactionState = oauth.generateRandomState();
+	const consentToken = oauth.generateRandomState(); // For CSRF protection on consent form
 
-    // We will persist everything in a cookie.
-    const auth0AuthRequest: Auth0AuthRequest = {
-        mcpAuthRequest: mcpClientAuthRequest,
-        nonce: oauth.generateRandomNonce(),
-        codeVerifier,
-        codeChallenge: await oauth.calculatePKCECodeChallenge(codeVerifier),
-        consentToken,
-        transactionState,
-    }
+	// We will persist everything in a cookie.
+	const auth0AuthRequest: Auth0AuthRequest = {
+		mcpAuthRequest: mcpClientAuthRequest,
+		nonce: oauth.generateRandomNonce(),
+		codeVerifier,
+		codeChallenge: await oauth.calculatePKCECodeChallenge(codeVerifier),
+		consentToken,
+		transactionState,
+	};
 
-    // Store the auth request in a transaction-specific cookie
-    const cookieName = `auth0_req_${transactionState}`
-    setCookie(c, cookieName, btoa(JSON.stringify(auth0AuthRequest)), {
-        path: '/',
-        httpOnly: true,
-        secure: c.env.NODE_ENV !== 'development',
-        sameSite: c.env.NODE_ENV !== 'development' ? 'none' : 'lax',
-        maxAge: 60 * 60 * 1, // 1 hour
-    })
+	// Store the auth request in a transaction-specific cookie
+	const cookieName = `auth0_req_${transactionState}`;
+	setCookie(c, cookieName, btoa(JSON.stringify(auth0AuthRequest)), {
+		path: "/",
+		httpOnly: true,
+		secure: c.env.NODE_ENV !== "development",
+		sameSite: c.env.NODE_ENV !== "development" ? "none" : "lax",
+		maxAge: 60 * 60 * 1, // 1 hour
+	});
 
-    // Extract client information for the consent screen
-    const clientName = client.clientName || client.clientId
-    const clientLogo = client.logoUri || '' // No default logo
-    const clientUri = client.clientUri || '#'
-    const requestedScopes = (c.env.AUTH0_SCOPE || '').split(' ')
+	// Extract client information for the consent screen
+	const clientName = client.clientName || client.clientId;
+	const clientLogo = client.logoUri || ""; // No default logo
+	const clientUri = client.clientUri || "#";
+	const requestedScopes = (c.env.AUTH0_SCOPE || "").split(" ");
 
-    // Render the consent screen with CSRF protection
-    return c.html(
-        renderConsentScreen({
-            clientName,
-            clientLogo,
-            clientUri,
-            redirectUri: mcpClientAuthRequest.redirectUri,
-            requestedScopes,
-            transactionState,
-            consentToken,
-        }),
-    )
+	// Render the consent screen with CSRF protection
+	return c.html(
+		renderConsentScreen({
+			clientName,
+			clientLogo,
+			clientUri,
+			redirectUri: mcpClientAuthRequest.redirectUri,
+			requestedScopes,
+			transactionState,
+			consentToken,
+		}),
+	);
 }
 
 /**
@@ -95,72 +99,74 @@ export async function authorize(c: Context<{ Bindings: Env & { OAUTH_PROVIDER: O
  *
  * This route handles the consent confirmation before redirecting to Auth0
  */
-export async function confirmConsent(c: Context<{ Bindings: Env & { OAUTH_PROVIDER: OAuthHelpers } }>) {
-    // Get form data
-    const formData = await c.req.formData()
-    const transactionState = formData.get('transaction_state') as string
-    const consentToken = formData.get('consent_token') as string
-    const consentAction = formData.get('consent_action') as string
+export async function confirmConsent(
+	c: Context<{ Bindings: Env & { OAUTH_PROVIDER: OAuthHelpers } }>,
+) {
+	// Get form data
+	const formData = await c.req.formData();
+	const transactionState = formData.get("transaction_state") as string;
+	const consentToken = formData.get("consent_token") as string;
+	const consentAction = formData.get("consent_action") as string;
 
-    // Validate the transaction state
-    if (!transactionState) {
-        return c.text('Invalid transaction state', 400)
-    }
+	// Validate the transaction state
+	if (!transactionState) {
+		return c.text("Invalid transaction state", 400);
+	}
 
-    // Get the transaction-specific cookie
-    const cookieName = `auth0_req_${transactionState}`
-    const auth0AuthRequestCookie = getCookie(c, cookieName)
-    if (!auth0AuthRequestCookie) {
-        return c.text('Invalid or expired transaction', 400)
-    }
+	// Get the transaction-specific cookie
+	const cookieName = `auth0_req_${transactionState}`;
+	const auth0AuthRequestCookie = getCookie(c, cookieName);
+	if (!auth0AuthRequestCookie) {
+		return c.text("Invalid or expired transaction", 400);
+	}
 
-    // Parse the Auth0 auth request from the cookie
-    const auth0AuthRequest = JSON.parse(atob(auth0AuthRequestCookie)) as Auth0AuthRequest
+	// Parse the Auth0 auth request from the cookie
+	const auth0AuthRequest = JSON.parse(atob(auth0AuthRequestCookie)) as Auth0AuthRequest;
 
-    // Validate the CSRF token
-    if (auth0AuthRequest.consentToken !== consentToken) {
-        return c.text('Invalid consent token', 403)
-    }
+	// Validate the CSRF token
+	if (auth0AuthRequest.consentToken !== consentToken) {
+		return c.text("Invalid consent token", 403);
+	}
 
-    // Handle user denial
-    if (consentAction !== 'approve') {
-        // Parse the MCP client auth request to get the original redirect URI
-        const redirectUri = new URL(auth0AuthRequest.mcpAuthRequest.redirectUri)
+	// Handle user denial
+	if (consentAction !== "approve") {
+		// Parse the MCP client auth request to get the original redirect URI
+		const redirectUri = new URL(auth0AuthRequest.mcpAuthRequest.redirectUri);
 
-        // Add error parameters to the redirect URI
-        redirectUri.searchParams.set('error', 'access_denied')
-        redirectUri.searchParams.set('error_description', 'User denied the request')
-        if (auth0AuthRequest.mcpAuthRequest.state) {
-            redirectUri.searchParams.set('state', auth0AuthRequest.mcpAuthRequest.state)
-        }
+		// Add error parameters to the redirect URI
+		redirectUri.searchParams.set("error", "access_denied");
+		redirectUri.searchParams.set("error_description", "User denied the request");
+		if (auth0AuthRequest.mcpAuthRequest.state) {
+			redirectUri.searchParams.set("state", auth0AuthRequest.mcpAuthRequest.state);
+		}
 
-        // Clear the transaction cookie
-        setCookie(c, cookieName, '', {
-            path: '/',
-            maxAge: 0,
-        })
+		// Clear the transaction cookie
+		setCookie(c, cookieName, "", {
+			path: "/",
+			maxAge: 0,
+		});
 
-        return c.redirect(redirectUri.toString())
-    }
+		return c.redirect(redirectUri.toString());
+	}
 
-    const { as } = await getOidcConfig({
-        issuer: `https://${c.env.AUTH0_DOMAIN}/`,
-        client_id: c.env.AUTH0_CLIENT_ID,
-        client_secret: c.env.AUTH0_CLIENT_SECRET,
-    })
+	const { as } = await getOidcConfig({
+		issuer: `https://${c.env.AUTH0_DOMAIN}/`,
+		client_id: c.env.AUTH0_CLIENT_ID,
+		client_secret: c.env.AUTH0_CLIENT_SECRET,
+	});
 
-    // Redirect to Auth0's authorization endpoint
-    const authorizationUrl = new URL(as.authorization_endpoint!)
-    authorizationUrl.searchParams.set('client_id', c.env.AUTH0_CLIENT_ID)
-    authorizationUrl.searchParams.set('redirect_uri', new URL('/callback', c.req.url).href)
-    authorizationUrl.searchParams.set('response_type', 'code')
-    authorizationUrl.searchParams.set('audience', c.env.AUTH0_AUDIENCE)
-    authorizationUrl.searchParams.set('scope', c.env.AUTH0_SCOPE)
-    authorizationUrl.searchParams.set('code_challenge', auth0AuthRequest.codeChallenge)
-    authorizationUrl.searchParams.set('code_challenge_method', 'S256')
-    authorizationUrl.searchParams.set('nonce', auth0AuthRequest.nonce)
-    authorizationUrl.searchParams.set('state', transactionState)
-    return c.redirect(authorizationUrl.href)
+	// Redirect to Auth0's authorization endpoint
+	const authorizationUrl = new URL(as.authorization_endpoint!);
+	authorizationUrl.searchParams.set("client_id", c.env.AUTH0_CLIENT_ID);
+	authorizationUrl.searchParams.set("redirect_uri", new URL("/callback", c.req.url).href);
+	authorizationUrl.searchParams.set("response_type", "code");
+	authorizationUrl.searchParams.set("audience", c.env.AUTH0_AUDIENCE);
+	authorizationUrl.searchParams.set("scope", c.env.AUTH0_SCOPE);
+	authorizationUrl.searchParams.set("code_challenge", auth0AuthRequest.codeChallenge);
+	authorizationUrl.searchParams.set("code_challenge_method", "S256");
+	authorizationUrl.searchParams.set("nonce", auth0AuthRequest.nonce);
+	authorizationUrl.searchParams.set("state", transactionState);
+	return c.redirect(authorizationUrl.href);
 }
 
 /**
@@ -171,98 +177,103 @@ export async function confirmConsent(c: Context<{ Bindings: Env & { OAUTH_PROVID
  * authorization process.
  */
 export async function callback(c: Context<{ Bindings: Env & { OAUTH_PROVIDER: OAuthHelpers } }>) {
-    // Parse the state parameter to extract transaction state and Auth0 state
-    const stateParam = c.req.query('state') as string
-    if (!stateParam) {
-        return c.text('Invalid state parameter', 400)
-    }
+	// Parse the state parameter to extract transaction state and Auth0 state
+	const stateParam = c.req.query("state") as string;
+	if (!stateParam) {
+		return c.text("Invalid state parameter", 400);
+	}
 
-    // Parse the Auth0 auth request from the transaction-specific cookie
-    const cookieName = `auth0_req_${stateParam}`
-    const auth0AuthRequestCookie = getCookie(c, cookieName)
-    if (!auth0AuthRequestCookie) {
-        return c.text('Invalid transaction state or session expired', 400)
-    }
+	// Parse the Auth0 auth request from the transaction-specific cookie
+	const cookieName = `auth0_req_${stateParam}`;
+	const auth0AuthRequestCookie = getCookie(c, cookieName);
+	if (!auth0AuthRequestCookie) {
+		return c.text("Invalid transaction state or session expired", 400);
+	}
 
-    const auth0AuthRequest = JSON.parse(atob(auth0AuthRequestCookie)) as Auth0AuthRequest
+	const auth0AuthRequest = JSON.parse(atob(auth0AuthRequestCookie)) as Auth0AuthRequest;
 
-    // Clear the transaction cookie as it's no longer needed
-    setCookie(c, cookieName, '', {
-        path: '/',
-        maxAge: 0,
-    })
+	// Clear the transaction cookie as it's no longer needed
+	setCookie(c, cookieName, "", {
+		path: "/",
+		maxAge: 0,
+	});
 
-    const { as, client, clientAuth } = await getOidcConfig({
-        issuer: `https://${c.env.AUTH0_DOMAIN}/`,
-        client_id: c.env.AUTH0_CLIENT_ID,
-        client_secret: c.env.AUTH0_CLIENT_SECRET,
-    })
+	const { as, client, clientAuth } = await getOidcConfig({
+		issuer: `https://${c.env.AUTH0_DOMAIN}/`,
+		client_id: c.env.AUTH0_CLIENT_ID,
+		client_secret: c.env.AUTH0_CLIENT_SECRET,
+	});
 
-    // Perform the Code Exchange
-    const params = oauth.validateAuthResponse(as, client, new URL(c.req.url), auth0AuthRequest.transactionState)
-    const response = await oauth.authorizationCodeGrantRequest(
-        as,
-        client,
-        clientAuth,
-        params,
-        new URL('/callback', c.req.url).href,
-        auth0AuthRequest.codeVerifier,
-    )
+	// Perform the Code Exchange
+	const params = oauth.validateAuthResponse(
+		as,
+		client,
+		new URL(c.req.url),
+		auth0AuthRequest.transactionState,
+	);
+	const response = await oauth.authorizationCodeGrantRequest(
+		as,
+		client,
+		clientAuth,
+		params,
+		new URL("/callback", c.req.url).href,
+		auth0AuthRequest.codeVerifier,
+	);
 
-    // Process the response
-    const result = await oauth.processAuthorizationCodeResponse(as, client, response, {
-        expectedNonce: auth0AuthRequest.nonce,
-        requireIdToken: true,
-    })
+	// Process the response
+	const result = await oauth.processAuthorizationCodeResponse(as, client, response, {
+		expectedNonce: auth0AuthRequest.nonce,
+		requireIdToken: true,
+	});
 
-    // Get the claims from the id_token
-    const claims = oauth.getValidatedIdTokenClaims(result)
-    if (!claims) {
-        return c.text('Received invalid id_token from Auth0', 400)
-    }
+	// Get the claims from the id_token
+	const claims = oauth.getValidatedIdTokenClaims(result);
+	if (!claims) {
+		return c.text("Received invalid id_token from Auth0", 400);
+	}
 
-    // Complete the authorization
-    const { redirectTo } = await c.env.OAUTH_PROVIDER.completeAuthorization({
-        request: auth0AuthRequest.mcpAuthRequest,
-        userId: claims.sub!,
-        metadata: {
-            label: claims.name || claims.email || claims.sub,
-        },
-        scope: auth0AuthRequest.mcpAuthRequest.scope,
-        props: {
-            claims: claims,
-            tokenSet: {
-                idToken: result.id_token,
-                accessToken: result.access_token,
-                refreshToken: result.refresh_token,
-            },
-        } as UserProps,
-    })
+	// Complete the authorization
+	const { redirectTo } = await c.env.OAUTH_PROVIDER.completeAuthorization({
+		request: auth0AuthRequest.mcpAuthRequest,
+		userId: claims.sub!,
+		metadata: {
+			label: claims.name || claims.email || claims.sub,
+		},
+		scope: auth0AuthRequest.mcpAuthRequest.scope,
+		props: {
+			claims: claims,
+			tokenSet: {
+				idToken: result.id_token,
+				accessToken: result.access_token,
+				refreshToken: result.refresh_token,
+			},
+		} as UserProps,
+	});
 
-    return Response.redirect(redirectTo)
+	return Response.redirect(redirectTo);
 }
 
 /**
  * Renders the consent screen HTML
  */
 function renderConsentScreen({
-    clientName,
-    clientLogo,
-    clientUri,
-    redirectUri,
-    requestedScopes,
-    transactionState,
-    consentToken,
+	clientName,
+	clientLogo,
+	clientUri,
+	redirectUri,
+	requestedScopes,
+	transactionState,
+	consentToken,
 }: {
-    clientName: string
-    clientLogo: string
-    clientUri: string
-    redirectUri: string
-    requestedScopes: string[]
-    transactionState: string
-    consentToken: string
+	clientName: string;
+	clientLogo: string;
+	clientUri: string;
+	redirectUri: string;
+	requestedScopes: string[];
+	transactionState: string;
+	consentToken: string;
 }) {
-    return html`
+	return html`
         <!DOCTYPE html>
         <html lang="en">
             <head>
@@ -421,7 +432,7 @@ function renderConsentScreen({
                 <div class="container">
                     <div class="card">
                         <div class="header">
-                            ${clientLogo?.length ? `<img src="${clientLogo}" alt="${clientName} logo" class="app-logo" />` : ''}
+                            ${clientLogo?.length ? `<img src="${clientLogo}" alt="${clientName} logo" class="app-logo" />` : ""}
                             <h1>Todo MCP Server - Authorization Request</h1>
                             <a href="${clientUri}" target="_blank" rel="noopener noreferrer" class="app-link">${clientName}</a>
                         </div>
@@ -436,7 +447,7 @@ function renderConsentScreen({
                         </p>
 
                         <ul class="scope-list">
-                            ${raw(requestedScopes.map((scope) => `<li>${scope}</li>`).join('\n'))}
+                            ${raw(requestedScopes.map((scope) => `<li>${scope}</li>`).join("\n"))}
                         </ul>
 
                         <p class="description">
@@ -462,5 +473,5 @@ function renderConsentScreen({
                 </div>
             </body>
         </html>
-    `
+    `;
 }
