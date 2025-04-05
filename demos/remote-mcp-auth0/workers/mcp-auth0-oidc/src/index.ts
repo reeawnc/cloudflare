@@ -20,21 +20,27 @@ export class AuthenticatedMCP extends DurableMCP<UserProps, Env> {
 
 		// Call the Todos API on behalf of the current user.
 		this.server.tool("list-todos", "List the current user's todos", {}, async () => {
-			const response = await fetch(`${this.env.API_BASE_URL}/api/todos`, {
-				headers: {
-					Authorization: `Bearer ${this.props.tokenSet.accessToken}`,
-				},
-			});
-
-			const data = await response.json();
-			return {
-				content: [
-					{
-						type: "text",
-						text: JSON.stringify(data),
+			try {
+				const response = await fetch(`${this.env.API_BASE_URL}/api/todos`, {
+					headers: {
+						Authorization: `Bearer ${this.props.tokenSet.accessToken}`,
 					},
-				],
-			};
+				});
+
+				const data = await response.json();
+				return {
+					content: [
+						{
+							type: "text",
+							text: JSON.stringify(data),
+						},
+					],
+				};
+			} catch (e) {
+				return {
+					content: [{ type: "text", text: `The call to the Todos API failed: ${e}` }],
+				};
+			}
 		});
 
 		// Get the current user's billing settings.
