@@ -35,7 +35,7 @@ playground below.
 
 ## Testing MCP Authentication
 
-Visit the [https://playground.ai.cloudflare.com](Cloudflare Workers AI playground) and enter the URL of your worker:
+Visit the [Cloudflare Workers AI playground](https://playground.ai.cloudflare.com) and enter the URL of your worker:
 
 ```
 # Local
