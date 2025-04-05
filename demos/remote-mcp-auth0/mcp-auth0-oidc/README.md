@@ -62,7 +62,7 @@ To start the MCP server, you can use the following command:
 npm run dev
 ```
 
-With MCP Inspector you can connect to the MCP server, list the available tools and call them. Make sure to set the transport type to `sse` and the URL to `http://localhost:8788`.
+With MCP Inspector you can connect to the MCP server, list the available tools and call them. Make sure to set the transport type to `sse` and the URL to `http://localhost:8788/sse`.
 
 <img src="../docs/local.jpg" width="750" alt="MCP Inspector">
 
