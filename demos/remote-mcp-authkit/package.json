@@ -17,6 +17,7 @@
 		"@cloudflare/workers-types": "^4.20250310.0",
 		"@cloudflare/workers-oauth-provider": "^0.0.2",
 		"@modelcontextprotocol/sdk": "^1.7.0",
+		"agents": "^0.0.53",
 		"hono": "^4.7.4",
 		"jose": "^6.0.10",
 		"@workos-inc/node": "^7.45.0",
