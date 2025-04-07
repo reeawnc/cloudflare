@@ -4,14 +4,18 @@
   "type": "module",
   "scripts": {
     "start": "vite dev",
-	"prebuild": "jq -e '.vars.HOST != \"<DEPLOYED_HOST>\"' wrangler.json || (echo 'WARNING: HOST is still set to <DEPLOYED_HOST>. Please update this value in your wrangler.json file or else MCP server connections will fail.')",
     "build": "vite build",
-    "deploy": "wrangler deploy"
+    "deploy": "npx wrangler deploy --var HOST:$(./get-subdomain.sh)"
   },
   "keywords": [],
   "author": "",
   "dependencies": {
+    "@cloudflare/vite-plugin": "^1.0.0",
     "@modelcontextprotocol/sdk": "^1.8.0",
-    "agents": "^0.0.54"
+    "@vitejs/plugin-react": "^4.3.4",
+    "agents": "^0.0.54",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "vite": "^6.2.5"
   }
 }
