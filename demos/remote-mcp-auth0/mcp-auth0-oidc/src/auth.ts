@@ -278,7 +278,9 @@ export async function tokenExchangeCallback(
 			},
 			accessTokenTTL: options.props.tokenSet.accessTokenTTL,
 		};
-	} else if (options.grantType === "refresh_token") {
+	}
+
+	if (options.grantType === "refresh_token") {
 		const auth0RefreshToken = options.props.tokenSet.refreshToken;
 		if (!auth0RefreshToken) {
 			throw new Error("No Auth0 refresh token found");
