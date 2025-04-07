@@ -1,15 +1,17 @@
 {
-	"name": "@cloudflare/agents-mcp-client-example",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"start": "vite dev",
-		"build": "vite build",
-		"deploy": "wrangler deploy"
-	},
-	"keywords": [],
-	"author": "",
-	"dependencies": {
-		"agents-repo": "github:cmsparks/agents#csparks/mcp-client-auth"
-	}
+  "name": "@cloudflare/agents-mcp-client-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "vite dev",
+	"prebuild": "jq -e '.vars.HOST != \"<DEPLOYED_HOST>\"' wrangler.json || (echo 'WARNING: HOST is still set to <DEPLOYED_HOST>. Please update this value in your wrangler.json file or else MCP server connections will fail.')",
+    "build": "vite build",
+    "deploy": "wrangler deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.8.0",
+    "agents": "^0.0.54"
+  }
 }
