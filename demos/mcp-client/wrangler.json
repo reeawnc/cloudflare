@@ -7,7 +7,7 @@
     "directory": "dist/client"
   },
   "vars": {
-    "HOST": "<DEPLOaYED_HOST>"
+    "HOST": "<PLACEHOLDER_HOST>"
   },
   "durable_objects": {
     "bindings": [
