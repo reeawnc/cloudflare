@@ -19,16 +19,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Set up Node.js with caching for npm dependencies
+      - uses: pnpm/action-setup@v4
+
+      # Set up Node.js with caching for pnpm dependencies
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'pnpm'
 
       # Install dependencies
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile --child-concurrency=10
 
       # Set commit shas for Nx if needed
       - name: Set Nx SHAs
@@ -37,4 +39,4 @@ jobs:
       # Run Nx tasks including the staging deployment and extract the URL.
       - name: Run smoke tests
         id: checks
-        run: npx nx run-many -t test:smoke
+        run: pnpm nx run-many -t test:smoke

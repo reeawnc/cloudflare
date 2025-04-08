@@ -20,7 +20,7 @@ This repository contains various packages and demo apps related consuming Cloudf
 
    ```bash
    cd ai
-   npm install
+   pnpm install
    ```
 
 3. Develop.
@@ -28,29 +28,29 @@ This repository contains various packages and demo apps related consuming Cloudf
    To start a development server for a specific app (for instance, `tool-calling`):
 
    ```bash
-   npx nx dev tool-calling
+   pnpm nx dev tool-calling
    ```
 
-   *Ideally all commands should be executed from the repository root with the `npx nx` prefix. This will ensure that the dependency graph is managed correctly, e.g. if one package relies on the output of an other.*
+   *Ideally all commands should be executed from the repository root with the `pnpm nx` prefix. This will ensure that the dependency graph is managed correctly, e.g. if one package relies on the output of an other.*
 
 4. Testing and Linting.
 
   - To execute your continuous integration tests for a specific project (e.g., `workers-ai-provider`):
 
     ```bash
-    npx nx test:ci workers-ai-provider
+    pnpm nx test:ci workers-ai-provider
     ```
 
   - To lint a specific project:
 
     ```bash
-    npx nx lint my-project
+    pnpm nx lint my-project
     ```
 
   - To run a more comprehensive sweep of tasks (lint, tests, type checks, build) against one or more projects:
 
     ```bash
-    npx nx run-many -t lint test:ci type-check build -p "my-project other-project"
+    pnpm nx run-many -t lint test:ci type-check build -p "my-project other-project"
     ```
 
 5. Other Nx Tasks.
@@ -66,25 +66,25 @@ This repository contains various packages and demo apps related consuming Cloudf
 In order to scaffold a new demo app, you can use the `create-demo` script. This script will create a new demo app in the `demos` directory.
 
 ```bash
-npm run create-demo <demo-name>
+pnpm create-demo <demo-name>
 ```
 
-After creating the app, `npm install` will be run to install the dependencies, and `npx nx cf-typegen <demo-name>` will be run to generate the types for the demo app. Then it's simply a case of starting the app with:
+After creating the app, `pnpm install` will be run to install the dependencies, and `pnpm nx cf-typegen <demo-name>` will be run to generate the types for the demo app. Then it's simply a case of starting the app with:
 
 ```bash
-npx nx dev <demo-name>
+pnpm nx dev <demo-name>
 ```
 
 ## Contributing
 
 We appreciate contributions and encourage pull requests. Please follow these guidelines:
 
-1. Project Setup: After forking or cloning, install dependencies with `npm install`.
+1. Project Setup: After forking or cloning, install dependencies with `pnpm install`.
 2. Branching: Create a new branch for your feature or fix.
 3. Making Changes:
   - Add or update relevant tests.
   - On pushing your changes, automated tasks will be run (courtesy of a Husky pre-push hook).
-4. Changesets: If your changes affect a published package, run `npx changeset` to create a changeset. Provide a concise summary of your changes in the changeset prompt.
+4. Changesets: If your changes affect a published package, run `pnpm changeset` to create a changeset. Provide a concise summary of your changes in the changeset prompt.
 5. Pull Request: Submit a pull request to the `main` branch. The team will review it and merge if everything is in order.
 
 ## Release Process
@@ -94,7 +94,7 @@ This repository uses [Changesets](https://github.com/changesets/changesets) to m
 1. **Changeset Creation**: Whenever a change is made that warrants a new release (e.g., bug fixes, new features), run:
 
    ```bash
-   npx changeset
+   pnpm changeset
    ```
 
    Provide a clear description of the changes.

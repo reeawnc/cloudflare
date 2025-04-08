@@ -92,12 +92,12 @@ async function main(): Promise<void> {
 
 	await new Promise((resolve) => {
 		const s = spinner();
-		s.start("Running npm install...");
+		s.start("Running pnpm install...");
 
-		exec("npm install", { cwd: projectPath }, (error, _, stderr) => {
+		exec("pnpm install --child-concurrency=10", { cwd: projectPath }, (error, _, stderr) => {
 			if (error) {
-				log.error("An error occurred while running npm install.");
-				s.stop("npm install failed.");
+				log.error("An error occurred while running pnpm install.");
+				s.stop("pnpm install failed.");
 				process.exit(1);
 			}
 
@@ -105,19 +105,19 @@ async function main(): Promise<void> {
 				log.error(`stderr: ${stderr}`);
 			}
 
-			s.stop("npm install completed successfully.");
+			s.stop("pnpm install completed successfully.");
 			resolve(true);
 		});
 	});
 
 	await new Promise((resolve) => {
 		const s = spinner();
-		s.start("Running npx nx cf-typegen...");
+		s.start("Running pnpm nx cf-typegen...");
 
-		exec(`npx nx cf-typegen ${projectName}`, { cwd: projectPath }, (error, _, stderr) => {
+		exec(`pnpm nx cf-typegen ${projectName}`, { cwd: projectPath }, (error, _, stderr) => {
 			if (error) {
-				log.error("An error occurred while running npx nx cf-typegen.");
-				s.stop(`npx nx cf-typegen ${projectName} failed.`);
+				log.error("An error occurred while running pnpm nx cf-typegen.");
+				s.stop(`pnpm nx cf-typegen ${projectName} failed.`);
 				process.exit(1);
 			}
 
@@ -125,7 +125,7 @@ async function main(): Promise<void> {
 				log.error(`stderr: ${stderr}`);
 			}
 
-			s.stop(`npx nx cf-typegen ${projectName} completed successfully.`);
+			s.stop(`pnpm nx cf-typegen ${projectName} completed successfully.`);
 			resolve(true);
 		});
 	});
@@ -134,7 +134,7 @@ async function main(): Promise<void> {
 
 	outro(`You're all set! To start your worker:
 
-   ${chalk.dim("$")} ${chalk.green(`npx nx dev ${projectName}`)}`);
+   ${chalk.dim("$")} ${chalk.green(`pnpm nx dev ${projectName}`)}`);
 }
 
 // Execute the main function and handle any unexpected errors.

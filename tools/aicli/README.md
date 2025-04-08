@@ -12,8 +12,8 @@ Note: We should still use the root package-lock.json for actual development of t
 
 ```sh
 # generate missing lockfiles
-npx aicli generate-npm-lockfiles
+pnpm aicli generate-npm-lockfiles
 
 # lint lockfiles to ensure they're all up to date
-npx aicli lint-npm-lockfiles
+pnpm aicli lint-npm-lockfiles
 ```
