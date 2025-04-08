@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       # Restore the cached .nx folder (if it exists)
       - name: Restore Nx cache
@@ -43,13 +43,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --child-concurrency=10
 
+      - name: "Ensure package-lock.json files are updated"
+        run: "pnpm lint-npm-lockfiles"
+
       - name: Format and lint everything
         run: |
           pnpm format
           pnpm lint
-
-      - name: 'Update package-lock.json files'
-        run: 'pnpm lint-npm-lockfiles'
 
       - name: Set Nx SHAs
         uses: nrwl/nx-set-shas@v4
