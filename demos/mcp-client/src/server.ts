@@ -94,7 +94,6 @@ export class MyAgent extends Agent<Env, State> {
           status: 200,
           headers: { "content-type": "text/html" },
         });
-        // biome-ignore lint/suspicious/noExplicitAny: just bubbling an error up
       } catch (e: any) {
         return new Response(e, { status: 401 });
       }
