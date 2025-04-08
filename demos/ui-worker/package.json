@@ -31,6 +31,7 @@
 		"wrangler": "^4.2.0"
 	},
 	"dependencies": {
+		"@ai-sdk/react": "^1.2.8",
 		"@mantine/charts": "^7.16.3",
 		"@mantine/code-highlight": "^7.16.3",
 		"@mantine/core": "^7.16.3",
