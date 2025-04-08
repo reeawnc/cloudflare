@@ -48,6 +48,9 @@ jobs:
           pnpm format
           pnpm lint
 
+      - name: 'Update package-lock.json files'
+        run: 'pnpm lint-npm-lockfiles'
+
       - name: Set Nx SHAs
         uses: nrwl/nx-set-shas@v4
 
