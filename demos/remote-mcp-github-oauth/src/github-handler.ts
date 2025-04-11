@@ -22,6 +22,7 @@ app.get('/authorize', async (c) => {
 		client: await c.env.OAUTH_PROVIDER.lookupClient(clientId),
 		server: {
 			name: "Cloudflare GitHub MCP Server",
+			logo: "https://avatars.githubusercontent.com/u/314135?s=200&v=4",
 			description: 'This is a demo MCP Remote Server using GitHub for authentication.', // optional
 		},
 		state: { oauthReqInfo }, // arbitrary data that flows through the form submission below
