@@ -1,15 +1,13 @@
-# Model Context Protocol (MCP) Server + Github OAuth
+# Model Context Protocol (MCP) Server + Access OAuth
 
-This is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) server that supports remote MCP connections, with Github OAuth built-in.
+This is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) server that supports remote MCP connections, with Access OAuth built-in.
 
-You can deploy it to your own Cloudflare account, and after you create your own Github OAuth client app, you'll have a fully functional remote MCP server that you can build off. Users will be able to connect to your MCP server by signing in with their GitHub account.
-
-You can use this as a reference example for how to integrate other OAuth providers with an MCP server deployed to Cloudflare, using the [`workers-oauth-provider` library](https://github.com/cloudflare/workers-oauth-provider).
+You can deploy it to your own Cloudflare account, and after you create your own Access for SaaS OIDC app, you'll have a fully functional remote MCP server that you can build off. Users will be able to connect to your MCP server by signing in with your connected Access Identity Provider.
 
 The MCP server (powered by [Cloudflare Workers](https://developers.cloudflare.com/workers/)):
 
 - Acts as OAuth _Server_ to your MCP clients
-- Acts as OAuth _Client_ to your _real_ OAuth server (in this case, GitHub)
+- Acts as OAuth _Client_ to your _real_ OAuth server (in this case, Access)
 
 ## Getting Started
 
@@ -17,16 +15,18 @@ Clone the repo & install dependencies: `npm install`
 
 ### For Production
 
-Create a new [GitHub OAuth App](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app):
+Create a new [Access for SaaS OIDC App](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/saas-apps/generic-oidc-saas/):
 
-- For the Homepage URL, specify `https://mcp-github-oauth.<your-subdomain>.workers.dev`
-- For the Authorization callback URL, specify `https://mcp-github-oauth.<your-subdomain>.workers.dev/callback`
-- Note your Client ID and generate a Client secret.
+- For the Authorization callback URL, specify `https://mcp-access-oauth.<your-subdomain>.workers.dev/callback` and `http://localhost:8788/callback` if you are developing locally.
+- Note your Client ID and Client secret.
 - Set secrets via Wrangler
 
 ```bash
-wrangler secret put GITHUB_CLIENT_ID
-wrangler secret put GITHUB_CLIENT_SECRET
+wrangler secret put ACCESS_CLIENT_ID
+wrangler secret put ACCESS_CLIENT_SECRET
+wrangler secret put ACCESS_TOKEN_URL
+wrangler secret put ACCESS_AUTHORIZATION_URL
+wrangler secret put ACCESS_JWKS_URL
 wrangler secret put COOKIE_ENCRYPTION_KEY # add any random string here e.g. openssl rand -hex 32
 ```
 
@@ -47,7 +47,7 @@ Test the remote server using [Inspector](https://modelcontextprotocol.io/docs/to
 npx @modelcontextprotocol/inspector@latest
 ```
 
-Enter `https://mcp-github-oauth.<your-subdomain>.workers.dev/sse` and hit connect. Once you go through the authentication flow, you'll see the Tools working:
+Enter `https://mcp-access-oauth.<your-subdomain>.workers.dev/sse` and hit connect. Once you go through the authentication flow, you'll see the Tools working:
 
 <img width="640" alt="image" src="https://github.com/user-attachments/assets/7973f392-0a9d-4712-b679-6dd23f824287" />
 
@@ -55,13 +55,13 @@ You now have a remote MCP server deployed!
 
 ### Access Control
 
-This MCP server uses GitHub OAuth for authentication. All authenticated GitHub users can access basic tools like "add" and "userInfoOctokit".
+This MCP server uses Access for authentication. All authenticated Access users can access basic tools like "add".
 
-The "generateImage" tool is restricted to specific GitHub users listed in the `ALLOWED_USERNAMES` configuration:
+The "generateImage" tool is restricted to specific Access users listed in the `ALLOWED_USERNAMES` configuration:
 
 ```typescript
-// Add GitHub usernames for image generation access
-const ALLOWED_USERNAMES = new Set(['yourusername', 'teammate1'])
+// Add user emails for image generation access
+const ALLOWED_EMAILS = new Set(['employee1@mycompany.com', 'teammate1@mycompany.com'])
 ```
 
 ### Access the remote MCP server from Claude Desktop
@@ -77,7 +77,7 @@ Replace the content with the following configuration. Once you restart Claude De
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://mcp-github-oauth.<your-subdomain>.workers.dev/sse"
+        "https://mcp-access-oauth.<your-subdomain>.workers.dev/sse"
       ]
     }
   }
@@ -88,7 +88,7 @@ Once the Tools (under 🔨) show up in the interface, you can ask Claude to use 
 
 ### For Local Development
 
-If you'd like to iterate and test your MCP server, you can do so in local development. This will require you to create another OAuth App on GitHub:
+If you'd like to iterate and test your MCP server, you can do so in local development.
 
 - For the Homepage URL, specify `http://localhost:8788`
 - For the Authorization callback URL, specify `http://localhost:8788/callback`
@@ -96,8 +96,12 @@ If you'd like to iterate and test your MCP server, you can do so in local develo
 - Create a `.dev.vars` file in your project root with:
 
 ```
-GITHUB_CLIENT_ID=your_development_github_client_id
-GITHUB_CLIENT_SECRET=your_development_github_client_secret
+ACCESS_CLIENT_ID=<your client id>
+ACCESS_CLIENT_SECRET=<your client secret>
+ACCESS_TOKEN_URL=<your Access for SaaS token url>
+ACCESS_AUTHORIZATION_URL=<your Access for SaaS authorization url>
+ACCESS_JWKS_URL=<your Access for SaaS JWKS url>
+COOKIE_ENCRYPTION_KEY=COOKIE_ENCRYPTION_KEY
 ```
 
 #### Develop & Test
@@ -126,7 +130,7 @@ You can connect your MCP server to other MCP clients like Windsurf by opening th
 The OAuth Provider library serves as a complete OAuth 2.1 server implementation for Cloudflare Workers. It handles the complexities of the OAuth flow, including token issuance, validation, and management. In this project, it plays the dual role of:
 
 - Authenticating MCP clients that connect to your server
-- Managing the connection to GitHub's OAuth services
+- Managing the connection to Access's OAuth services
 - Securely storing tokens and authentication state in KV storage
 
 #### Durable MCP
