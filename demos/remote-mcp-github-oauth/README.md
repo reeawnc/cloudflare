@@ -24,6 +24,7 @@ Create a new [GitHub OAuth App](https://docs.github.com/en/apps/oauth-apps/build
 ```bash
 wrangler secret put GITHUB_CLIENT_ID
 wrangler secret put GITHUB_CLIENT_SECRET
+wrangler secret put COOKIE_ENCRYPTION_KEY # add any random string here e.g. openssl rand -hex 32
 ```
 #### Set up a KV namespace
 - Create the KV namespace: 

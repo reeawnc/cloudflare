@@ -7,8 +7,8 @@
 YELLOW="\033[1;33m"
 RESET="\033[0m"
 
-# Replace "package-lock.json" with your actual lockfile if needed.
-LOCKFILE="package-lock.json"
+# Replace "pnpm-lock.yaml" with your actual lockfile if needed.
+LOCKFILE="pnpm-lock.yaml"
 
 # 1. Ensure the lockfile exists.
 if [ ! -f "$LOCKFILE" ]; then
@@ -22,10 +22,10 @@ fi
 # 2. Calculate the original hash of the lockfile.
 ORIGINAL_HASH=$(sha256sum "$LOCKFILE" | cut -d ' ' -f 1)
 
-# 3. Run npm install.
-npm install
+# 3. Run pnpm install.
+pnpm install --child-concurrency=10
 
-# 4. Recalculate the hash after npm install.
+# 4. Recalculate the hash after pnpm install.
 NEW_HASH=$(sha256sum "$LOCKFILE" | cut -d ' ' -f 1)
 
 # 5. Compare the hashes.

@@ -142,8 +142,10 @@ export default new OAuthProvider({
 
 			// Keep most of the existing props, but override whatever needs changing
 			return {
-				...options.props,
-				...await refreshSlackToken(options.props.refreshToken)
+				newProps: {
+					...options.props,
+					...await refreshSlackToken(options.props.refreshToken)
+				}
 			}
 		}
 	}

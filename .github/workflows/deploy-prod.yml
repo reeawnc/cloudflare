@@ -20,12 +20,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: 'npm'
-      - run: npm ci
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile --child-concurrency=10
 
       - uses: nrwl/nx-set-shas@v4
 
-      - run: npx nx affected -t lint test:ci type-check build deploy:production
+      - run: pnpm nx affected -t lint test:ci type-check build deploy:production
