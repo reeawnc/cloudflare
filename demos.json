@@ -77,6 +77,9 @@
     },
     "./demos/ui-worker": {
       "package_json_hash": "a987a629a06e6377b612b6dded24d1a868b7483d"
+    },
+    "./demos/remote-mcp-cf-access": {
+      "package_json_hash": "0359c5cac8bca22b08af9f85ed1ab7f6e0171d03"
     }
   }
 }

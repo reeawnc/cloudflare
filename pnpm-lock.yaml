@@ -747,6 +747,45 @@ importers:
         specifier: ^3.24.2
         version: 3.24.2
 
+  demos/remote-mcp-cf-access:
+    devDependencies:
+      '@cloudflare/workers-oauth-provider':
+        specifier: ^0.0.2
+        version: 0.0.2
+      '@cloudflare/workers-types':
+        specifier: ^4.20250310.0
+        version: 4.20250407.0
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.7.0
+        version: 1.9.0
+      agents:
+        specifier: ^0.0.45
+        version: 0.0.45(@cloudflare/workers-types@4.20250407.0)
+      hono:
+        specifier: ^4.7.4
+        version: 4.7.6
+      just-pick:
+        specifier: ^4.2.0
+        version: 4.2.0
+      octokit:
+        specifier: ^4.1.2
+        version: 4.1.2
+      prettier:
+        specifier: ^3.5.3
+        version: 3.5.3
+      typescript:
+        specifier: ^5.5.2
+        version: 5.8.3
+      workers-mcp:
+        specifier: 0.1.0-3
+        version: 0.1.0-3
+      wrangler:
+        specifier: ^3.112.0
+        version: 3.114.4(@cloudflare/workers-types@4.20250407.0)
+      zod:
+        specifier: ^3.24.2
+        version: 3.24.2
+
   demos/remote-mcp-github-oauth:
     devDependencies:
       '@cloudflare/workers-oauth-provider':
