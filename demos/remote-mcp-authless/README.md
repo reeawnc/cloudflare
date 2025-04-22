@@ -12,10 +12,10 @@ git clone git@github.com:cloudflare/ai.git
 cd ai/demos/remote-mcp-authless/
 
 # Install dependencies
-npm install
+pnpm install
 
 # Deploy your worker
-npm run deploy
+pnpm run deploy
 ```
 
 Your MCP server will be deployed to a URL like: `remote-mcp-server-authless.your-account.workers.dev/sse`
