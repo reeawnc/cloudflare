@@ -1,4 +1,4 @@
-# Public MCP Server on Cloudflare (Without Auth)
+# Building a Remote MCP Server on Cloudflare (Without Auth)
 
 This example demonstrates how to create a remote MCP server on Cloudflare Workers that doesn't require authentication. 
 
