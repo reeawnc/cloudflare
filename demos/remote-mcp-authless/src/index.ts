@@ -40,14 +40,10 @@ export class MyMCP extends McpAgent {
   }
 }
 
-// Export default handler - use the static mount method correctly
-export default {
-  // Use the static mount method with CORS options
-  ...MyMCP.mount("/sse", {
-    corsOptions: {
-      origin: "*",
-      methods: "GET, POST, OPTIONS",
-      headers: "Content-Type, Authorization, Accept"
-    }
-  })
-};
+export default MyMCP.mount("/sse", {
+  corsOptions: {
+    origin: "*",
+    methods: "GET, POST, OPTIONS",
+    headers: "Content-Type, Authorization, Accept"
+  }
+});
