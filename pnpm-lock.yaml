@@ -747,6 +747,25 @@ importers:
         specifier: ^3.24.2
         version: 3.24.2
 
+  demos/remote-mcp-authless:
+    dependencies:
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.7.0
+        version: 1.9.0
+      agents:
+        specifier: ^0.0.53
+        version: 0.0.53(@cloudflare/workers-types@4.20250407.0)
+      zod:
+        specifier: ^3.24.2
+        version: 3.24.2
+    devDependencies:
+      typescript:
+        specifier: ^5.5.2
+        version: 5.8.3
+      wrangler:
+        specifier: ^4.2.0
+        version: 4.8.0(@cloudflare/workers-types@4.20250407.0)
+
   demos/remote-mcp-cf-access:
     devDependencies:
       '@cloudflare/workers-oauth-provider':
