@@ -13,7 +13,16 @@ The MCP server (powered by [Cloudflare Workers](https://developers.cloudflare.co
 
 ## Getting Started
 
-Clone the repo & install dependencies: `npm install`
+[![Deploy to Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/ai/tree/main/demos/remote-mcp-github-oauth)
+
+This will deploy your MCP server to a URL like: `remote-mcp-server-github-oauth.<your-account>.workers.dev/sse`
+
+Alternatively, you can use the command line below to get the remote MCP Server created on your local machine:
+```bash
+npm create cloudflare@latest -- my-mcp-server --template=cloudflare/ai/demos/remote-mcp-github-oauth
+```
+
+Or clone the repo directly & install dependencies: `npm install`
 
 ### For Production
 Create a new [GitHub OAuth App](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app): 
