@@ -1,5 +1,6 @@
 {
 	"name": "@repo/aicli",
+	"version": "0.0.1",
 	"description": "A handy CLI for developing demos",
 	"directories": {
 		"bin": "bin"
