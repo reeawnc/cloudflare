@@ -1,5 +1,6 @@
 {
 	"name": "@repo/aicli",
+	"private": true,
 	"version": "0.0.1",
 	"description": "A handy CLI for developing demos",
 	"directories": {
