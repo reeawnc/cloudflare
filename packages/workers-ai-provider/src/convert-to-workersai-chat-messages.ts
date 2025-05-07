@@ -1,8 +1,12 @@
-import { type LanguageModelV1Prompt, UnsupportedFunctionalityError } from "@ai-sdk/provider";
+import { type LanguageModelV1Prompt } from "@ai-sdk/provider";
 import type { WorkersAIChatPrompt } from "./workersai-chat-prompt";
 
-export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): WorkersAIChatPrompt {
+export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
+	messages: WorkersAIChatPrompt;
+	image?: Uint8Array;
+} {
 	const messages: WorkersAIChatPrompt = [];
+	let image: Uint8Array | undefined;
 
 	for (const { role, content } of prompt) {
 		switch (role) {
@@ -21,9 +25,13 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): W
 									return part.text;
 								}
 								case "image": {
-									throw new UnsupportedFunctionalityError({
-										functionality: "image-part",
-									});
+									// Extract image from this part
+									if (!image && part.image instanceof Uint8Array) {
+										// Store the image data directly as Uint8Array
+										// For Llama 3.2 Vision model, which needs array of integers
+										image = part.image;
+									}
+									return ""; // No text for the image part
 								}
 							}
 						})
@@ -101,5 +109,5 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): W
 		}
 	}
 
-	return messages;
+	return { messages, image };
 }

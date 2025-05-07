@@ -140,15 +140,20 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		const { args, warnings } = this.getArgs(options);
 
 		const { gateway, safePrompt, ...passthroughOptions } = this.settings;
+		
+		// Extract image from messages if present
+		const { messages, image } = convertToWorkersAIChatMessages(options.prompt);
 
 		const output = await this.config.binding.run(
 			args.model,
 			{
-				messages: args.messages,
+				messages: messages,
 				max_tokens: args.max_tokens,
 				temperature: args.temperature,
 				tools: args.tools,
 				top_p: args.top_p,
+				// Convert Uint8Array to Array of integers for Llama 3.2 Vision model
+				...(image ? { image: Array.from(image) } : {}),
 				// @ts-expect-error response_format not yet added to types
 				response_format: args.response_format,
 			},
@@ -181,11 +186,14 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		options: Parameters<LanguageModelV1["doStream"]>[0],
 	): Promise<Awaited<ReturnType<LanguageModelV1["doStream"]>>> {
 		const { args, warnings } = this.getArgs(options);
+		
+		// Extract image from messages if present
+		const { messages, image } = convertToWorkersAIChatMessages(options.prompt);
 
 		// [1] When the latest message is not a tool response, we use the regular generate function
 		// and simulate it as a streamed response in order to satisfy the AI SDK's interface for
 		// doStream...
-		if (args.tools?.length && lastMessageWasUser(args.messages)) {
+		if (args.tools?.length && lastMessageWasUser(messages)) {
 			const response = await this.doGenerate(options);
 
 			if (response instanceof ReadableStream) {
@@ -217,7 +225,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 						controller.close();
 					},
 				}),
-				rawCall: { rawPrompt: args.messages, rawSettings: args },
+				rawCall: { rawPrompt: messages, rawSettings: args },
 				warnings,
 			};
 		}
@@ -228,12 +236,14 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		const response = await this.config.binding.run(
 			args.model,
 			{
-				messages: args.messages,
+				messages: messages,
 				max_tokens: args.max_tokens,
 				stream: true,
 				temperature: args.temperature,
 				tools: args.tools,
 				top_p: args.top_p,
+				// Convert Uint8Array to Array of integers for Llama 3.2 Vision model
+				...(image ? { image: Array.from(image) } : {}),
 				// @ts-expect-error response_format not yet added to types
 				response_format: args.response_format,
 			},
