@@ -43,7 +43,6 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 
 	private getArgs({
 		mode,
-		prompt,
 		maxTokens,
 		temperature,
 		topP,
@@ -81,9 +80,6 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 			temperature,
 			top_p: topP,
 			random_seed: seed,
-
-			// messages:
-			messages: convertToWorkersAIChatMessages(prompt),
 		};
 
 		switch (type) {
@@ -140,9 +136,18 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		const { args, warnings } = this.getArgs(options);
 
 		const { gateway, safePrompt, ...passthroughOptions } = this.settings;
-		
+
 		// Extract image from messages if present
-		const { messages, image } = convertToWorkersAIChatMessages(options.prompt);
+		const { messages, images } = convertToWorkersAIChatMessages(
+			options.prompt,
+		);
+
+		// TODO: support for multiple images
+		if (images.length !== 0 && images.length !== 1) {
+			throw new Error("Multiple images are not yet supported as input");
+		}
+
+		const image = images[0];
 
 		const output = await this.config.binding.run(
 			args.model,
@@ -176,7 +181,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 				args: JSON.stringify(toolCall.arguments || {}),
 			})),
 			finishReason: "stop", // TODO: mapWorkersAIFinishReason(response.finish_reason),
-			rawCall: { rawPrompt: args.messages, rawSettings: args },
+			rawCall: { rawPrompt: messages, rawSettings: args },
 			usage: mapWorkersAIUsage(output),
 			warnings,
 		};
@@ -186,9 +191,11 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		options: Parameters<LanguageModelV1["doStream"]>[0],
 	): Promise<Awaited<ReturnType<LanguageModelV1["doStream"]>>> {
 		const { args, warnings } = this.getArgs(options);
-		
+
 		// Extract image from messages if present
-		const { messages, image } = convertToWorkersAIChatMessages(options.prompt);
+		const { messages, images } = convertToWorkersAIChatMessages(
+			options.prompt,
+		);
 
 		// [1] When the latest message is not a tool response, we use the regular generate function
 		// and simulate it as a streamed response in order to satisfy the AI SDK's interface for
@@ -232,6 +239,13 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 
 		// [2] ...otherwise, we just proceed as normal and stream the response directly from the remote model.
 		const { gateway, ...passthroughOptions } = this.settings;
+
+		// TODO: support for multiple images
+		if (images.length !== 0 && images.length !== 1) {
+			throw new Error("Multiple images are not yet supported as input");
+		}
+
+		const image = images[0];
 
 		const response = await this.config.binding.run(
 			args.model,
@@ -285,7 +299,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 					controller.close();
 				},
 			}),
-			rawCall: { rawPrompt: args.messages, rawSettings: args },
+			rawCall: { rawPrompt: messages, rawSettings: args },
 			warnings,
 		};
 	}
@@ -334,7 +348,9 @@ function prepareToolsAndToolChoice(
 		// so we filter the tools and force the tool choice through 'any'
 		case "tool":
 			return {
-				tools: mappedTools.filter((tool) => tool.function.name === toolChoice.toolName),
+				tools: mappedTools.filter(
+					(tool) => tool.function.name === toolChoice.toolName,
+				),
 				tool_choice: "any",
 			};
 		default: {

@@ -1,12 +1,12 @@
-import { type LanguageModelV1Prompt } from "@ai-sdk/provider";
+import type { LanguageModelV1Prompt } from "@ai-sdk/provider";
 import type { WorkersAIChatPrompt } from "./workersai-chat-prompt";
 
 export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 	messages: WorkersAIChatPrompt;
-	image?: Uint8Array;
+	images: Uint8Array[];
 } {
 	const messages: WorkersAIChatPrompt = [];
-	let image: Uint8Array | undefined;
+	const images: Uint8Array[] = [];
 
 	for (const { role, content } of prompt) {
 		switch (role) {
@@ -26,10 +26,10 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 								}
 								case "image": {
 									// Extract image from this part
-									if (!image && part.image instanceof Uint8Array) {
+									if (part.image instanceof Uint8Array) {
 										// Store the image data directly as Uint8Array
 										// For Llama 3.2 Vision model, which needs array of integers
-										image = part.image;
+										images.push(part.image);
 									}
 									return ""; // No text for the image part
 								}
@@ -72,7 +72,9 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 						}
 						default: {
 							const exhaustiveCheck = part;
-							throw new Error(`Unsupported part: ${exhaustiveCheck}`);
+							throw new Error(
+								`Unsupported part: ${exhaustiveCheck}`,
+							);
 						}
 					}
 				}
@@ -82,11 +84,15 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 					content: text,
 					tool_calls:
 						toolCalls.length > 0
-							? toolCalls.map(({ function: { name, arguments: args } }) => ({
-									id: "null",
-									type: "function",
-									function: { name, arguments: args },
-								}))
+							? toolCalls.map(
+									({
+										function: { name, arguments: args },
+									}) => ({
+										id: "null",
+										type: "function",
+										function: { name, arguments: args },
+									}),
+								)
 							: undefined,
 				});
 
@@ -109,5 +115,5 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 		}
 	}
 
-	return { messages, image };
+	return { messages, images };
 }
