@@ -60,7 +60,7 @@ importers:
         specifier: ^8.4.0
         version: 8.4.0(postcss@8.5.3)(tsx@4.19.4)(typescript@5.8.3)(yaml@2.7.1)
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -136,7 +136,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -176,7 +176,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -213,7 +213,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -250,7 +250,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -284,7 +284,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -571,7 +571,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -608,7 +608,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -645,7 +645,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -682,7 +682,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -893,7 +893,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -986,7 +986,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -1020,7 +1020,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -1057,7 +1057,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -1094,7 +1094,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.8
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
@@ -1253,7 +1253,7 @@ importers:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
       workers-ai-provider:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0
       zod:
         specifier: ^3.24.2
