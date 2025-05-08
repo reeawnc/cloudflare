@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.3.1
+
+### Patch Changes
+
+- [#137](https://github.com/cloudflare/ai/pull/137) [`cb2cc87`](https://github.com/cloudflare/ai/commit/cb2cc871566c4dbe8a09711ee86944ddcdb15bc6) Thanks [@mchenco](https://github.com/mchenco)! - adding vision support (For Llama 3.2 11b vision right now)
+
 ## 0.3.0
 
 ### Minor Changes

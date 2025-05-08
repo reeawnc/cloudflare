@@ -1,7 +1,7 @@
 {
   "demos": {
     "./demos/agent-scheduler": {
-      "package_json_hash": "f9541ff40c7dee633b6f48fa8dd506efd65efc05"
+      "package_json_hash": "c88fc8f746acae6d4eb0babef33c9a07a784ea78"
     },
     "./demos/agent-task-manager": {
       "package_json_hash": "358b4dcdf67e192fc91d44934111a596a0a0bcb4"

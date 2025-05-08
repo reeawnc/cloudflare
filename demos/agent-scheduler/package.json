@@ -14,7 +14,7 @@
 		"lint": "biome lint --error-on-warnings",
 		"lint:fix": "biome lint --fix",
 		"type-check": "tsc --noEmit"
-	},	
+	},
 	"dependencies": {
 		"agents": "^0.0.79",
 		"ai": "^4.1.39",
