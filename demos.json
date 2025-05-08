@@ -1,7 +1,7 @@
 {
   "demos": {
     "./demos/agent-scheduler": {
-      "package_json_hash": "413a43fdd4d2f538ba47cc9dab27c8fb1b486ba9"
+      "package_json_hash": "f9541ff40c7dee633b6f48fa8dd506efd65efc05"
     },
     "./demos/agent-task-manager": {
       "package_json_hash": "358b4dcdf67e192fc91d44934111a596a0a0bcb4"
@@ -76,7 +76,7 @@
       "package_json_hash": "847894945bfd70fa08c1472a441660aae1daba02"
     },
     "./demos/ui-worker": {
-      "package_json_hash": "677c9208c1c7e1ca4a3876d7c96b1273c2deded5"
+      "package_json_hash": "e9f98741934a93aa5258fdc8aa7a9db17b31ebf7"
     },
     "./demos/remote-mcp-cf-access": {
       "package_json_hash": "7985d1fa5cf3cdd7eaa4079496da670d470ad827"
