@@ -1,5 +1,5 @@
 {
-	"name": "routing",
+	"name": "@cloudflare/routing",
 	"private": true,
 	"type": "module",
 	"scripts": {

@@ -1,5 +1,5 @@
 {
-	"name": "agent-task-manager",
+	"name": "@cloudflare/agent-task-manager",
 	"private": true,
 	"type": "module",
 	"scripts": {

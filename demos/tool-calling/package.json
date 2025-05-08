@@ -1,5 +1,5 @@
 {
-	"name": "tool-calling",
+	"name": "@cloudflare/tool-calling",
 	"private": true,
 	"type": "module",
 	"scripts": {

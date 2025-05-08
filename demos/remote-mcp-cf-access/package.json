@@ -1,5 +1,5 @@
 {
-    "name": "mcp-access-oauth",
+    "name": "@cloudflare/mcp-access-oauth",
     "version": "0.0.1",
     "private": true,
     "scripts": {

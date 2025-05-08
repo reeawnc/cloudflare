@@ -1,5 +1,5 @@
 {
-	"name": "parallelisation",
+	"name": "@cloudflare/parallelisation",
 	"private": true,
 	"type": "module",
 	"scripts": {

@@ -5,7 +5,11 @@
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
-	"files": ["dist", "LICENSE", "README.md"],
+	"files": [
+		"dist",
+		"LICENSE",
+		"README.md"
+	],
 	"scripts": {
 		"build": "rm -rf dist && tsup src/index.ts --dts --sourcemap --format cjs,esm --target es2020",
 		"format": "biome format --write",
@@ -15,7 +19,10 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"keywords": ["cloudflare", "worker"],
+	"keywords": [
+		"cloudflare",
+		"worker"
+	],
 	"author": "Gabriel Massadas <https://github.com/g4brym>",
 	"license": "MIT",
 	"homepage": "https://github.com/cloudflare/ai",

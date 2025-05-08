@@ -1,5 +1,5 @@
 {
-	"name": "image-generation",
+	"name": "@cloudflare/image-generation",
 	"private": true,
 	"type": "module",
 	"scripts": {

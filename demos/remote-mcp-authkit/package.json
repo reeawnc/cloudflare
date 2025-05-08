@@ -1,5 +1,5 @@
 {
-	"name": "remote-mcp-authkit",
+	"name": "@cloudflare/remote-mcp-authkit",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {

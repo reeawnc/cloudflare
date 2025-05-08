@@ -1,5 +1,5 @@
 {
-	"name": "agent-task-manager-human-in-the-loop",
+	"name": "@cloudflare/agent-task-manager-human-in-the-loop",
 	"private": true,
 	"type": "module",
 	"scripts": {
