@@ -1,5 +1,5 @@
 {
-	"name": "agent-scheduler",
+	"name": "@cloudflare/agent-scheduler",
 	"private": true,
 	"type": "module",
 	"scripts": {

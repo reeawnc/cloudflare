@@ -1,5 +1,5 @@
 {
-	"name": "vision",
+	"name": "@cloudflare/vision",
 	"type": "module",
 	"scripts": {
 		"build": "vite build",

@@ -1,5 +1,5 @@
 {
-	"name": "prompt-chaining",
+	"name": "@cloudflare/prompt-chaining",
 	"private": true,
 	"type": "module",
 	"scripts": {

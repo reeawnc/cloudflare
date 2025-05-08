@@ -1,5 +1,5 @@
 {
-	"name": "text-generation",
+	"name": "@cloudflare/text-generation",
 	"private": true,
 	"type": "module",
 	"scripts": {

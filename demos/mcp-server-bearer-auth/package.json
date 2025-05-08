@@ -1,5 +1,5 @@
 {
-	"name": "remote-mcp-server-bearer-auth",
+	"name": "@cloudflare/remote-mcp-server-bearer-auth",
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
