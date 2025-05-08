@@ -60,8 +60,8 @@ importers:
         specifier: ^8.4.0
         version: 8.4.0(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.7.1)
       workers-ai-provider:
-        specifier: ^0.2.1
-        version: 0.2.2
+        specifier: ^0.3.0
+        version: 0.3.0
       zod:
         specifier: ^3.24.2
         version: 3.24.2
@@ -6113,9 +6113,6 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
 
-  workers-ai-provider@0.2.2:
-    resolution: {integrity: sha512-jtgM4rZIE6euSQxdXc9B61zDdXPf2T9W038rvvr/wQLeopndImPaGO1tuh9wqwY6kTM/02/yYVruBC/UtIdSvA==}
-
   workers-ai-provider@0.3.0:
     resolution: {integrity: sha512-NCnwRJ0OVgyVIZwbHRmn+8A80vi4iXxnjvLaxn0CCYMsooVKgf52rEIcbap5FJNd7fx3nLOi2OgNKjqS1ipz5A==}
 
@@ -11166,10 +11163,6 @@ snapshots:
       '@cloudflare/workerd-linux-64': 1.20250507.0
       '@cloudflare/workerd-linux-arm64': 1.20250507.0
       '@cloudflare/workerd-windows-64': 1.20250507.0
-
-  workers-ai-provider@0.2.2:
-    dependencies:
-      '@cloudflare/workers-types': 4.20250407.0
 
   workers-ai-provider@0.3.0:
     dependencies:
