@@ -1253,8 +1253,8 @@ importers:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
       workers-ai-provider:
-        specifier: ^0.2.1
-        version: 0.2.2
+        specifier: workspace:*
+        version: link:../../packages/workers-ai-provider
       zod:
         specifier: ^3.24.2
         version: 3.24.3

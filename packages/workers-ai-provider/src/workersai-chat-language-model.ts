@@ -147,7 +147,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 			throw new Error("Multiple images are not yet supported as input");
 		}
 
-		const image = images[0];
+		const imagePart = images[0];
 
 		const output = await this.config.binding.run(
 			args.model,
@@ -158,7 +158,8 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 				tools: args.tools,
 				top_p: args.top_p,
 				// Convert Uint8Array to Array of integers for Llama 3.2 Vision model
-				...(image ? { image: Array.from(image) } : {}),
+				// TODO: maybe use the base64 string version?
+				...(imagePart ? { image: Array.from(imagePart.image) } : {}),
 				// @ts-expect-error response_format not yet added to types
 				response_format: args.response_format,
 			},
@@ -245,7 +246,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 			throw new Error("Multiple images are not yet supported as input");
 		}
 
-		const image = images[0];
+		const imagePart = images[0];
 
 		const response = await this.config.binding.run(
 			args.model,
@@ -257,7 +258,8 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 				tools: args.tools,
 				top_p: args.top_p,
 				// Convert Uint8Array to Array of integers for Llama 3.2 Vision model
-				...(image ? { image: Array.from(image) } : {}),
+				// TODO: maybe use the base64 string version?
+				...(imagePart ? { image: Array.from(imagePart.image) } : {}),
 				// @ts-expect-error response_format not yet added to types
 				response_format: args.response_format,
 			},

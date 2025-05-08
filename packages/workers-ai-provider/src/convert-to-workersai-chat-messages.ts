@@ -1,12 +1,23 @@
-import type { LanguageModelV1Prompt } from "@ai-sdk/provider";
+import type {
+	LanguageModelV1Prompt,
+	LanguageModelV1ProviderMetadata,
+} from "@ai-sdk/provider";
 import type { WorkersAIChatPrompt } from "./workersai-chat-prompt";
 
 export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 	messages: WorkersAIChatPrompt;
-	images: Uint8Array[];
+	images: {
+		mimeType: string | undefined;
+		image: Uint8Array;
+		providerMetadata: LanguageModelV1ProviderMetadata | undefined;
+	}[];
 } {
 	const messages: WorkersAIChatPrompt = [];
-	const images: Uint8Array[] = [];
+	const images: {
+		mimeType: string | undefined;
+		image: Uint8Array;
+		providerMetadata: LanguageModelV1ProviderMetadata | undefined;
+	}[] = [];
 
 	for (const { role, content } of prompt) {
 		switch (role) {
@@ -29,13 +40,18 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 									if (part.image instanceof Uint8Array) {
 										// Store the image data directly as Uint8Array
 										// For Llama 3.2 Vision model, which needs array of integers
-										images.push(part.image);
+										images.push({
+											mimeType: part.mimeType,
+											image: part.image,
+											providerMetadata:
+												part.providerMetadata,
+										});
 									}
 									return ""; // No text for the image part
 								}
 							}
 						})
-						.join(""),
+						.join("\n"),
 				});
 				break;
 			}
