@@ -86,6 +86,9 @@
     },
     "./demos/python-workers-mcp": {
       "package_json_hash": "3ff42b5e5e6aa69aae6d00668301b2f84805cf66"
+    },
+    "./demos/vision": {
+      "package_json_hash": "39dd01337f0e2e478857eca84ffed1500b3524c9"
     }
   }
 }

@@ -43,7 +43,6 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 
 	private getArgs({
 		mode,
-		prompt,
 		maxTokens,
 		temperature,
 		topP,
@@ -81,9 +80,6 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 			temperature,
 			top_p: topP,
 			random_seed: seed,
-
-			// messages:
-			messages: convertToWorkersAIChatMessages(prompt),
 		};
 
 		switch (type) {
@@ -141,14 +137,29 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 
 		const { gateway, safePrompt, ...passthroughOptions } = this.settings;
 
+		// Extract image from messages if present
+		const { messages, images } = convertToWorkersAIChatMessages(
+			options.prompt,
+		);
+
+		// TODO: support for multiple images
+		if (images.length !== 0 && images.length !== 1) {
+			throw new Error("Multiple images are not yet supported as input");
+		}
+
+		const imagePart = images[0];
+
 		const output = await this.config.binding.run(
 			args.model,
 			{
-				messages: args.messages,
+				messages: messages,
 				max_tokens: args.max_tokens,
 				temperature: args.temperature,
 				tools: args.tools,
 				top_p: args.top_p,
+				// Convert Uint8Array to Array of integers for Llama 3.2 Vision model
+				// TODO: maybe use the base64 string version?
+				...(imagePart ? { image: Array.from(imagePart.image) } : {}),
 				// @ts-expect-error response_format not yet added to types
 				response_format: args.response_format,
 			},
@@ -171,7 +182,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 				args: JSON.stringify(toolCall.arguments || {}),
 			})),
 			finishReason: "stop", // TODO: mapWorkersAIFinishReason(response.finish_reason),
-			rawCall: { rawPrompt: args.messages, rawSettings: args },
+			rawCall: { rawPrompt: messages, rawSettings: args },
 			usage: mapWorkersAIUsage(output),
 			warnings,
 		};
@@ -182,10 +193,15 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 	): Promise<Awaited<ReturnType<LanguageModelV1["doStream"]>>> {
 		const { args, warnings } = this.getArgs(options);
 
+		// Extract image from messages if present
+		const { messages, images } = convertToWorkersAIChatMessages(
+			options.prompt,
+		);
+
 		// [1] When the latest message is not a tool response, we use the regular generate function
 		// and simulate it as a streamed response in order to satisfy the AI SDK's interface for
 		// doStream...
-		if (args.tools?.length && lastMessageWasUser(args.messages)) {
+		if (args.tools?.length && lastMessageWasUser(messages)) {
 			const response = await this.doGenerate(options);
 
 			if (response instanceof ReadableStream) {
@@ -217,7 +233,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 						controller.close();
 					},
 				}),
-				rawCall: { rawPrompt: args.messages, rawSettings: args },
+				rawCall: { rawPrompt: messages, rawSettings: args },
 				warnings,
 			};
 		}
@@ -225,15 +241,25 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		// [2] ...otherwise, we just proceed as normal and stream the response directly from the remote model.
 		const { gateway, ...passthroughOptions } = this.settings;
 
+		// TODO: support for multiple images
+		if (images.length !== 0 && images.length !== 1) {
+			throw new Error("Multiple images are not yet supported as input");
+		}
+
+		const imagePart = images[0];
+
 		const response = await this.config.binding.run(
 			args.model,
 			{
-				messages: args.messages,
+				messages: messages,
 				max_tokens: args.max_tokens,
 				stream: true,
 				temperature: args.temperature,
 				tools: args.tools,
 				top_p: args.top_p,
+				// Convert Uint8Array to Array of integers for Llama 3.2 Vision model
+				// TODO: maybe use the base64 string version?
+				...(imagePart ? { image: Array.from(imagePart.image) } : {}),
 				// @ts-expect-error response_format not yet added to types
 				response_format: args.response_format,
 			},
@@ -275,7 +301,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 					controller.close();
 				},
 			}),
-			rawCall: { rawPrompt: args.messages, rawSettings: args },
+			rawCall: { rawPrompt: messages, rawSettings: args },
 			warnings,
 		};
 	}
@@ -324,7 +350,9 @@ function prepareToolsAndToolChoice(
 		// so we filter the tools and force the tool choice through 'any'
 		case "tool":
 			return {
-				tools: mappedTools.filter((tool) => tool.function.name === toolChoice.toolName),
+				tools: mappedTools.filter(
+					(tool) => tool.function.name === toolChoice.toolName,
+				),
 				tool_choice: "any",
 			};
 		default: {
