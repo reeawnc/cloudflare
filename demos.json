@@ -89,6 +89,9 @@
     },
     "./demos/vision": {
       "package_json_hash": "7cb0f68b51b4d24b0d0f00c7bf174dcf827cfb7c"
+    },
+    "./demos/remote-mcp-google-oauth": {
+      "package_json_hash": "8f542c6f17b8070f41925d7aad6fbd72f03a34c1"
     }
   }
 }
