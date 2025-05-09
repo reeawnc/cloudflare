@@ -1,5 +1,5 @@
 {
-	"name": "@cloudflare/ui-worker",
+	"name": "ui-worker",
 	"private": true,
 	"type": "module",
 	"scripts": {

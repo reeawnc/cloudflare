@@ -1,5 +1,5 @@
 {
-	"name": "@cloudflare/remote-mcp-server-authless",
+	"name": "remote-mcp-server-authless",
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {

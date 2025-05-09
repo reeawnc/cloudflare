@@ -1,5 +1,5 @@
 {
-	"name": "@cloudflare/mcp-stytch-consumer-todo-list",
+	"name": "mcp-stytch-consumer-todo-list",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
