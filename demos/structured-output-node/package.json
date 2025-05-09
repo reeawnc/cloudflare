@@ -1,5 +1,5 @@
 {
-	"name": "@cloudflare/structured-output-node",
+	"name": "structured-output-node",
 	"private": true,
 	"type": "module",
 	"scripts": {

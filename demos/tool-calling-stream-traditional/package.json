@@ -1,5 +1,5 @@
 {
-	"name": "@cloudflare/tool-calling-stream-traditional",
+	"name": "tool-calling-stream-traditional",
 	"private": true,
 	"type": "module",
 	"scripts": {
