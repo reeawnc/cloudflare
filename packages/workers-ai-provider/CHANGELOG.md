@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.4.0
+
+### Minor Changes
+
+- [#153](https://github.com/cloudflare/ai/pull/153) [`ae5ac12`](https://github.com/cloudflare/ai/commit/ae5ac12cd4f1b17792af29e05cccc0c9403f38d9) Thanks [@JoaquinGimenez1](https://github.com/JoaquinGimenez1)! - Add support for new tool call format
+
 ## 0.3.2
 
 ### Patch Changes
