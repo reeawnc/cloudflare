@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.4.1
+
+### Patch Changes
+
+- [`ac0693d`](https://github.com/cloudflare/ai/commit/ac0693d75b0c481935cdd48417e69db66083efe6) Thanks [@threepointone](https://github.com/threepointone)! - For #126; thanks @jokull for adding AutoRAG support to workers-ai-provider
+
 ## 0.4.0
 
 ### Minor Changes
