@@ -6,11 +6,14 @@ Let's get a remote MCP server up-and-running on Cloudflare Workers complete with
 
 ```bash
 # clone the repository
-git clone git@github.com:cloudflare/ai.git
+git clone https://github.com/cloudflare/ai.git
+# Or if using ssh:
+# git clone git@github.com:cloudflare/ai.git
 
 # install dependencies
 cd ai
-npm install
+# Note: using pnpm instead of just "npm"
+pnpm install
 
 # run locally
 npx nx dev remote-mcp-server
