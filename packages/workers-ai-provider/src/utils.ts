@@ -1,3 +1,5 @@
+import type { LanguageModelV1 } from "@ai-sdk/provider";
+
 /**
  * General AI run interface with overloads to handle distinct return types.
  *
@@ -83,7 +85,9 @@ export function createRun(config: CreateRunConfig): AiRun {
 			}
 		}
 
-		const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}${urlParams ? `?${urlParams}` : ""}`;
+		const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}${
+			urlParams ? `?${urlParams}` : ""
+		}`;
 
 		// Merge default and custom headers.
 		const headers = {
@@ -119,4 +123,92 @@ export function createRun(config: CreateRunConfig): AiRun {
 		}>();
 		return data.result;
 	};
+}
+
+export function prepareToolsAndToolChoice(
+	mode: Parameters<LanguageModelV1["doGenerate"]>[0]["mode"] & {
+		type: "regular";
+	},
+) {
+	// when the tools array is empty, change it to undefined to prevent errors:
+	const tools = mode.tools?.length ? mode.tools : undefined;
+
+	if (tools == null) {
+		return { tools: undefined, tool_choice: undefined };
+	}
+
+	const mappedTools = tools.map((tool) => ({
+		type: "function",
+		function: {
+			name: tool.name,
+			// @ts-expect-error - description is not a property of tool
+			description: tool.description,
+			// @ts-expect-error - parameters is not a property of tool
+			parameters: tool.parameters,
+		},
+	}));
+
+	const toolChoice = mode.toolChoice;
+
+	if (toolChoice == null) {
+		return { tools: mappedTools, tool_choice: undefined };
+	}
+
+	const type = toolChoice.type;
+
+	switch (type) {
+		case "auto":
+			return { tools: mappedTools, tool_choice: type };
+		case "none":
+			return { tools: mappedTools, tool_choice: type };
+		case "required":
+			return { tools: mappedTools, tool_choice: "any" };
+
+		// workersAI does not support tool mode directly,
+		// so we filter the tools and force the tool choice through 'any'
+		case "tool":
+			return {
+				tools: mappedTools.filter((tool) => tool.function.name === toolChoice.toolName),
+				tool_choice: "any",
+			};
+		default: {
+			const exhaustiveCheck = type satisfies never;
+			throw new Error(`Unsupported tool choice type: ${exhaustiveCheck}`);
+		}
+	}
+}
+
+export function lastMessageWasUser<T extends { role: string }>(messages: T[]) {
+	return messages.length > 0 && messages[messages.length - 1]!.role === "user";
+}
+
+export function processToolCalls(output: any) {
+	// Check for OpenAI format tool calls first
+	if (output.tool_calls && Array.isArray(output.tool_calls)) {
+		return output.tool_calls.map((toolCall: any) => {
+			// Handle new format
+			if (toolCall.function && toolCall.id) {
+				return {
+					toolCallType: "function",
+					toolCallId: toolCall.id,
+					toolName: toolCall.function.name,
+					args:
+						typeof toolCall.function.arguments === "string"
+							? toolCall.function.arguments
+							: JSON.stringify(toolCall.function.arguments || {}),
+				};
+			}
+			return {
+				toolCallType: "function",
+				toolCallId: toolCall.name,
+				toolName: toolCall.name,
+				args:
+					typeof toolCall.arguments === "string"
+						? toolCall.arguments
+						: JSON.stringify(toolCall.arguments || {}),
+			};
+		});
+	}
+
+	return [];
 }
