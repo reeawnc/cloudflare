@@ -80,7 +80,7 @@ const text = await streamText({
 
 ### Using AutoRAG
 
-The provider now supports Cloudflare's AutoRAG, allowing you to prompt your AutoRAG models directly from the Vercel AI SDK. Here's how to use it in your Worker:
+The provider now supports [Cloudflare's AutoRAG](https://developers.cloudflare.com/autorag/), allowing you to prompt your AutoRAG models directly from the Vercel AI SDK. Here's how to use it in your Worker:
 
 ```ts
 import { createAutoRAG } from "workers-ai-provider";
