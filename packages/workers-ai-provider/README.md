@@ -19,10 +19,12 @@ binding = "AI"
 # ...
 ```
 
+### Using Workers AI
+
 Then in your Worker, import the factory function and create a new AI provider:
 
 ```ts
-import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
+import { createWorkersAI } from "workers-ai-provider";
 import { streamText } from "ai";
 
 type Env = {
@@ -74,6 +76,45 @@ const text = await streamText({
     },
   ],
 });
+```
+
+### Using AutoRAG
+
+The provider now supports [Cloudflare's AutoRAG](https://developers.cloudflare.com/autorag/), allowing you to prompt your AutoRAG models directly from the Vercel AI SDK. Here's how to use it in your Worker:
+
+```ts
+import { createAutoRAG } from "workers-ai-provider";
+import { streamText } from "ai";
+
+type Env = {
+  AI: Ai;
+};
+
+export default {
+  async fetch(req: Request, env: Env) {
+    const autorag = createAutoRAG({ binding: env.AI.autorag('my-rag-name') });
+
+    const text = await streamText({
+      model: autorag("@cf/meta/llama-3.3-70b-instruct-fp8-fast"),
+      messages: [
+        {
+          role: "user",
+          content: "How to setup AI Gateway?",
+        },
+      ],
+    });
+
+    return text.toTextStreamResponse({
+      headers: {
+        // add these headers to ensure that the
+        // response is chunked and streamed
+        "Content-Type": "text/x-unknown",
+        "content-encoding": "identity",
+        "transfer-encoding": "chunked",
+      },
+    });
+  },
+};
 ```
 
 For more info, refer to the documentation of the [Vercel AI SDK](https://sdk.vercel.ai/).
