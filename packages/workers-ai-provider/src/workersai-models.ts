@@ -11,4 +11,9 @@ export type TextGenerationModels = Exclude<
  */
 export type ImageGenerationModels = value2key<AiModels, BaseAiTextToImage>;
 
+/**
+ * The names of the BaseAiTextToEmbeddings models.
+ */
+export type EmbeddingModels = value2key<AiModels, BaseAiTextEmbeddings>;
+
 type value2key<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];

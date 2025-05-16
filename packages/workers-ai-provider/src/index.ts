@@ -1,11 +1,19 @@
 import { AutoRAGChatLanguageModel } from "./autorag-chat-language-model";
 import type { AutoRAGChatSettings } from "./autorag-chat-settings";
 import { createRun } from "./utils";
+import {
+	WorkersAIEmbeddingModel,
+	type WorkersAIEmbeddingSettings,
+} from "./workers-ai-embedding-model";
 import { WorkersAIChatLanguageModel } from "./workersai-chat-language-model";
 import type { WorkersAIChatSettings } from "./workersai-chat-settings";
 import { WorkersAIImageModel } from "./workersai-image-model";
 import type { WorkersAIImageSettings } from "./workersai-image-settings";
-import type { ImageGenerationModels, TextGenerationModels } from "./workersai-models";
+import type {
+	EmbeddingModels,
+	ImageGenerationModels,
+	TextGenerationModels,
+} from "./workersai-models";
 
 export type WorkersAISettings = (
 	| {
@@ -47,6 +55,21 @@ export interface WorkersAI {
 		modelId: TextGenerationModels,
 		settings?: WorkersAIChatSettings,
 	): WorkersAIChatLanguageModel;
+
+	embedding(
+		modelId: EmbeddingModels,
+		settings?: WorkersAIEmbeddingSettings,
+	): WorkersAIEmbeddingModel;
+
+	textEmbedding(
+		modelId: EmbeddingModels,
+		settings?: WorkersAIEmbeddingSettings,
+	): WorkersAIEmbeddingModel;
+
+	textEmbeddingModel(
+		modelId: EmbeddingModels,
+		settings?: WorkersAIEmbeddingSettings,
+	): WorkersAIEmbeddingModel;
 
 	/**
 	 * Creates a model for image generation.
@@ -91,6 +114,15 @@ export function createWorkersAI(options: WorkersAISettings): WorkersAI {
 			binding,
 			gateway: options.gateway,
 		});
+	const createEmbeddingModel = (
+		modelId: EmbeddingModels,
+		settings: WorkersAIEmbeddingSettings = {},
+	) =>
+		new WorkersAIEmbeddingModel(modelId, settings, {
+			provider: "workersai.embedding",
+			binding,
+			gateway: options.gateway,
+		});
 
 	const provider = (modelId: TextGenerationModels, settings?: WorkersAIChatSettings) => {
 		if (new.target) {
@@ -100,6 +132,9 @@ export function createWorkersAI(options: WorkersAISettings): WorkersAI {
 	};
 
 	provider.chat = createChatModel;
+	provider.embedding = createEmbeddingModel;
+	provider.textEmbedding = createEmbeddingModel;
+	provider.textEmbeddingModel = createEmbeddingModel;
 	provider.image = createImageModel;
 	provider.imageModel = createImageModel;
 
