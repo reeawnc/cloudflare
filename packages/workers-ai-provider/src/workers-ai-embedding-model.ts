@@ -70,9 +70,15 @@ export class WorkersAIEmbeddingModel implements EmbeddingModelV1<string> {
 			});
 		}
 
-		const response = await this.config.binding.run(this.modelId, {
-			text: values,
-		});
+		const { gateway, ...passthroughOptions } = this.settings;
+
+		const response = await this.config.binding.run(
+			this.modelId,
+			{
+				text: values,
+			},
+			{ gateway: this.config.gateway ?? gateway, ...passthroughOptions },
+		);
 
 		return {
 			embeddings: response.data,
