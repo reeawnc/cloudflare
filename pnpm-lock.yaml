@@ -841,6 +841,9 @@ importers:
         specifier: ^3.24.4
         version: 3.24.4
     devDependencies:
+      '@biomejs/biome':
+        specifier: 1.9.4
+        version: 1.9.4
       typescript:
         specifier: ^5.8.3
         version: 5.8.3

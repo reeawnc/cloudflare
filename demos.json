@@ -82,7 +82,7 @@
       "package_json_hash": "007c0d0d47304bfdb7bc0e5034113741d92e91f9"
     },
     "./demos/remote-mcp-authless": {
-      "package_json_hash": "6b77e4b9af317cc7143d58e1ffd22f9502cabf4a"
+      "package_json_hash": "b20ff707760be924d0e530ed3b14f455d523a982"
     },
     "./demos/python-workers-mcp": {
       "package_json_hash": "44cb5b33f2eafe01c85f4fe4d29abe54b7712eb8"
