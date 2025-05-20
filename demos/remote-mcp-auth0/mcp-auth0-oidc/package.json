@@ -6,7 +6,8 @@
         "deploy": "wrangler deploy",
         "dev": "wrangler dev",
         "start": "wrangler dev",
-        "cf-typegen": "wrangler types"
+        "cf-typegen": "wrangler types",
+        "type-check": "tsc --noEmit"
     },
     "devDependencies": {
         "@cloudflare/workers-oauth-provider": "^0.0.5",
@@ -18,8 +19,8 @@
         "oauth4webapi": "^3.5.1",
         "prettier": "^3.5.3",
         "typescript": "^5.8.3",
+        "workers-mcp": "^0.0.13",
         "wrangler": "^4.14.4",
-        "workers-mcp": "0.1.0-3",
         "zod": "^3.24.4"
     }
 }
