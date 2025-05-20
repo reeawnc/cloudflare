@@ -10,6 +10,6 @@
 		"type-check": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"wrangler": "^4.14.4"
+		"wrangler": "^4.16.0"
 	}
 }

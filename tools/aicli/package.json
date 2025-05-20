@@ -7,14 +7,14 @@
 		"bin": "bin"
 	},
 	"dependencies": {
-		"@commander-js/extra-typings": "^13.1.0",
-		"commander": "^13.1.0",
+		"@commander-js/extra-typings": "^14.0.0",
+		"commander": "^14.0.0",
 		"tsx": "^4.19.4",
-		"zod": "^3.24.4",
-		"zx": "8.5.3"
+		"zod": "^3.25.7",
+		"zx": "8.5.4"
 	},
 	"devDependencies": {
-		"@types/node": "^22.15.17",
+		"@types/node": "^22.15.19",
 		"typescript": "^5.8.3"
 	},
 	"scripts": {
