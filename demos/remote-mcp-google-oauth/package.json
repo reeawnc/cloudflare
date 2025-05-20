@@ -18,10 +18,10 @@
   "dependencies": {
     "@cloudflare/workers-oauth-provider": "^0.0.5",
     "@modelcontextprotocol/sdk": "^1.11.1",
-    "agents": "^0.0.80",
+    "agents": "^0.0.88",
     "hono": "^4.7.9",
     "just-pick": "^4.2.0",
-    "workers-mcp": "0.1.0-3",
+    "workers-mcp": "^0.0.13",
     "zod": "^3.24.4"
   }
 }
