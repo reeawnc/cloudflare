@@ -92,6 +92,9 @@
     },
     "./demos/remote-mcp-google-oauth": {
       "package_json_hash": "0e9d9ca9c75022f39360d4fc2aa224deb9caf081"
+    },
+    "./demos/remote-mcp-logto": {
+      "package_json_hash": "10071ef40acbdf74cf36b1c181070160a6c46171"
     }
   }
 }
