@@ -30,7 +30,7 @@
 		"hono": "^4.7.10",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
-		"workers-ai-provider": "0.5.1",
+		"workers-ai-provider": "0.5.0",
 		"zod": "^3.25.13"
 	}
 }
