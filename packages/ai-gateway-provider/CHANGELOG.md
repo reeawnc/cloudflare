@@ -1,5 +1,11 @@
 # ai-gateway-provider
 
+## 0.0.8
+
+### Patch Changes
+
+- [`7cc3626`](https://github.com/cloudflare/ai/commit/7cc362689fc632d1c266796b13272bc9a643007c) Thanks [@threepointone](https://github.com/threepointone)! - trigger a release to pick up new deps
+
 ## 0.0.7
 
 ### Patch Changes
