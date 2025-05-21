@@ -43,9 +43,9 @@ export class MyMCP extends McpAgent<Props, Env> {
 
 export default new OAuthProvider({
 	apiRoute: "/sse",
-	// @ts-ignore
+	// @ts-expect-error
 	apiHandler: MyMCP.mount("/sse"),
-	// @ts-ignore
+	// @ts-expect-error
 	defaultHandler: LogtoHandler,
 	authorizeEndpoint: "/authorize",
 	tokenEndpoint: "/token",
