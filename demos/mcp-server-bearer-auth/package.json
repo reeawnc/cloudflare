@@ -22,6 +22,6 @@
 		"@modelcontextprotocol/sdk": "^1.11.4",
 		"agents": "^0.0.88",
 		"hono": "^4.7.10",
-		"zod": "^3.25.7"
+		"zod": "^3.25.13"
 	}
 }

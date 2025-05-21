@@ -12,7 +12,7 @@
 	"author": "",
 	"dependencies": {
 		"@cloudflare/vite-plugin": "^1.2.3",
-		"@cloudflare/workers-types": "^4.20250520.0",
+		"@cloudflare/workers-types": "^4.20250521.0",
 		"@modelcontextprotocol/sdk": "^1.11.4",
 		"@vitejs/plugin-react": "^4.4.1",
 		"agents": "^0.0.88",
