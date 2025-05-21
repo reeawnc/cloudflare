@@ -7,6 +7,7 @@
 		"lint": "biome lint",
 		"lint:fix": "biome lint --fix",
 		"postinstall": "nx run-many --target=build --projects=packages/*",
+		"prepare": "if [ \"$CI\" ]; then echo 'Skipping husky setup in CI'; else husky; fi",
 		"generate-npm-lockfiles": "aicli generate-npm-lockfiles",
 		"lint-npm-lockfiles": "aicli lint-npm-lockfiles"
 	},
