@@ -16,6 +16,13 @@
 		"lint:fix": "biome lint --fix",
 		"type-check": "tsc --noEmit"
 	},
+	"dependencies": {
+		"agents": "^0.0.88",
+		"ai": "^4.3.16",
+		"hono": "^4.7.10",
+		"workers-ai-provider": "0.5.1",
+		"zod": "^3.25.13"
+	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@cloudflare/vite-plugin": "^1.2.3",
@@ -23,12 +30,5 @@
 		"typescript": "^5.8.3",
 		"vitest": "~3.1.4",
 		"wrangler": "^4.16.0"
-	},
-	"dependencies": {
-		"agents": "^0.0.88",
-		"ai": "^4.3.16",
-		"hono": "^4.7.10",
-		"workers-ai-provider": "0.5.1",
-		"zod": "^3.25.13"
 	}
 }

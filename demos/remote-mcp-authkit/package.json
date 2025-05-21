@@ -13,21 +13,20 @@
 		"start": "wrangler dev",
 		"type-check": "tsc --noEmit"
 	},
-	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
+	"dependencies": {
 		"@cloudflare/workers-oauth-provider": "^0.0.5",
-		"@cloudflare/workers-types": "^4.20250521.0",
 		"@modelcontextprotocol/sdk": "^1.11.4",
 		"@workos-inc/node": "^7.50.1",
 		"agents": "^0.0.88",
 		"hono": "^4.7.10",
 		"jose": "^6.0.11",
-		"typescript": "^5.8.3",
 		"workers-mcp": "^0.0.13",
-		"wrangler": "^4.16.0",
 		"zod": "^3.25.13"
 	},
-	"dependencies": {
-		"@workos-inc/node": "^7.50.1"
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@cloudflare/workers-types": "^4.20250521.0",
+		"typescript": "^5.8.3",
+		"wrangler": "^4.16.0"
 	}
 }
