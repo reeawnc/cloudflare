@@ -19,11 +19,11 @@
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
-		"agents": "^0.0.88",
+		"agents": "^0.0.90",
 		"ai": "^4.3.16",
 		"hono": "^4.7.10",
 		"workers-ai-provider": "0.5.1",
-		"zod": "^3.25.13"
+		"zod": "^3.25.16"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

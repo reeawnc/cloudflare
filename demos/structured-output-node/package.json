@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"ai": "^4.3.16",
-		"zod": "^3.25.13"
+		"zod": "^3.25.16"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
