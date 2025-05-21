@@ -7,16 +7,22 @@ settings:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       '@ai-sdk/openai':
         specifier: ^1.3.22
         version: 1.3.22(zod@3.25.7)
+      '@biomejs/biome':
+        specifier: ^1.9.4
+        version: 1.9.4
       '@changesets/changelog-github':
         specifier: ^0.5.1
         version: 0.5.1
       '@changesets/cli':
         specifier: ^2.29.4
         version: 2.29.4
+      '@clack/prompts':
+        specifier: ^0.10.1
+        version: 0.10.1
       '@cloudflare/workers-oauth-provider':
         specifier: ^0.0.5
         version: 0.0.5
@@ -26,6 +32,18 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.11.4
         version: 1.11.4
+      '@repo/aicli':
+        specifier: workspace:*
+        version: link:tools/aicli
+      '@types/ejs':
+        specifier: ^3.1.5
+        version: 3.1.5
+      '@types/node':
+        specifier: ^22.15.19
+        version: 22.15.19
+      '@types/wait-on':
+        specifier: ^5.3.4
+        version: 5.3.4
       agents:
         specifier: ^0.0.88
         version: 0.0.88(@cloudflare/workers-types@4.20250520.0)(react@19.1.0)
@@ -50,40 +68,6 @@ importers:
       fetch-event-stream:
         specifier: ^0.1.5
         version: 0.1.5
-      hono:
-        specifier: ^4.7.10
-        version: 4.7.10
-      langchain:
-        specifier: ^0.3.26
-        version: 0.3.26(@langchain/core@0.3.56(openai@4.92.1(ws@8.18.0)(zod@3.25.7)))(axios@1.8.4)(handlebars@4.7.8)(openai@4.92.1(ws@8.18.0)(zod@3.25.7))(ws@8.18.0)
-      marked:
-        specifier: ^15.0.12
-        version: 15.0.12
-      tsup:
-        specifier: ^8.5.0
-        version: 8.5.0(postcss@8.5.3)(tsx@4.19.4)(typescript@5.8.3)(yaml@2.7.1)
-      zod:
-        specifier: ^3.25.7
-        version: 3.25.7
-    devDependencies:
-      '@biomejs/biome':
-        specifier: ^1.9.4
-        version: 1.9.4
-      '@clack/prompts':
-        specifier: ^0.10.1
-        version: 0.10.1
-      '@repo/aicli':
-        specifier: workspace:*
-        version: link:tools/aicli
-      '@types/ejs':
-        specifier: ^3.1.5
-        version: 3.1.5
-      '@types/node':
-        specifier: ^22.15.19
-        version: 22.15.19
-      '@types/wait-on':
-        specifier: ^5.3.4
-        version: 5.3.4
       get-port:
         specifier: ^7.1.0
         version: 7.1.0
@@ -93,9 +77,18 @@ importers:
       handlebars:
         specifier: ^4.7.8
         version: 4.7.8
+      hono:
+        specifier: ^4.7.10
+        version: 4.7.10
       husky:
         specifier: ^9.1.7
         version: 9.1.7
+      langchain:
+        specifier: ^0.3.26
+        version: 0.3.26(@langchain/core@0.3.56(openai@4.92.1(ws@8.18.0)(zod@3.25.7)))(axios@1.8.4)(handlebars@4.7.8)(openai@4.92.1(ws@8.18.0)(zod@3.25.7))(ws@8.18.0)
+      marked:
+        specifier: ^15.0.12
+        version: 15.0.12
       miniflare:
         specifier: ^4.20250508.3
         version: 4.20250508.3
@@ -105,6 +98,9 @@ importers:
       nx:
         specifier: 21.0.3
         version: 21.0.3
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(postcss@8.5.3)(tsx@4.19.4)(typescript@5.8.3)(yaml@2.7.1)
       tsx:
         specifier: ^4.19.4
         version: 4.19.4
@@ -123,6 +119,9 @@ importers:
       wrangler:
         specifier: ^4.16.0
         version: 4.16.0(@cloudflare/workers-types@4.20250520.0)
+      zod:
+        specifier: ^3.25.7
+        version: 3.25.7
 
   demos/agent-scheduler:
     dependencies:
