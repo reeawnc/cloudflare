@@ -95,6 +95,9 @@
     },
     "./demos/remote-mcp-logto": {
       "package_json_hash": "10071ef40acbdf74cf36b1c181070160a6c46171"
+    },
+    "./demos/remote-mcp-server-descope-auth": {
+      "package_json_hash": "cb87d634d9eabd4391d67b2b7348c98592f14a5c"
     }
   }
 }
