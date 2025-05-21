@@ -15,7 +15,7 @@ type Props = {
 
 const ALLOWED_EMAILS = new Set(['<INSERT EMAIL>'])
 
-export class MyMCP extends McpAgent<Env, Props> {
+export class MyMCP extends McpAgent<Env, {}, Props> {
   server = new McpServer({
     name: 'Access OAuth Proxy Demo',
     version: '1.0.0',
@@ -29,7 +29,6 @@ export class MyMCP extends McpAgent<Env, Props> {
 
     // Dynamically add tools based on the user's login. In this case, I want to limit
     // access to my Image Generation tool to just me
-    // @ts-ignore
     if (ALLOWED_EMAILS.has(this.props.email)) {
       this.server.tool(
         'generateImage',
@@ -46,7 +45,6 @@ export class MyMCP extends McpAgent<Env, Props> {
             ),
         },
         async ({ prompt, steps }) => {
-          // @ts-ignore
           const response = await this.env.AI.run('@cf/black-forest-labs/flux-1-schnell', {
             prompt,
             steps,

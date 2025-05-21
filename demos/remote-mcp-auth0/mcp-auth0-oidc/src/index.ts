@@ -70,10 +70,10 @@ app.get('/callback', callback)
 export default new OAuthProvider({
   apiRoute: '/sse',
   // TODO: fix these types
-  // @ts-ignore
+  // @ts-expect-error
   apiHandler: AuthenticatedMCP.mount('/sse'),
   // TODO: fix these types
-  // @ts-ignore
+  // @ts-expect-error
   defaultHandler: app,
   authorizeEndpoint: '/authorize',
   tokenEndpoint: '/token',

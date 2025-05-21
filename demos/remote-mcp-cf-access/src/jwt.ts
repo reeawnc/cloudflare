@@ -3,14 +3,14 @@
  */
 const base64url = {
     stringify: function (a: string) {
-        // @ts-ignore
+        // @ts-expect-error
         let base64string = btoa(String.fromCharCode.apply(0, a))
         return base64string.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
     },
     parse: function (s: string) {
         s = s.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '')
         return new Uint8Array(
-            // @ts-ignore
+            // @ts-expect-error
             Array.prototype.map.call(atob(s), function (c) {
                 return c.charCodeAt(0)
             }),
