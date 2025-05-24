@@ -2,6 +2,7 @@
 	"name": "middleware",
 	"private": true,
 	"scripts": {
-		"format": "biome format --write"
+		"format": "biome format --write",
+		"type-check": "tsc --noEmit"
 	}
 }
