@@ -18,7 +18,7 @@
 	"dependencies": {
 		"ai": "^4.3.16",
 		"hono": "^4.7.10",
-		"workers-ai-provider": "0.5.1",
+		"workers-ai-provider": "0.5.2",
 		"zod": "^3.25.16"
 	},
 	"devDependencies": {
@@ -28,5 +28,5 @@
 		"vite": "^6.3.5",
 		"vitest": "~3.1.4",
 		"wrangler": "^4.16.0"
-	}	
+	}
 }
