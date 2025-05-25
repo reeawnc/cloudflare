@@ -4,16 +4,16 @@
       "package_json_hash": "faefcbd0b5cfb6fff34f2202c35362a0405d6c10"
     },
     "./demos/agent-task-manager": {
-      "package_json_hash": "d9fded72bbe948827d1cc698c4e0db7c7af2c2af"
+      "package_json_hash": "d84c03741bc593674e924d20c36d9637fe164825"
     },
     "./demos/agent-task-manager-human-in-the-loop": {
-      "package_json_hash": "9769ca6448919c114fef3dfcbc20fafb1a97a949"
+      "package_json_hash": "5747dd7b50c93109a42e15b6512084b49c0b80f2"
     },
     "./demos/evaluator-optimiser": {
-      "package_json_hash": "946b49830779b77f9a31004f32774a8319cdd947"
+      "package_json_hash": "892332dfe66aa0035de13a82290feda6b9c5b4b1"
     },
     "./demos/image-generation": {
-      "package_json_hash": "99e8dbfa159937fe03cd27c53f498d49ebe49a59"
+      "package_json_hash": "81485c8a33fa1d459bbe28b6a3936b21011c7281"
     },
     "./demos/mcp-client": {
       "package_json_hash": "884c4577199f6fdeb55e8c2c738b01e27a43fb0e"
