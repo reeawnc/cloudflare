@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.5.2
+
+### Patch Changes
+
+- [#170](https://github.com/cloudflare/ai/pull/170) [`4f57e61`](https://github.com/cloudflare/ai/commit/4f57e61223c532df128b6bd454d2bd01205917b7) Thanks [@JoaquinGimenez1](https://github.com/JoaquinGimenez1)! - Support new tool call format on streaming responses
+
 ## 0.5.1
 
 ### Patch Changes
