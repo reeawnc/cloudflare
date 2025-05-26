@@ -2,16 +2,8 @@ import OAuthProvider from '@cloudflare/workers-oauth-provider'
 import { McpAgent } from 'agents/mcp'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
-import { AccessHandler } from './access-handler.js'
-
-// Context from the auth process, encrypted & stored in the auth token
-// and provided to the DurableMCP as this.props
-type Props = {
-  login: string
-  name: string
-  email: string
-  accessToken: string
-}
+import type { Props } from './workers-oauth-utils'
+import { handleAccessRequest } from './access-handler'
 
 const ALLOWED_EMAILS = new Set(['<INSERT EMAIL>'])
 
@@ -59,10 +51,21 @@ export class MyMCP extends McpAgent<Env, {}, Props> {
   }
 }
 
+async function handleMcpRequest(req: Request, env: Env, ctx: ExecutionContext) {
+  const { pathname } = new URL(req.url)
+  if (pathname === '/sse' || pathname === '/sse/message') {
+    return MyMCP.serveSSE('/sse').fetch(req, env, ctx)
+  }
+  if (pathname === '/mcp') {
+    return MyMCP.serve('/mcp').fetch(req, env, ctx)
+  }
+  return new Response('Not found', { status: 404 })
+}
+
 export default new OAuthProvider({
-  apiRoute: '/sse',
-  apiHandler: MyMCP.mount('/sse') as any,
-  defaultHandler: AccessHandler as any,
+  apiRoute: ['/sse', '/mcp'],
+  apiHandler: { fetch: handleMcpRequest as any },
+  defaultHandler: { fetch: handleAccessRequest as any },
   authorizeEndpoint: '/authorize',
   tokenEndpoint: '/token',
   clientRegistrationEndpoint: '/register',

@@ -1,118 +1,178 @@
 import type { AuthRequest, OAuthHelpers } from '@cloudflare/workers-oauth-provider'
-import { Context, Hono } from 'hono'
 import {
-    clientIdAlreadyApproved,
-    parseRedirectApproval,
-    renderApprovalDialog,
-    fetchUpstreamAuthToken,
-    getUpstreamAuthorizeUrl,
-    Props,
+  clientIdAlreadyApproved,
+  parseRedirectApproval,
+  renderApprovalDialog,
+  fetchUpstreamAuthToken,
+  getUpstreamAuthorizeUrl,
+  Props,
 } from './workers-oauth-utils'
-import { verifyToken } from './jwt'
+import { Buffer } from 'node:buffer'
 
-type honocontext = { Bindings: Env & { OAUTH_PROVIDER: OAuthHelpers } }
-const app = new Hono<honocontext>()
+type EnvWithOauth = Env & { OAUTH_PROVIDER: OAuthHelpers }
 
-app.get('/authorize', async (c) => {
-    const oauthReqInfo = await c.env.OAUTH_PROVIDER.parseAuthRequest(c.req.raw)
+export async function handleAccessRequest(request: Request, env: EnvWithOauth, ctx: ExecutionContext) {
+  const { pathname, searchParams } = new URL(request.url)
+
+  if (request.method === 'GET' && pathname === '/authorize') {
+    const oauthReqInfo = await env.OAUTH_PROVIDER.parseAuthRequest(request)
     const { clientId } = oauthReqInfo
     if (!clientId) {
-        return c.text('Invalid request', 400)
+      return new Response('Invalid request', { status: 400 })
     }
 
-    if (await clientIdAlreadyApproved(c.req.raw, oauthReqInfo.clientId, c.env.COOKIE_ENCRYPTION_KEY)) {
-        return redirectToAccess(c, oauthReqInfo)
+    if (await clientIdAlreadyApproved(request, oauthReqInfo.clientId, env.COOKIE_ENCRYPTION_KEY)) {
+      return redirectToAccess(request, env, oauthReqInfo)
     }
 
-    return renderApprovalDialog(c.req.raw, {
-        client: await c.env.OAUTH_PROVIDER.lookupClient(clientId),
-        server: {
-            name: 'Cloudflare Access MCP Server',
-            logo: 'https://avatars.githubusercontent.com/u/314135?s=200&v=4',
-            description: 'This is a demo MCP Remote Server using Access for authentication.', // optional
-        },
-        state: { oauthReqInfo }, // arbitrary data that flows through the form submission below
+    return renderApprovalDialog(request, {
+      client: await env.OAUTH_PROVIDER.lookupClient(clientId),
+      server: {
+        name: 'Cloudflare Access MCP Server',
+        logo: 'https://avatars.githubusercontent.com/u/314135?s=200&v=4',
+        description: 'This is a demo MCP Remote Server using Access for authentication.', // optional
+      },
+      state: { oauthReqInfo }, // arbitrary data that flows through the form submission below
     })
-})
+  }
 
-app.post('/authorize', async (c) => {
+  if (request.method === 'POST' && pathname === '/authorize') {
     // Validates form submission, extracts state, and generates Set-Cookie headers to skip approval dialog next time
-    const { state, headers } = await parseRedirectApproval(c.req.raw, c.env.COOKIE_ENCRYPTION_KEY)
+    const { state, headers } = await parseRedirectApproval(request, env.COOKIE_ENCRYPTION_KEY)
     if (!state.oauthReqInfo) {
-        return c.text('Invalid request', 400)
+      return new Response('Invalid request', { status: 400 })
     }
 
-    return redirectToAccess(c, state.oauthReqInfo, headers)
-})
+    return redirectToAccess(request, env, state.oauthReqInfo, headers)
+  }
 
-async function redirectToAccess(c: Context<honocontext>, oauthReqInfo: AuthRequest, headers: Record<string, string> = {}) {
-    const request = c.req.raw
-    return new Response(null, {
-        status: 302,
-        headers: {
-            ...headers,
-            location: getUpstreamAuthorizeUrl({
-                upstream_url: c.env.ACCESS_AUTHORIZATION_URL,
-                client_id: c.env.ACCESS_CLIENT_ID,
-                scope: 'openid email profile',
-                redirect_uri: new URL('/callback', request.url).href,
-                state: btoa(JSON.stringify(oauthReqInfo)),
-            }),
-        },
-    })
-}
-
-/**
- * OAuth Callback Endpoint
- *
- * This route handles the callback from Access after user authentication.
- * It exchanges the temporary code for an access token, then stores some
- * user metadata & the auth token as part of the 'props' on the token passed
- * down to the client. It ends by redirecting the client back to _its_ callback URL
- */
-app.get('/callback', async (c) => {
+  if (request.method === 'GET' && pathname === '/callback') {
     // Get the oathReqInfo out of KV
-    const oauthReqInfo = JSON.parse(atob(c.req.query('state') as string)) as AuthRequest
+    const oauthReqInfo = JSON.parse(Buffer.from(searchParams.get('state') ?? '', 'base64url').toString()) as AuthRequest
     if (!oauthReqInfo.clientId) {
-        return c.text('Invalid state', 400)
+      return new Response('Invalid state', { status: 400 })
     }
 
     // Exchange the code for an access token
     const [accessToken, idToken, errResponse] = await fetchUpstreamAuthToken({
-        upstream_url: c.env.ACCESS_TOKEN_URL,
-        client_id: c.env.ACCESS_CLIENT_ID,
-        client_secret: c.env.ACCESS_CLIENT_SECRET,
-        code: c.req.query('code'),
-        redirect_uri: new URL('/callback', c.req.url).href,
+      upstream_url: env.ACCESS_TOKEN_URL,
+      client_id: env.ACCESS_CLIENT_ID,
+      client_secret: env.ACCESS_CLIENT_SECRET,
+      code: searchParams.get('code') ?? undefined,
+      redirect_uri: new URL('/callback', request.url).href,
     })
     if (errResponse) {
-        return errResponse
+      return errResponse
     }
 
-    const idTokenClaims = await verifyToken(c.env, idToken)
+    const idTokenClaims = await verifyToken(env, idToken)
     const user = {
-        sub: idTokenClaims.sub,
-        name: idTokenClaims.name,
-        email: idTokenClaims.email,
+      sub: idTokenClaims.sub,
+      name: idTokenClaims.name,
+      email: idTokenClaims.email,
     }
 
     // Return back to the MCP client a new token
-    const { redirectTo } = await c.env.OAUTH_PROVIDER.completeAuthorization({
-        request: oauthReqInfo,
-        userId: user.sub,
-        metadata: {
-            label: user.name,
-        },
-        scope: oauthReqInfo.scope,
-        // This will be available on this.props inside MyMCP
-        props: {
-            login: user.sub,
-            name: user.name,
-            email: user.email,
-            accessToken,
-        } as Props,
+    const { redirectTo } = await env.OAUTH_PROVIDER.completeAuthorization({
+      request: oauthReqInfo,
+      userId: user.sub,
+      metadata: {
+        label: user.name,
+      },
+      scope: oauthReqInfo.scope,
+      // This will be available on this.props inside MyMCP
+      props: {
+        login: user.sub,
+        name: user.name,
+        email: user.email,
+        accessToken,
+      } as Props,
     })
     return Response.redirect(redirectTo)
-})
+  }
 
-export { app as AccessHandler }
+  return new Response('Not Found', { status: 404 })
+}
+
+async function redirectToAccess(request: Request, env: Env, oauthReqInfo: AuthRequest, headers: Record<string, string> = {}) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      ...headers,
+      location: getUpstreamAuthorizeUrl({
+        upstream_url: env.ACCESS_AUTHORIZATION_URL,
+        client_id: env.ACCESS_CLIENT_ID,
+        scope: 'openid email profile',
+        redirect_uri: new URL('/callback', request.url).href,
+        state: Buffer.from(JSON.stringify(oauthReqInfo)).toString('base64url'),
+      }),
+    },
+  })
+}
+
+/**
+ * Helper to get the Access public keys from the certs endpoint
+ */
+async function fetchAccessPublicKey(env: Env, kid: string) {
+  if (!env.ACCESS_JWKS_URL) {
+    throw new Error('access jwks url not provided')
+  }
+  // TODO: cache this
+  const resp = await fetch(env.ACCESS_JWKS_URL)
+  const keys = (await resp.json()) as {
+    keys: (JsonWebKey & { kid: string })[]
+  }
+  const jwk = keys.keys.filter((key) => key.kid == kid)[0]
+  const key = await crypto.subtle.importKey(
+    'jwk',
+    jwk,
+    {
+      name: 'RSASSA-PKCS1-v1_5',
+      hash: 'SHA-256',
+    },
+    false,
+    ['verify'],
+  )
+  return key
+}
+
+/**
+ * Parse a JWT into its respective pieces. Does not do any validation other than form checking.
+ */
+function parseJWT(token: string) {
+  const tokenParts = token.split('.')
+
+  if (tokenParts.length !== 3) {
+    throw new Error('token must have 3 parts')
+  }
+
+  return {
+    data: `${tokenParts[0]}.${tokenParts[1]}`,
+    header: JSON.parse(Buffer.from(tokenParts[0], 'base64url').toString()),
+    payload: JSON.parse(Buffer.from(tokenParts[1], 'base64url').toString()),
+    signature: tokenParts[2],
+  }
+}
+
+/**
+ * Validates the provided token using the Access public key set
+ */
+async function verifyToken(env: Env, token: string) {
+  const jwt = parseJWT(token)
+  const key = await fetchAccessPublicKey(env, jwt.header.kid)
+
+  const verified = await crypto.subtle.verify('RSASSA-PKCS1-v1_5', key, Buffer.from(jwt.signature, 'base64url'), Buffer.from(jwt.data))
+
+  if (!verified) {
+    throw new Error('failed to verify token')
+  }
+
+  const claims = jwt.payload
+  let now = Math.floor(Date.now() / 1000)
+  // Validate expiration
+  if (claims.exp < now) {
+    throw new Error('expired token')
+  }
+
+  return claims
+}
