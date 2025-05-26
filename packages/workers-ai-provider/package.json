@@ -27,6 +27,6 @@
 		"@ai-sdk/provider": "^1.1.3"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20250521.0"
+		"@cloudflare/workers-types": "^4.20250525.0"
 	}
 }
