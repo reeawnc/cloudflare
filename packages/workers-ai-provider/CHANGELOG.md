@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.5.3
+
+### Patch Changes
+
+- [`de992e6`](https://github.com/cloudflare/ai/commit/de992e6e9b7245c9aba5c64c50e6d5df8820b4ba) Thanks [@threepointone](https://github.com/threepointone)! - trigger a release for reverted change
+
 ## 0.5.2
 
 ### Patch Changes
