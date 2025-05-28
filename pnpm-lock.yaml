@@ -135,8 +135,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -175,8 +175,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -215,8 +215,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -255,8 +255,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -292,8 +292,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -595,8 +595,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -635,8 +635,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -675,8 +675,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -715,8 +715,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -1126,8 +1126,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -1166,8 +1166,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -1228,8 +1228,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -1265,8 +1265,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -1305,8 +1305,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -1345,8 +1345,8 @@ importers:
         specifier: ^4.7.10
         version: 4.7.10
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -1513,8 +1513,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       workers-ai-provider:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       zod:
         specifier: ^3.25.28
         version: 3.25.28
@@ -5899,8 +5899,8 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
 
-  workers-ai-provider@0.5.2:
-    resolution: {integrity: sha512-cXPuajSV/ohVcgAsx5t5xos1EqNvgocE4rylaItXitIG759Cbo9waX3mP052vLv8gl7lFlnAeLF0KQ6XLKIMpA==}
+  workers-ai-provider@0.5.3:
+    resolution: {integrity: sha512-avRQKVk/z+c/yzR87fbgccxw7ZWVbbiGpY5R7ioNHLFhFwV0bs7hl/jvorr8Rs5Whh1wR2TrpwIMaI6tBHGbgw==}
 
   workers-mcp@0.0.13:
     resolution: {integrity: sha512-JoFASGioyaVAI1Rn+a4PJcV66cWthL7wnwZZYl1u3pwUz014Ym76sBPvGLuODWXjOkE7D3z+6CM4nH8pW4tlcA==}
@@ -10305,7 +10305,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20250508.0
       '@cloudflare/workerd-windows-64': 1.20250508.0
 
-  workers-ai-provider@0.5.2:
+  workers-ai-provider@0.5.3:
     dependencies:
       '@ai-sdk/provider': 1.1.3
 
