@@ -4942,7 +4942,7 @@ declare module "assets:*" {
 declare module "cloudflare:pipelines" {
     export abstract class PipelineTransformationEntrypoint<Env = unknown, I extends PipelineRecord = {}, O extends PipelineRecord = {}> {
         /**
-         * run recieves an array of PipelineRecord which can be
+         * run receives an array of PipelineRecord which can be
          * mutated and returned to the pipeline
          * @param records Incoming records from the pipeline to be transformed
          * @param metadata Information about the specific pipeline calling the transformation entrypoint
