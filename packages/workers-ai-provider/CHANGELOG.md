@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.6.0
+
+### Minor Changes
+
+- [#181](https://github.com/cloudflare/ai/pull/181) [`9f5562a`](https://github.com/cloudflare/ai/commit/9f5562a16e645195d911134610871059eceb9b3e) Thanks [@JoaquinGimenez1](https://github.com/JoaquinGimenez1)! - Adds support for new tool call format during streaming
+
 ## 0.5.3
 
 ### Patch Changes
