@@ -1,7 +1,8 @@
 import { TextEncoder } from "node:util";
 import { streamText } from "ai";
-import { http, type DefaultBodyType } from "msw";
+import { http, HttpResponse, type DefaultBodyType } from "msw";
 import { setupServer } from "msw/node";
+import z from "zod";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { createWorkersAI } from "../src/index";
 
@@ -151,6 +152,145 @@ describe("REST API - Streaming Text Tests", () => {
 		expect(capturedOptions).toHaveProperty("aBool", "true");
 		expect(capturedOptions).toHaveProperty("aNumber", "1");
 	});
+
+	it("should handle old tool call inside response when last message is user message", async () => {
+		server.use(
+			http.post(
+				`https://api.cloudflare.com/client/v4/accounts/${TEST_ACCOUNT_ID}/ai/run/${TEST_MODEL}`,
+				// `doStream` calls `doGenerate` underneath when the last message is from the user
+				async () => {
+					return HttpResponse.json({
+						result: {
+							response: null,
+							tool_calls: [
+								{
+									name: "get_weather",
+									arguments: {
+										location: "London",
+									},
+								},
+							],
+							usage: {
+								prompt_tokens: 168,
+								completion_tokens: 23,
+								total_tokens: 191,
+							},
+						},
+					});
+				},
+			),
+		);
+
+		const workersai = createWorkersAI({
+			apiKey: TEST_API_KEY,
+			accountId: TEST_ACCOUNT_ID,
+		});
+
+		const result = await streamText({
+			model: workersai(TEST_MODEL),
+			prompt: "Get the weather information for London",
+			tools: {
+				get_weather: {
+					description: "Get the weather in a location",
+					parameters: z.object({
+						location: z.string().describe("The location to get the weather for"),
+					}),
+					execute: async ({ location }) => ({
+						location,
+						weather: location === "London" ? "Raining" : "Sunny",
+					}),
+				},
+			},
+		});
+
+		const toolCalls: any = [];
+
+		for await (const chunk of result.fullStream) {
+			if (chunk.type === "tool-call") {
+				toolCalls.push(chunk);
+			}
+		}
+
+		expect(toolCalls).toHaveLength(1);
+		expect(toolCalls).toMatchObject([
+			{
+				type: "tool-call",
+				toolCallId: "get_weather",
+				toolName: "get_weather",
+				args: { location: "London" },
+			},
+		]);
+	});
+
+	it("should handle new tool call inside response when last message is user message", async () => {
+		server.use(
+			http.post(
+				`https://api.cloudflare.com/client/v4/accounts/${TEST_ACCOUNT_ID}/ai/run/${TEST_MODEL}`,
+				// `doStream` calls `doGenerate` underneath when the last message is from the user
+				async () => {
+					return HttpResponse.json({
+						result: {
+							tool_calls: [
+								{
+									id: "chatcmpl-tool-b482f0e36b0c4190b9bee3fb61408a9e",
+									type: "function",
+									function: {
+										name: "get_weather",
+										arguments: '{"location": "London"}',
+									},
+								},
+							],
+							usage: {
+								prompt_tokens: 179,
+								completion_tokens: 17,
+								total_tokens: 196,
+							},
+						},
+					});
+				},
+			),
+		);
+
+		const workersai = createWorkersAI({
+			apiKey: TEST_API_KEY,
+			accountId: TEST_ACCOUNT_ID,
+		});
+
+		const result = await streamText({
+			model: workersai(TEST_MODEL),
+			prompt: "Get the weather information for London",
+			tools: {
+				get_weather: {
+					description: "Get the weather in a location",
+					parameters: z.object({
+						location: z.string().describe("The location to get the weather for"),
+					}),
+					execute: async ({ location }) => ({
+						location,
+						weather: location === "London" ? "Raining" : "Sunny",
+					}),
+				},
+			},
+		});
+
+		const toolCalls: any = [];
+
+		for await (const chunk of result.fullStream) {
+			if (chunk.type === "tool-call") {
+				toolCalls.push(chunk);
+			}
+		}
+
+		expect(toolCalls).toHaveLength(1);
+		expect(toolCalls).toMatchObject([
+			{
+				type: "tool-call",
+				toolCallId: "chatcmpl-tool-b482f0e36b0c4190b9bee3fb61408a9e",
+				toolName: "get_weather",
+				args: { location: "London" },
+			},
+		]);
+	});
 });
 
 describe("Binding - Streaming Text Tests", () => {
@@ -215,6 +355,150 @@ describe("Binding - Streaming Text Tests", () => {
 		expect(capturedOptions).toHaveProperty("aString", "a");
 		expect(capturedOptions).toHaveProperty("aBool", true);
 		expect(capturedOptions).toHaveProperty("aNumber", 1);
+	});
+
+	it("should handle old tool call inside response when last message is user message", async () => {
+		const workersai = createWorkersAI({
+			binding: {
+				run: async (modelName: string, inputs: any, options?: any) => {
+					return {
+						response: null,
+						tool_calls: [
+							{
+								name: "get_weather",
+								arguments: {
+									location: "London",
+								},
+							},
+						],
+						usage: {
+							prompt_tokens: 168,
+							completion_tokens: 23,
+							total_tokens: 191,
+						},
+					};
+				},
+			},
+		});
+
+		const result = await streamText({
+			model: workersai(TEST_MODEL),
+			prompt: "Get the weather information for London",
+			tools: {
+				get_weather: {
+					description: "Get the weather in a location",
+					parameters: z.object({
+						location: z.string().describe("The location to get the weather for"),
+					}),
+					execute: async ({ location }) => ({
+						location,
+						weather: location === "London" ? "Raining" : "Sunny",
+					}),
+				},
+			},
+		});
+
+		const toolCalls: any = [];
+
+		for await (const chunk of result.fullStream) {
+			if (chunk.type === "tool-call") {
+				toolCalls.push(chunk);
+			}
+		}
+
+		expect(toolCalls).toHaveLength(1);
+		expect(toolCalls).toMatchObject([
+			{
+				type: "tool-call",
+				toolCallId: "get_weather",
+				toolName: "get_weather",
+				args: { location: "London" },
+			},
+		]);
+	});
+
+	it("should handle new tool call inside response when last message is user message", async () => {
+		const workersai = createWorkersAI({
+			binding: {
+				run: async () => {
+					return {
+						tool_calls: [
+							{
+								id: "chatcmpl-tool-b482f0e36b0c4190b9bee3fb61408a9e",
+								type: "function",
+								function: {
+									name: "get_weather",
+									arguments: '{"location": "London"}',
+								},
+							},
+
+							{
+								id: "chatcmpl-tool-a482f0e36b0c4190b9bee3fb61408a9c",
+								type: "function",
+								function: {
+									name: "get_temperature",
+									arguments: '{"location": "London"}',
+								},
+							},
+						],
+						usage: {
+							prompt_tokens: 179,
+							completion_tokens: 17,
+							total_tokens: 196,
+						},
+					};
+				},
+			},
+		});
+
+		const result = await streamText({
+			model: workersai(TEST_MODEL),
+			prompt: "Get the weather information for London",
+			tools: {
+				get_weather: {
+					description: "Get the weather in a location",
+					parameters: z.object({
+						location: z.string().describe("The location to get the weather for"),
+					}),
+					execute: async ({ location }) => ({
+						location,
+						weather: location === "London" ? "Raining" : "Sunny",
+					}),
+				},
+				get_temperature: {
+					description: "Get the temperature in a location",
+					parameters: z.object({
+						location: z.string().describe("The location to get the temperature for"),
+					}),
+					execute: async ({ location }) => ({
+						location,
+						weather: location === "London" ? "80" : "100",
+					}),
+				},
+			},
+		});
+
+		const toolCalls: any = [];
+
+		for await (const chunk of result.fullStream) {
+			if (chunk.type === "tool-call") {
+				toolCalls.push(chunk);
+			}
+		}
+
+		expect(toolCalls).toHaveLength(2);
+		expect(toolCalls[0]).toMatchObject({
+			type: "tool-call",
+			toolCallId: "chatcmpl-tool-b482f0e36b0c4190b9bee3fb61408a9e",
+			toolName: "get_weather",
+			args: { location: "London" },
+		});
+		expect(toolCalls[1]).toMatchObject({
+			type: "tool-call",
+			toolCallId: "chatcmpl-tool-a482f0e36b0c4190b9bee3fb61408a9c",
+			toolName: "get_temperature",
+			args: { location: "London" },
+		});
 	});
 });
 
