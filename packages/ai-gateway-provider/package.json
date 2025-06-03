@@ -10,8 +10,7 @@
 		"build": "rm -rf dist && tsup src/index.ts --dts --sourcemap --format cjs,esm --target es2020",
 		"format": "biome format --write",
 		"test:ci": "vitest --watch=false",
-		"test": "vitest",
-		"type-check": "tsc --noEmit"
+		"test": "vitest"
 	},
 	"publishConfig": {
 		"access": "public"

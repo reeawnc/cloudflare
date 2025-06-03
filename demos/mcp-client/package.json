@@ -11,18 +11,18 @@
 	"keywords": [],
 	"author": "",
 	"dependencies": {
-		"@modelcontextprotocol/sdk": "^1.12.1",
+		"@modelcontextprotocol/sdk": "^1.12.0",
 		"agents": "^0.0.93",
 		"nanoid": "^5.1.5",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0"
 	},
 	"devDependencies": {
-		"@cloudflare/vite-plugin": "^1.3.1",
-		"@cloudflare/workers-types": "^4.20250603.0",
-		"@types/react": "^19.1.6",
+		"@cloudflare/vite-plugin": "^1.2.4",
+		"@cloudflare/workers-types": "^4.20250525.0",
+		"@types/react": "^19.1.5",
 		"@types/react-dom": "^19.1.5",
-		"@vitejs/plugin-react": "^4.5.1",
+		"@vitejs/plugin-react": "^4.5.0",
 		"vite": "^6.3.5"
 	}
 }
