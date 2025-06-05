@@ -56,7 +56,9 @@ export default async function fetchModels(): Promise<Response> {
 
 	// This is a fake request to use as the Cache key for storage/retrieval.
 	// The URL string means nothing, just needs to be valid.
-	const fakeRequest = new Request(new URL("https://playground.ai.cloudflare.com/api/models"));
+	const fakeRequest = new Request(
+		new URL("https://playground.ai.cloudflare.com/api/models"),
+	);
 	// @ts-expect-error - default is not a property of web standard CacheStorage
 	const cache = caches.default as Cache;
 	let response = await cache.match(fakeRequest);
@@ -68,10 +70,10 @@ export default async function fetchModels(): Promise<Response> {
 
 		const data = await Promise.all([
 			fetch(modelsEndpoint, reqParams).then((res) => res.json<Result<Model>>()),
-			fetch(finetunesEndpoint, reqParams).then((res) => res.json<Result<FineTune>>()),
+			fetch(finetunesEndpoint, reqParams).then((res) =>
+				res.json<Result<FineTune>>(),
+			),
 		]);
-
-		console.log(data[1].result);
 
 		const models = data[0].result
 			// TODO: We can remove this once the `?task=Text%20Generation` API filter works
@@ -85,7 +87,8 @@ export default async function fetchModels(): Promise<Response> {
 
 		// Inline finetunes into respective model objects
 		for (const finetune of finetunes) {
-			const mappings = loraMappings[finetune.model as keyof typeof loraMappings];
+			const mappings =
+				loraMappings[finetune.model as keyof typeof loraMappings];
 
 			if (mappings && Array.isArray(mappings)) {
 				for (const modelName of mappings) {

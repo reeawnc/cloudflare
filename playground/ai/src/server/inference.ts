@@ -1,13 +1,37 @@
 import fetchModels from "./fetchModels";
 import { createWorkersAI } from "workers-ai-provider";
-import { jsonSchema, streamText } from "ai";
+import { jsonSchema, streamText, type UIMessage } from "ai";
+import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import type { Model } from "./fetchModels";
 
-export async function replyToMessage(request: Request, env: Env, _ctx: ExecutionContext) {
-	const response = await fetchModels().then((res) => res.json<{ models: Model[] }>());
+type PostInferenceBody = {
+	lora: string | null;
+	messages: UIMessage[];
+	model: keyof AiModels;
+	max_tokens: number;
+	stream: boolean;
+	system_message: string;
+	tools: Tool[];
+};
+
+export async function replyToMessage(
+	request: Request,
+	env: Env,
+	_ctx: ExecutionContext,
+) {
+	const response = await fetchModels().then((res) =>
+		res.json<{ models: Model[] }>(),
+	);
 	const models = response.models.map((model) => model.name);
 
-	const { model, messages, system_message, max_tokens, tools = [], lora } = await request.json();
+	const {
+		model,
+		messages,
+		system_message,
+		max_tokens,
+		tools = [],
+		lora,
+	} = await request.json<PostInferenceBody>();
 
 	// Invalid model sent to API, return 400
 	if (!models.includes(model)) {
@@ -27,6 +51,7 @@ export async function replyToMessage(request: Request, env: Env, _ctx: Execution
 				t.name,
 				{
 					description: t.description,
+					// @ts-expect-error it's fine
 					parameters: jsonSchema(t.inputSchema),
 				},
 			];
@@ -36,7 +61,7 @@ export async function replyToMessage(request: Request, env: Env, _ctx: Execution
 	// console.log(mcpTools);
 
 	const result = streamText({
-		model: workersai(model),
+		model: workersai(model as Parameters<typeof workersai>[0]),
 		messages,
 		system: system_message,
 		maxTokens: max_tokens,

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useMcp } from "use-mcp/react";
+import { useMcp, type UseMcpResult } from "use-mcp/react";
 
 // MCP Connection wrapper that only renders when active
 function McpConnection({
@@ -7,7 +7,7 @@ function McpConnection({
 	onConnectionUpdate,
 }: {
 	serverUrl: string;
-	onConnectionUpdate: (data: any) => void;
+	onConnectionUpdate: (data: UseMcpResult) => void;
 }) {
 	// Use the MCP hook with the server URL
 	const connection = useMcp({
@@ -36,7 +36,7 @@ export function McpServers({
 	});
 	const [isActive, setIsActive] = useState(false);
 	const [showSettings, setShowSettings] = useState(true);
-	const [connectionData, setConnectionData] = useState({
+	const [connectionData, setConnectionData] = useState<UseMcpResult>({
 		state: "not-connected",
 		tools: [],
 		error: undefined,
@@ -45,13 +45,15 @@ export function McpServers({
 		retry: () => {},
 		disconnect: () => {},
 		authenticate: () => Promise.resolve(undefined),
-		callTool: (name: string, args?: Record<string, unknown>) => Promise.resolve(undefined),
+		callTool: (name: string, args?: Record<string, unknown>) =>
+			Promise.resolve(undefined),
 		clearStorage: () => {},
 	});
 	const logRef = useRef<HTMLDivElement>(null);
 
 	// Extract connection properties
-	const { state, tools, error, log, authUrl, retry, disconnect, authenticate } = connectionData;
+	const { state, tools, error, log, authUrl, retry, disconnect, authenticate } =
+		connectionData;
 
 	// Notify parent component when tools change
 	useEffect(() => {
@@ -110,7 +112,9 @@ export function McpServers({
 		switch (state) {
 			case "discovering":
 				return (
-					<span className={`${baseClasses} bg-blue-100 text-blue-800`}>Discovering</span>
+					<span className={`${baseClasses} bg-blue-100 text-blue-800`}>
+						Discovering
+					</span>
 				);
 			case "authenticating":
 				return (
@@ -126,14 +130,24 @@ export function McpServers({
 				);
 			case "loading":
 				return (
-					<span className={`${baseClasses} bg-orange-100 text-orange-800`}>Loading</span>
+					<span className={`${baseClasses} bg-orange-100 text-orange-800`}>
+						Loading
+					</span>
 				);
 			case "ready":
 				return (
-					<span className={`${baseClasses} bg-green-100 text-green-800`}>Connected</span>
+					<span className={`${baseClasses} bg-green-100 text-green-800`}>
+						Connected
+					</span>
 				);
 			case "failed":
-				return <span className={`${baseClasses} bg-red-100 text-red-800`}>Failed</span>;
+				return (
+					<span className={`${baseClasses} bg-red-100 text-red-800`}>
+						Failed
+					</span>
+				);
+
+			/* biome-ignore lint/complexity/noUselessSwitchCase: eh */
 			case "not-connected":
 			default:
 				return (
@@ -248,6 +262,7 @@ export function McpServers({
 
 			<div className="my-4">
 				<div className="flex items-center mb-2">
+					{/* biome-ignore lint/a11y/noLabelWithoutControl: eh */}
 					<label className="font-semibold text-sm mr-2">Status:</label>
 					{getStatusBadge()}
 					{error && (
@@ -338,6 +353,7 @@ export function McpServers({
 
 				{/* Debug Log */}
 				<div className={showSettings ? "block" : "hidden"}>
+					{/* biome-ignore lint/a11y/noLabelWithoutControl: eh */}
 					<label className="font-semibold text-sm block mb-1">Debug Log</label>
 					<div
 						ref={logRef}
@@ -384,7 +400,10 @@ export function McpServers({
 
 			{/* Only render the actual MCP connection when active */}
 			{isActive && (
-				<McpConnection serverUrl={serverUrl} onConnectionUpdate={setConnectionData} />
+				<McpConnection
+					serverUrl={serverUrl}
+					onConnectionUpdate={setConnectionData}
+				/>
 			)}
 		</section>
 	);
