@@ -35,7 +35,7 @@ export type Model = {
 	finetunes?: FineTune[];
 };
 
-type FineTune = {
+export type FineTune = {
 	id: string;
 	name: string;
 	description: string;

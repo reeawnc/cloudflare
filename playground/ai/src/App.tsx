@@ -131,32 +131,35 @@ const App = () => {
 					const calledTool = await (mcpTool as any).callTool(convertedArgs);
 					// console.log({ calledTool });
 					if (Array.isArray(calledTool?.content)) {
-						return calledTool.content
-							.map((c) => {
-								// console.log({ c });
-								if (c.type === "image") {
-									// Extract the base64 data and mime type
-									const { data, mimeType } = c;
-									const binaryData = atob(data);
+						return (
+							calledTool.content
+								// @ts-expect-error need to fix this
+								.map((c) => {
+									// console.log({ c });
+									if (c.type === "image") {
+										// Extract the base64 data and mime type
+										const { data, mimeType } = c;
+										const binaryData = atob(data);
 
-									// Create an array buffer from the binary data
-									const arrayBuffer = new Uint8Array(binaryData.length);
-									for (let i = 0; i < binaryData.length; i++) {
-										arrayBuffer[i] = binaryData.charCodeAt(i);
+										// Create an array buffer from the binary data
+										const arrayBuffer = new Uint8Array(binaryData.length);
+										for (let i = 0; i < binaryData.length; i++) {
+											arrayBuffer[i] = binaryData.charCodeAt(i);
+										}
+
+										// Create a blob from the array buffer
+										const blob = new Blob([arrayBuffer], { type: mimeType });
+
+										// Create a URL for the blob
+										const blobUrl = URL.createObjectURL(blob);
+
+										// Return a description of the received data
+										return `Received image: ${mimeType}, size: ${Math.round(data.length / 1024)}KB\n[${blobUrl}]`;
 									}
-
-									// Create a blob from the array buffer
-									const blob = new Blob([arrayBuffer], { type: mimeType });
-
-									// Create a URL for the blob
-									const blobUrl = URL.createObjectURL(blob);
-
-									// Return a description of the received data
-									return `Received image: ${mimeType}, size: ${Math.round(data.length / 1024)}KB\n[${blobUrl}]`;
-								}
-								return c.text;
-							})
-							.join("\n");
+									return c.text;
+								})
+								.join("\n")
+						);
 					}
 					return `Sorry, something went wrong. Got this response: ${JSON.stringify(calledTool)}`;
 				}
@@ -334,7 +337,10 @@ const App = () => {
 												{
 													id: "0",
 													role: "user",
-													content: finetuneTemplates[model?.name] || "",
+													content:
+														finetuneTemplates[
+															model?.name as keyof typeof finetuneTemplates
+														] || "",
 												},
 											]);
 										}}

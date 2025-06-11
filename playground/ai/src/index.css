@@ -22,3 +22,7 @@ body,
 		#901475
 	);
 }
+
+button {
+	cursor: pointer;
+}
