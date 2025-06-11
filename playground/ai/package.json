@@ -7,7 +7,6 @@
 		"start:demo": "CLOUDFLARE_ACCOUNT_ID=85d0c02b57ed75faf9b18f92d5c01602 vite dev",
 		"build": "vite build",
 		"deploy": "vite build && wrangler deploy",
-		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
