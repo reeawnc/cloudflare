@@ -4,16 +4,25 @@ import { useMcp, type UseMcpResult } from "use-mcp/react";
 // MCP Connection wrapper that only renders when active
 function McpConnection({
 	serverUrl,
+	headerKey,
+	bearerToken,
 	onConnectionUpdate,
 }: {
 	serverUrl: string;
+	headerKey?: string;
+	bearerToken?: string;
 	onConnectionUpdate: (data: ConnectionData) => void;
 }) {
+	// Build custom headers object
+	const customHeaders =
+		headerKey && bearerToken ? { [headerKey]: `Bearer ${bearerToken}` } : {};
+
 	// Use the MCP hook with the server URL
 	const connection = useMcp({
 		url: serverUrl,
 		debug: true,
 		autoRetry: false,
+		customHeaders,
 		popupFeatures: "width=500,height=600,resizable=yes,scrollbars=yes",
 	});
 
@@ -54,6 +63,14 @@ export function McpServers({
 		clearStorage: () => {},
 	});
 	const logRef = useRef<HTMLDivElement>(null);
+	const [showAuth, setShowAuth] = useState<boolean>(false);
+	const [headerKey, setHeaderKey] = useState<string>(() => {
+		return sessionStorage.getItem("mcpHeaderKey") || "Authorization";
+	});
+	const [bearerToken, setBearerToken] = useState<string>(() => {
+		return sessionStorage.getItem("mcpBearerToken") || "";
+	});
+	const [showToken, setShowToken] = useState<boolean>(false);
 
 	// Extract connection properties
 	const { state, tools, error, log, authUrl, retry, disconnect, authenticate } =
@@ -313,6 +330,144 @@ export function McpServers({
 					)}
 				</div>
 
+				{/* Custom Authentication Section */}
+				<div className="border border-gray-200 rounded-md bg-gray-50">
+					<button
+						className="w-full flex items-center justify-between p-3 text-left hover:bg-gray-100 rounded-md transition-colors"
+						onClick={() => setShowAuth(!showAuth)}
+						type="button"
+					>
+						<div className="flex items-center space-x-2">
+							<svg
+								className="w-4 h-4 text-gray-600"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<title>Auth</title>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+								/>
+							</svg>
+							<span className="text-sm font-medium text-gray-700">
+								Authentication (Optional)
+							</span>
+						</div>
+						<svg
+							className={`w-4 h-4 text-gray-500 transform transition-transform ${
+								showAuth ? "rotate-180" : ""
+							}`}
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<title>expand</title>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M19 9l-7 7-7-7"
+							/>
+						</svg>
+					</button>
+
+					{showAuth && (
+						<div className="px-3 pb-3 space-y-3 border-t border-gray-200 bg-white rounded-b-md">
+							<div>
+								{/* biome-ignore lint/a11y/noLabelWithoutControl: eh */}
+								<label className="block text-xs font-medium text-gray-700 mb-1">
+									Header Name
+								</label>
+								<input
+									type="text"
+									className="w-full p-2 border border-gray-200 rounded-md text-sm hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-orange-300"
+									placeholder="e.g., Authorization, X-API-Key, API-Key"
+									value={headerKey}
+									onChange={(e) => {
+										const newValue = e.target.value;
+										setHeaderKey(newValue);
+										sessionStorage.setItem("mcpHeaderKey", newValue);
+									}}
+									disabled={isActive && state !== "failed"}
+								/>
+							</div>
+
+							<div>
+								{/* biome-ignore lint/a11y/noLabelWithoutControl: eh */}
+								<label className="block text-xs font-medium text-gray-700 mb-1">
+									Bearer Value
+								</label>
+								<div className="relative">
+									<input
+										type={showToken ? "text" : "password"}
+										className="w-full p-2 pr-10 border border-gray-200 rounded-md text-sm hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-orange-300"
+										placeholder="Enter header value (API key, token, etc.)"
+										value={bearerToken}
+										onChange={(e) => {
+											const newValue = e.target.value;
+											setBearerToken(newValue);
+											sessionStorage.setItem("mcpBearerToken", newValue);
+										}}
+										disabled={isActive && state !== "failed"}
+									/>
+									<button
+										type="button"
+										className="absolute inset-y-0 right-0 pr-3 flex items-center"
+										onClick={() => setShowToken(!showToken)}
+									>
+										<svg
+											className="w-4 h-4 text-gray-400 hover:text-gray-600"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<title>show token</title>
+											{showToken ? (
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+												/>
+											) : (
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+												/>
+											)}
+										</svg>
+									</button>
+								</div>
+							</div>
+
+							{headerKey && bearerToken && (
+								<div className="text-xs text-gray-500 flex items-start space-x-1">
+									<svg
+										className="w-3 h-3 mt-0.5 flex-shrink-0"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<title>header</title>
+										<path
+											fillRule="evenodd"
+											d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+											clipRule="evenodd"
+										/>
+									</svg>
+									<span>
+										Header will be sent as "{headerKey}: Bearer REDACTED"
+									</span>
+								</div>
+							)}
+						</div>
+					)}
+				</div>
+
 				{/* Authentication Link if needed */}
 				{authUrl && (
 					<div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-md">
@@ -409,6 +564,8 @@ export function McpServers({
 			{isActive && (
 				<McpConnection
 					serverUrl={serverUrl}
+					headerKey={headerKey}
+					bearerToken={bearerToken}
 					onConnectionUpdate={setConnectionData}
 				/>
 			)}
