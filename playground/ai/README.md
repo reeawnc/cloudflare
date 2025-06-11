@@ -28,7 +28,7 @@ Welcome to the Workers AI Playground! This project is designed to provide a user
 2. Start the development server:
 
    ```bash
-   npm start
+   cd playground/ai && npm start
    ```
 
 3. Open your browser and navigate to `http://localhost:5173` to access the playground.
