@@ -42,7 +42,7 @@ const ModelSelector = ({
 
 	useEffect(() => {
 		setInputItems(models);
-		setSelectedItem(model);
+		setSelectedItem(model || null);
 	}, [models, model]);
 
 	useEffect(() => {
@@ -50,7 +50,9 @@ const ModelSelector = ({
 		let filteredItems = models;
 
 		if (inputValue) {
-			filteredItems = filteredItems.filter((model) => model.name.includes(inputValue));
+			filteredItems = filteredItems.filter((model) =>
+				model.name.includes(inputValue),
+			);
 		}
 
 		// Apply tag filters
@@ -58,9 +60,17 @@ const ModelSelector = ({
 			if (state === "show") {
 				filteredItems = filteredItems.filter((model) =>
 					model.properties.some((prop) => {
-						if (tag === "Beta" && prop.property_id === "beta" && prop.value === "true")
+						if (
+							tag === "Beta" &&
+							prop.property_id === "beta" &&
+							prop.value === "true"
+						)
 							return true;
-						if (tag === "LoRA" && prop.property_id === "lora" && prop.value === "true")
+						if (
+							tag === "LoRA" &&
+							prop.property_id === "lora" &&
+							prop.value === "true"
+						)
 							return true;
 						if (
 							tag === "MCP" &&
@@ -189,6 +199,7 @@ const ModelSelector = ({
 		<div className="relative">
 			<div className="mb-1">
 				<div className="flex justify-between items-center mb-1">
+					{/* biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
 					<label {...getLabelProps()} className="font-semibold text-sm">
 						Model
 					</label>
@@ -222,7 +233,11 @@ const ModelSelector = ({
 						setInputValue("");
 					}}
 				/>
-				{inputValue || !selectedItem ? <span /> : <ModelRow model={selectedItem} />}
+				{inputValue || !selectedItem ? (
+					<span />
+				) : (
+					<ModelRow model={selectedItem} />
+				)}
 				<span className="px-2" {...getToggleButtonProps()}>
 					{isOpen ? <>&#8593;</> : <>&#8595;</>}
 				</span>
@@ -234,7 +249,9 @@ const ModelSelector = ({
 				{...getMenuProps()}
 			>
 				{isOpen && inputItems.length === 0 && (
-					<li className={"py-2 px-3 flex flex-col rounded-md"}>No models found</li>
+					<li className={"py-2 px-3 flex flex-col rounded-md"}>
+						No models found
+					</li>
 				)}
 				{isOpen &&
 					inputItems.map((item, index) => (

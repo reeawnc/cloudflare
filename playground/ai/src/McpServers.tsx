@@ -7,7 +7,7 @@ function McpConnection({
 	onConnectionUpdate,
 }: {
 	serverUrl: string;
-	onConnectionUpdate: (data: UseMcpResult) => void;
+	onConnectionUpdate: (data: ConnectionData) => void;
 }) {
 	// Use the MCP hook with the server URL
 	const connection = useMcp({
@@ -26,6 +26,10 @@ function McpConnection({
 	return null;
 }
 
+type ConnectionData = Omit<UseMcpResult, "state"> & {
+	state: "not-connected" | UseMcpResult["state"];
+};
+
 export function McpServers({
 	onToolsUpdate,
 }: {
@@ -36,7 +40,7 @@ export function McpServers({
 	});
 	const [isActive, setIsActive] = useState(false);
 	const [showSettings, setShowSettings] = useState(true);
-	const [connectionData, setConnectionData] = useState<UseMcpResult>({
+	const [connectionData, setConnectionData] = useState<ConnectionData>({
 		state: "not-connected",
 		tools: [],
 		error: undefined,
@@ -86,6 +90,9 @@ export function McpServers({
 			retry: () => {},
 			disconnect: () => {},
 			authenticate: () => Promise.resolve(undefined),
+			callTool: (name: string, args?: Record<string, unknown>) =>
+				Promise.resolve(undefined),
+			clearStorage: () => {},
 		});
 	};
 
