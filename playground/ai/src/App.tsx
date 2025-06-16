@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import type { Model, FineTune } from "./server/fetchModels";
+
 import { useHotkeys } from "react-hotkeys-hook";
 
 import ViewCodeModal from "./ViewCodeModal";
@@ -15,7 +15,7 @@ import FinetuneSelector from "./FinetuneSelector";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-import modelsJson from "./server/models.json";
+import { models } from "./models";
 
 const finetuneTemplates = {
 	"cf-public-cnn-summarization": `You are given a news article below. Please summarize the article, including only its highlights.
@@ -172,7 +172,7 @@ const App = () => {
 		enableOnFormTags: ["textarea"],
 	});
 
-	const activeModel = modelsJson.find((model) => model.name === params.model);
+	const activeModel = models.find((model) => model.name === params.model);
 
 	return (
 		<main className="w-full h-full bg-gray-50 md:px-6">
@@ -291,8 +291,8 @@ const App = () => {
 							<div className="md:mb-4">
 								{
 									<ModelSelector
-										models={modelsJson as Model[]}
-										model={activeModel as Model}
+										models={models}
+										model={activeModel}
 										onModelSelection={(model) => {
 											const modelName = model ? model.name : defaultModel;
 											// Store selected model in sessionStorage
@@ -310,7 +310,7 @@ const App = () => {
 							{activeModel?.finetunes && (
 								<div className="md:mb-4">
 									<FinetuneSelector
-										models={[null, ...(activeModel.finetunes as FineTune[])]}
+										models={[null, ...activeModel.finetunes]}
 										model={params.lora}
 										onSelection={(model) => {
 											setParams({

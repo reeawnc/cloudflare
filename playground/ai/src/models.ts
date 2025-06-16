@@ -29,8 +29,6 @@ export type FineTune = {
 	model: keyof AiModels;
 };
 
-export default async function fetchModels(): Promise<Response> {
-	return Response.json({
-		models: modelsJson,
-	});
-}
+const models = modelsJson as Model[];
+
+export { models };

@@ -1,4 +1,4 @@
-import type { Model } from "./server/fetchModels";
+import type { Model } from "./models";
 
 const ModelRow = ({ model }: { model: Model }) => {
 	const [provider, author, name] = model.name.split("/");

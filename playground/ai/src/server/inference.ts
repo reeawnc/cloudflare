@@ -1,7 +1,7 @@
 import { createWorkersAI } from "workers-ai-provider";
 import { jsonSchema, streamText, type UIMessage } from "ai";
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
-import modelsJson from "./models.json";
+import { models } from "../models";
 
 type PostInferenceBody = {
 	lora: string | null;
@@ -18,7 +18,7 @@ export async function replyToMessage(
 	env: Env,
 	_ctx: ExecutionContext,
 ) {
-	const models = modelsJson.map((model) => model.name);
+	const modelNames = models.map((model) => model.name);
 
 	const {
 		model,
@@ -30,7 +30,7 @@ export async function replyToMessage(
 	} = await request.json<PostInferenceBody>();
 
 	// Invalid model sent to API, return 400
-	if (!models.includes(model)) {
+	if (!modelNames.includes(model)) {
 		return new Response(null, {
 			status: 400,
 		});

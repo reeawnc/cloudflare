@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useCombobox } from "downshift";
 
 import ModelRow from "./ModelRow";
-import type { Model } from "./server/fetchModels";
+import type { Model } from "./models";
 
 type FilterState = {
 	[key: string]: "show" | "hide" | null;

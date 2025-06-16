@@ -1,4 +1,4 @@
-import type { Model, FineTune } from "../src/server/fetchModels";
+import type { Model, FineTune } from "../src/models";
 import * as fs from "node:fs";
 import dotenv from "dotenv";
 dotenv.config();

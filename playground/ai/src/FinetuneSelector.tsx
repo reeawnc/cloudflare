@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelect } from "downshift";
-import type { Model, FineTune } from "./server/fetchModels";
+import type { Model, FineTune } from "./models";
 
 const FinetuneSelector = ({
 	models,
