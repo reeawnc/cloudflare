@@ -11,6 +11,7 @@ import type { TextGenerationModels } from "./workersai-models";
 import { mapWorkersAIUsage } from "./map-workersai-usage";
 import { getMappedStream } from "./streaming";
 import { lastMessageWasUser, prepareToolsAndToolChoice, processToolCalls } from "./utils";
+import { mapWorkersAIFinishReason } from "./map-workersai-finish-reason";
 
 type WorkersAIChatConfig = {
 	provider: string;
@@ -174,7 +175,8 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 					? JSON.stringify(output.response) // ai-sdk expects a string here
 					: output.response,
 			toolCalls: processToolCalls(output),
-			finishReason: "stop", // TODO: mapWorkersAIFinishReason(response.finish_reason),
+			// @ts-ignore Missing types
+			finishReason: mapWorkersAIFinishReason(output),
 			rawCall: { rawPrompt: messages, rawSettings: args },
 			rawResponse: { body: output },
 			usage: mapWorkersAIUsage(output),
@@ -219,7 +221,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 						}
 						controller.enqueue({
 							type: "finish",
-							finishReason: "stop",
+							finishReason: mapWorkersAIFinishReason(response?.finishReason),
 							usage: response.usage,
 						});
 						controller.close();

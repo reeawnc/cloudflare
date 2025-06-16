@@ -11,7 +11,14 @@ export function mapWorkersAIFinishReason(
 			return "length";
 		case "tool_calls":
 			return "tool-calls";
-		default:
+		case "error":
+			return "error";
+		case "other":
 			return "other";
+		case "unknown":
+			return "unknown";
+		default:
+			// Default to `stop` for backwards compatibility
+			return "stop";
 	}
 }
