@@ -17,7 +17,7 @@ type PostInferenceBody = {
 	tools: Tool[];
 };
 
-export async function replyToMessage(
+async function replyToMessage(
 	request: Request,
 	env: Env,
 	_ctx: ExecutionContext,
