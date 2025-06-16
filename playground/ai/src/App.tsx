@@ -12,8 +12,8 @@ import { McpServers } from "./McpServers";
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import FinetuneSelector from "./FinetuneSelector";
 
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "./Header";
+import Footer from "./Footer";
 
 import { models } from "./models";
 
