@@ -2,6 +2,8 @@
 
 Welcome to the Workers AI Playground! This project is designed to provide a user-friendly interface for interacting with AI models and exploring their capabilities. The playground allows you to connect to Model Context Protocol (MCP) servers, manage AI tools, and run AI models with ease.
 
+[![Deploy to Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/ai/tree/main/playground/ai)
+
 ## Features
 
 - **Connect to MCP Servers**: Easily connect to MCP servers to access additional AI capabilities.
