@@ -5,11 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "tsc -b && pnpm run build:only",
-		"build:only": "vite build",
 		"lint": "biome lint --error-on-warnings",
-		"preview": "vite preview",
-		"deploy": "pnpm run build:only && wrangler deploy",
+		"deploy": "vite build && wrangler deploy",
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {

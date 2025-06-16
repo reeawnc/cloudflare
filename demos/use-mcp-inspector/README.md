@@ -2,6 +2,8 @@
 
 A minimal demo showcasing the `use-mcp` React hook for connecting to Model Context Protocol (MCP) servers.
 
+[![Deploy to Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/ai/tree/main/demos/use-mcp-inspector)
+
 ## Features
 
 - Connect to any MCP server via URL
@@ -13,11 +15,13 @@ A minimal demo showcasing the `use-mcp` React hook for connecting to Model Conte
 ## Getting Started
 
 1. Install dependencies:
+
    ```bash
    pnpm install
    ```
 
 2. Start the development server:
+
    ```bash
    pnpm dev
    ```
@@ -36,7 +40,7 @@ import { useMcp } from 'use-mcp/react'
 const connection = useMcp({
   url: 'your-mcp-server-url',
   debug: true,
-  autoRetry: false
+  autoRetry: false,
 })
 
 // Access connection.state, connection.tools, connection.error, etc.
