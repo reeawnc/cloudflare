@@ -38,8 +38,6 @@ export async function replyToMessage(
 
 	const workersai = createWorkersAI({
 		binding: env.AI,
-		// apiKey: env.CLOUDFLARE_API_TOKEN,
-		// accountId: env.CLOUDFLARE_ACCOUNT_ID,
 	});
 	const mcpTools = Object.fromEntries(
 		tools.map((t) => {
