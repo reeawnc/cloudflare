@@ -4,8 +4,6 @@
 	"type": "module",
 	"scripts": {
 		"start": "vite dev",
-		"start:demo": "CLOUDFLARE_ACCOUNT_ID=85d0c02b57ed75faf9b18f92d5c01602 vite dev",
-		"build": "vite build",
 		"deploy": "vite build && wrangler deploy",
 		"type-check": "tsc --noEmit"
 	},
@@ -29,6 +27,7 @@
 		"@types/react": "^19.1.7",
 		"@types/react-dom": "^19.1.6",
 		"@vitejs/plugin-react": "^4.5.2",
+		"dotenv": "^16.5.0",
 		"eslint": "^9.28.0",
 		"eslint-plugin-react": "^7.37.5",
 		"eslint-plugin-react-hooks": "^5.2.0",
