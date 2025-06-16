@@ -3,7 +3,7 @@ import { jsonSchema, streamText, type UIMessage } from "ai";
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { models } from "../models";
 
-export type Env = {
+type Env = {
 	AI: Ai;
 };
 
