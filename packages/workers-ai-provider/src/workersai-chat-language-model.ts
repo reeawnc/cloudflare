@@ -176,6 +176,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 			toolCalls: processToolCalls(output),
 			finishReason: "stop", // TODO: mapWorkersAIFinishReason(response.finish_reason),
 			rawCall: { rawPrompt: messages, rawSettings: args },
+			rawResponse: { body: output },
 			usage: mapWorkersAIUsage(output),
 			warnings,
 		};
