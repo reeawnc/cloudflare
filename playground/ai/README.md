@@ -47,7 +47,7 @@ The project uses Tailwind CSS for styling. You can customize the theme and other
 
 ## Generate list of models
 
-Running `./scripts/fetch-models.ts` will generate the `src/server/models.json` file. Populate `scripts/.env` with your Cloudflare API token and account ID before doing so.
+Running `./scripts/fetch-models.ts` will generate the `src/models.json` file. Populate `scripts/.env` with your Cloudflare API token and account ID before doing so.
 
 ## Contributing
 
