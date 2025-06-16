@@ -43,6 +43,10 @@ The project uses Tailwind CSS for styling. You can customize the theme and other
 - **Manage Tools**: Once connected, view and interact with available AI tools.
 - **Send Messages**: Use the input field to send messages and receive AI responses.
 
+## Generate list of models
+
+Running `./scripts/fetch-models.ts` will generate the `src/server/models.json` file. Populate `scripts/.env` with your Cloudflare API token and account ID before doing so.
+
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
