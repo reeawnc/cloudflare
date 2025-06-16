@@ -1,8 +1,7 @@
-import fetchModels from "./fetchModels";
 import { createWorkersAI } from "workers-ai-provider";
 import { jsonSchema, streamText, type UIMessage } from "ai";
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
-import type { Model } from "./fetchModels";
+import modelsJson from "./models.json";
 
 type PostInferenceBody = {
 	lora: string | null;
@@ -19,10 +18,7 @@ export async function replyToMessage(
 	env: Env,
 	_ctx: ExecutionContext,
 ) {
-	const response = await fetchModels().then((res) =>
-		res.json<{ models: Model[] }>(),
-	);
-	const models = response.models.map((model) => model.name);
+	const models = modelsJson.map((model) => model.name);
 
 	const {
 		model,

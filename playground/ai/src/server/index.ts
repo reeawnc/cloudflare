@@ -1,4 +1,3 @@
-import fetchModels from "./fetchModels";
 import { replyToMessage } from "./inference";
 
 export default {
@@ -7,8 +6,6 @@ export default {
 		switch (`${request.method} ${url.pathname}`) {
 			case "POST /api/inference":
 				return replyToMessage(request, env, ctx);
-			case "GET /api/models":
-				return fetchModels();
 			default:
 				return new Response("Not found", { status: 404 });
 		}

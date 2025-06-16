@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
+import type { Model, FineTune } from "./server/fetchModels";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import ViewCodeModal from "./ViewCodeModal";
 import ModelSelector from "./ModelSelector";
 import { SparkleIcon } from "./Icons";
 
-import type { Model } from "./server/fetchModels";
 import { useChat } from "@ai-sdk/react";
 import { McpServers } from "./McpServers";
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
@@ -14,6 +14,8 @@ import FinetuneSelector from "./FinetuneSelector";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+
+import modelsJson from "./server/models.json";
 
 const finetuneTemplates = {
 	"cf-public-cnn-summarization": `You are given a news article below. Please summarize the article, including only its highlights.
@@ -56,15 +58,6 @@ const App = () => {
 	const queryParams = new URLSearchParams(document.location.search);
 	const selectedModel = queryParams.get("model");
 	const selectedFinetune = queryParams.get("finetune");
-
-	const [models, setModels] = useState<Model[]>(() => {
-		try {
-			return JSON.parse(sessionStorage.getItem("allModels") || "[]");
-		} catch (_) {
-			sessionStorage.setItem("allModels", "[]");
-			return [];
-		}
-	});
 
 	const defaultModel = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 	const [params, setParams] = useState<Params>(() => {
@@ -175,20 +168,11 @@ const App = () => {
 
 	const messageElement = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		fetch("/api/models")
-			.then((res) => res.json<{ models: Model[] }>())
-			.then(async (json) => {
-				sessionStorage.setItem("allModels", JSON.stringify(json.models));
-				setModels(json.models);
-			});
-	}, []);
-
 	useHotkeys("meta+enter, ctrl+enter", () => handleSubmit(), {
 		enableOnFormTags: ["textarea"],
 	});
 
-	const activeModel = models.find((model) => model.name === params.model);
+	const activeModel = modelsJson.find((model) => model.name === params.model);
 
 	return (
 		<main className="w-full h-full bg-gray-50 md:px-6">
@@ -307,8 +291,8 @@ const App = () => {
 							<div className="md:mb-4">
 								{
 									<ModelSelector
-										models={models}
-										model={activeModel}
+										models={modelsJson as Model[]}
+										model={activeModel as Model}
 										onModelSelection={(model) => {
 											const modelName = model ? model.name : defaultModel;
 											// Store selected model in sessionStorage
@@ -326,7 +310,7 @@ const App = () => {
 							{activeModel?.finetunes && (
 								<div className="md:mb-4">
 									<FinetuneSelector
-										models={[null, ...activeModel.finetunes]}
+										models={[null, ...(activeModel.finetunes as FineTune[])]}
 										model={params.lora}
 										onSelection={(model) => {
 											setParams({
