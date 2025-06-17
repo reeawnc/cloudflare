@@ -101,9 +101,9 @@ describe("mapWorkersAIFinishReason", () => {
 				["", "stop"],
 			];
 
-			testCases.forEach(([input, expected]) => {
+			for (const [input, expected] of testCases) {
 				expect(mapWorkersAIFinishReason(input)).toBe(expected);
-			});
+			}
 		});
 	});
 });

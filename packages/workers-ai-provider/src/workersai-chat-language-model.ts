@@ -175,7 +175,6 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 					? JSON.stringify(output.response) // ai-sdk expects a string here
 					: output.response,
 			toolCalls: processToolCalls(output),
-			// @ts-ignore Missing types
 			finishReason: mapWorkersAIFinishReason(output),
 			rawCall: { rawPrompt: messages, rawSettings: args },
 			rawResponse: { body: output },
@@ -221,7 +220,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 						}
 						controller.enqueue({
 							type: "finish",
-							finishReason: mapWorkersAIFinishReason(response?.finishReason),
+							finishReason: mapWorkersAIFinishReason(response),
 							usage: response.usage,
 						});
 						controller.close();
