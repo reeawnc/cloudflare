@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.6.2
+
+### Patch Changes
+
+- [#197](https://github.com/cloudflare/ai/pull/197) [`6506faa`](https://github.com/cloudflare/ai/commit/6506faacd50f066e86f6cd9c0eae297afc523bca) Thanks [@JoaquinGimenez1](https://github.com/JoaquinGimenez1)! - Add rawResponse from Workers AI
+
 ## 0.6.1
 
 ### Patch Changes
