@@ -106,4 +106,191 @@ describe("mapWorkersAIFinishReason", () => {
 			}
 		});
 	});
+
+	describe("response with choices array", () => {
+		it("should extract finish_reason from choices[0]", () => {
+			const response = {
+				choices: [{ finish_reason: "stop" }],
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+
+		it("should handle all finish reasons from choices[0]", () => {
+			const testCases = [
+				{ input: "stop", expected: "stop" },
+				{ input: "length", expected: "length" },
+				{ input: "model_length", expected: "length" },
+				{ input: "tool_calls", expected: "tool-calls" },
+				{ input: "error", expected: "error" },
+				{ input: "other", expected: "other" },
+				{ input: "unknown", expected: "unknown" },
+				{ input: "invalid_reason", expected: "stop" },
+			];
+
+			for (const { input, expected } of testCases) {
+				const response = {
+					choices: [{ finish_reason: input }],
+				};
+				expect(mapWorkersAIFinishReason(response)).toBe(expected);
+			}
+		});
+
+		it('should default to "stop" when choices[0].finish_reason is null', () => {
+			const response = {
+				choices: [{ finish_reason: null }],
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+
+		it('should default to "stop" when choices[0].finish_reason is undefined', () => {
+			const response = {
+				choices: [{ finish_reason: undefined }],
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+
+		it('should default to "stop" when choices[0] has no finish_reason property', () => {
+			const response = {
+				choices: [{ some_other_property: "value" }],
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+
+		it('should default to "stop" when choices array is empty', () => {
+			const response = {
+				choices: [],
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+
+		it("should only use first choice when multiple choices exist", () => {
+			const response = {
+				choices: [{ finish_reason: "stop" }, { finish_reason: "length" }],
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+	});
+
+	describe("response with direct finish_reason property", () => {
+		it("should extract finish_reason from response object", () => {
+			const response = {
+				finish_reason: "length",
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("length");
+		});
+
+		it("should handle all finish reasons from direct property", () => {
+			const testCases = [
+				{ input: "stop", expected: "stop" },
+				{ input: "length", expected: "length" },
+				{ input: "model_length", expected: "length" },
+				{ input: "tool_calls", expected: "tool-calls" },
+				{ input: "error", expected: "error" },
+				{ input: "other", expected: "other" },
+				{ input: "unknown", expected: "unknown" },
+				{ input: "invalid_reason", expected: "stop" },
+			];
+
+			for (const { input, expected } of testCases) {
+				const response = { finish_reason: input };
+				expect(mapWorkersAIFinishReason(response)).toBe(expected);
+			}
+		});
+
+		it('should default to "stop" when finish_reason is null', () => {
+			const response = {
+				finish_reason: null,
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+
+		it('should default to "stop" when finish_reason is undefined', () => {
+			const response = {
+				finish_reason: undefined,
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+	});
+
+	describe("precedence and edge cases", () => {
+		it("should prioritize choices[0].finish_reason over direct finish_reason", () => {
+			const response = {
+				choices: [{ finish_reason: "length" }],
+				finish_reason: "stop",
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("length");
+		});
+
+		it("should fall back to direct finish_reason when choices is not an array", () => {
+			const response = {
+				choices: "not_an_array",
+				finish_reason: "error",
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("error");
+		});
+
+		it("should fall back to direct finish_reason when choices is null", () => {
+			const response = {
+				choices: null,
+				finish_reason: "other",
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("other");
+		});
+
+		it('should default to "stop" when object has neither choices nor finish_reason', () => {
+			const response = {
+				some_other_property: "value",
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+
+		it("should handle empty object", () => {
+			const response = {};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+
+		it("should handle complex nested objects without expected properties", () => {
+			const response = {
+				nested: {
+					deep: {
+						property: "value",
+					},
+				},
+				array: [1, 2, 3],
+			};
+			const result = mapWorkersAIFinishReason(response);
+			expect(result).toBe("stop");
+		});
+	});
+
+	describe("type flexibility", () => {
+		it("should handle array input", () => {
+			const result = mapWorkersAIFinishReason([]);
+			expect(result).toBe("stop");
+		});
+
+		it("should handle number input", () => {
+			const result = mapWorkersAIFinishReason(42);
+			expect(result).toBe("stop");
+		});
+
+		it("should handle boolean input", () => {
+			const result = mapWorkersAIFinishReason(true);
+			expect(result).toBe("stop");
+		});
+	});
 });

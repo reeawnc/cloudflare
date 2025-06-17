@@ -10,7 +10,7 @@ export function mapWorkersAIFinishReason(finishReasonOrResponse: any): LanguageM
 		finishReasonOrResponse === undefined
 	) {
 		finishReason = finishReasonOrResponse;
-	} else {
+	} else if (typeof finishReasonOrResponse === "object" && finishReasonOrResponse !== null) {
 		const response = finishReasonOrResponse;
 
 		if (
