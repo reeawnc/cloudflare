@@ -141,41 +141,41 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: any[]) =
 	const getStatusBadge = () => {
 		const states = {
 			discovering: {
-				color: "blue",
+				colors: "bg-blue-100 text-blue-800",
 				label: "Discovering",
 			},
 			authenticating: {
-				color: "purple",
+				colors: "bg-purple-100 text-purple-800",
 				label: "Authenticating",
 			},
 			connecting: {
-				color: "yellow",
+				colors: "bg-yellow-100 text-yellow-800",
 				label: "Connecting",
 			},
 			loading: {
-				color: "orange",
+				colors: "bg-orange-100 text-orange-800",
 				label: "Loading",
 			},
 			ready: {
-				color: "green",
+				colors: "bg-green-100 text-green-800",
 				label: "Connected",
 			},
 			failed: {
-				color: "red",
+				colors: "bg-red-100 text-red-800",
 				label: "Failed",
 			},
 			"not-connected": {
-				color: "gray",
+				colors: "bg-gray-100 text-gray-800",
 				label: "Not Connected",
 			},
 		};
 
-		const { color, label } = state ? states[state] : states["not-connected"];
+		const { colors, label } = states[state] ?? states["not-connected"];
 
 		return (
 			<span
 				data-testid="status"
-				className={`px-2 py-1 rounded-full text-xs font-medium bg-${color}-100 text-${color}-800`}
+				className={`px-2 py-1 rounded-full text-xs font-medium ${colors}`}
 			>
 				{label}
 			</span>
