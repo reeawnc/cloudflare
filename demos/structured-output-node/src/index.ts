@@ -1,6 +1,6 @@
-import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 import { generateObject } from "ai";
 import z from "zod";
+import { createWorkersAI } from "../../../packages/workers-ai-provider/src";
 
 if (!process.env.CLOUDFLARE_API_TOKEN) {
 	throw new Error("CLOUDFLARE_API_TOKEN is not set");
@@ -11,8 +11,8 @@ if (!process.env.CLOUDFLARE_ACCOUNT_ID) {
 }
 
 const workersai = createWorkersAI({
-	apiKey: process.env.CLOUDFLARE_API_TOKEN,
 	accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+	apiKey: process.env.CLOUDFLARE_API_TOKEN,
 });
 
 console.log("Generating structured output for a sourdough recipe...");
@@ -20,14 +20,14 @@ console.log("Generating structured output for a sourdough recipe...");
 const { object } = await generateObject({
 	// @ts-expect-error - this is a valid model, we need to fix this
 	model: workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast"),
+	prompt: "Please give me a recipe for sourdough bread.",
 	schema: z.object({
 		recipe: z.object({
+			ingredients: z.array(z.object({ amount: z.string(), name: z.string() })),
 			name: z.string(),
-			ingredients: z.array(z.object({ name: z.string(), amount: z.string() })),
 			steps: z.array(z.string()),
 		}),
 	}),
-	prompt: "Please give me a recipe for sourdough bread.",
 });
 
 console.log(JSON.stringify(object, null, 2));

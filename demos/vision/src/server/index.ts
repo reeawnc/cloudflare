@@ -1,10 +1,9 @@
+import { env } from "cloudflare:workers";
+import { generateText } from "ai";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import type { Variables } from "./types/hono";
-
-import { generateText } from "ai";
-import { env } from "cloudflare:workers";
 import { createWorkersAI } from "workers-ai-provider";
+import type { Variables } from "./types/hono";
 
 const workersAI = createWorkersAI({
 	binding: env.AI,
@@ -37,31 +36,31 @@ app.post("/analyze", async (c) => {
 		// );
 
 		const response = await generateText({
-			// @ts-expect-error is it not in the types yet?
-			model: workersAI("@cf/meta/llama-3.2-11b-vision-instruct"),
 			messages: [
 				{
-					role: "system",
 					content:
 						"You are a helpful assistant that analyzes images and returns a description of the image.",
+					role: "system",
 				},
 				{
-					role: "user",
 					content: [
 						{
-							type: "image",
 							image: await image.arrayBuffer(),
+							type: "image",
 						},
 					],
+					role: "user",
 				},
 			],
+			// @ts-expect-error is it not in the types yet?
+			model: workersAI("@cf/meta/llama-3.2-11b-vision-instruct"),
 		});
 
 		return c.json({
-			success: true,
 			analysis: response.text,
-			imageType: image.type,
 			imageSize: image.size,
+			imageType: image.type,
+			success: true,
 		});
 	} catch (error) {
 		console.error("Error processing image:", error);

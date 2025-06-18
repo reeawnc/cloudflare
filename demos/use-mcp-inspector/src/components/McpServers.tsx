@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { useMcp, type UseMcpResult, type Tool } from "use-mcp/react";
 import { Info, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { type Tool, type UseMcpResult, useMcp } from "use-mcp/react";
 
 type ConnectionData = Omit<UseMcpResult, "state"> & {
 	state: "not-connected" | UseMcpResult["state"];
@@ -16,10 +16,10 @@ function McpConnection({
 }) {
 	// Use the MCP hook with the server URL
 	const connection = useMcp({
-		url: serverUrl,
-		debug: true,
 		autoRetry: false,
+		debug: true,
 		popupFeatures: "width=500,height=600,resizable=yes,scrollbars=yes",
+		url: serverUrl,
 	});
 
 	// Update parent component with connection data
@@ -38,16 +38,16 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: Tool[]) 
 	const [isActive, setIsActive] = useState(false);
 
 	const [connectionData, setConnectionData] = useState<ConnectionData>({
-		state: "not-connected",
-		tools: [],
-		error: undefined,
-		log: [],
-		authUrl: undefined,
-		retry: () => {},
-		disconnect: () => {},
 		authenticate: () => Promise.resolve(undefined),
+		authUrl: undefined,
 		callTool: (_name: string, _args?: Record<string, unknown>) => Promise.resolve(undefined),
 		clearStorage: () => {},
+		disconnect: () => {},
+		error: undefined,
+		log: [],
+		retry: () => {},
+		state: "not-connected",
+		tools: [],
 	});
 	const [toolForms, setToolForms] = useState<Record<string, Record<string, any>>>({});
 	const [toolExecutionLogs, setToolExecutionLogs] = useState<Record<string, string>>({});
@@ -89,17 +89,17 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: Tool[]) 
 		disconnect();
 		setIsActive(false);
 		setConnectionData({
-			state: "not-connected",
-			tools: [],
-			error: undefined,
-			log: [],
-			authUrl: undefined,
-			retry: () => {},
-			disconnect: () => {},
 			authenticate: () => Promise.resolve(undefined),
+			authUrl: undefined,
 			callTool: (_name: string, _args?: Record<string, unknown>) =>
 				Promise.resolve(undefined),
 			clearStorage: () => {},
+			disconnect: () => {},
+			error: undefined,
+			log: [],
+			retry: () => {},
+			state: "not-connected",
+			tools: [],
 		});
 	};
 
@@ -285,7 +285,8 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: Tool[]) 
 					}}
 				/>
 			);
-		}if (schema.type === "boolean") {
+		}
+		if (schema.type === "boolean") {
 			return (
 				<input
 					type="checkbox"
@@ -295,17 +296,17 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: Tool[]) 
 				/>
 			);
 		}
-			// String or other text input
-			return (
-				<input
-					type="text"
-					className="w-full p-2 border border-gray-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-300 placeholder-gray-300"
-					value={value}
-					required={isRequired}
-					placeholder={schema.description || ""}
-					onChange={(e) => handleFormChange(toolName, fieldName, e.target.value)}
-				/>
-			);
+		// String or other text input
+		return (
+			<input
+				type="text"
+				className="w-full p-2 border border-gray-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-300 placeholder-gray-300"
+				value={value}
+				required={isRequired}
+				placeholder={schema.description || ""}
+				onChange={(e) => handleFormChange(toolName, fieldName, e.target.value)}
+			/>
+		);
 	};
 
 	return (
