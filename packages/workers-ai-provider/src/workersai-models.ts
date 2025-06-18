@@ -1,12 +1,10 @@
 /**
  * The names of the BaseAiTextGeneration models.
  */
-export type TextGenerationModels =
-	| Exclude<
-			value2key<AiModels, BaseAiTextGeneration>,
-			value2key<AiModels, BaseAiTextToImage>
-	  >
-	| "@cf/meta/llama-3.3-70b-instruct-fp8-fast"; // This needs to be fixed to allow more models
+export type TextGenerationModels = Exclude<
+	value2key<AiModels, BaseAiTextGeneration>,
+	value2key<AiModels, BaseAiTextToImage>
+>; // This needs to be fixed to allow more models
 
 /*
  * The names of the BaseAiTextToImage models.
