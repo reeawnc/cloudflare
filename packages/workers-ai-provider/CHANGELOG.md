@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.6.3
+
+### Patch Changes
+
+- [#206](https://github.com/cloudflare/ai/pull/206) [`f7aa30d`](https://github.com/cloudflare/ai/commit/f7aa30d9ee61fdc0330ea62c206a7ff3a3f64401) Thanks [@threepointone](https://github.com/threepointone)! - update dependencies
+
 ## 0.6.2
 
 ### Patch Changes
