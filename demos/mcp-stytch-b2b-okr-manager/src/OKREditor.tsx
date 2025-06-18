@@ -96,6 +96,7 @@ const KeyResultEditor = ({
 			<div className={fullyAttained ? "complete" : ""}>
 				<strong>Key Result:</strong> {keyResult.text} ({keyResult.attainment}% achieved)
 				<button
+					type="button"
 					disabled={!canEdit}
 					className="text tiny"
 					onClick={() => setModalOpen(true)}
@@ -103,6 +104,7 @@ const KeyResultEditor = ({
 					<Pen />
 				</button>
 				<button
+					type="button"
 					disabled={!canDelete}
 					className="text tiny"
 					onClick={() => onDeleteKeyResult(objective.id, keyResult.id)}
@@ -165,6 +167,7 @@ const ObjectiveEditor = ({
 					</div>
 					<div>
 						<button
+							type="button"
 							disabled={!canCreateKeyResult}
 							className="text"
 							onClick={() => setModalOpen(true)}
@@ -172,6 +175,7 @@ const ObjectiveEditor = ({
 							<PlusCircle />
 						</button>
 						<button
+							type="button"
 							disabled={!canDelete}
 							className="text"
 							onClick={() => onDeleteObjective(objective.id)}
@@ -311,7 +315,7 @@ const OKREditor = ({ stytchPermissions }: EditorProps) => {
 
 				<h1>
 					Objectives and Key Results for {organization?.organization_name}
-					<button className="text" onClick={() => setInfoModalOpen(true)}>
+					<button type="button" className="text" onClick={() => setInfoModalOpen(true)}>
 						<CircleHelp />
 					</button>
 				</h1>
@@ -328,6 +332,7 @@ const OKREditor = ({ stytchPermissions }: EditorProps) => {
 					{objectives.length === 0 && <li>No objectives defined yet....</li>}
 				</ul>
 				<button
+					type="button"
 					disabled={!canCreate}
 					className="primary"
 					onClick={() => setModalOpen(true)}

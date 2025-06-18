@@ -15,7 +15,7 @@ export const jwt = (
 		auth0_domain: string;
 		auth0_audience: string;
 	},
-	init?: RequestInit,
+	_init?: RequestInit,
 ): MiddlewareHandler => {
 	let JWKS: ReturnType<typeof createRemoteJWKSet> | null = null;
 

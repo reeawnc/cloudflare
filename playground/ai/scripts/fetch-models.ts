@@ -1,6 +1,7 @@
-import type { Model, FineTune } from "../src/models";
 import * as fs from "node:fs";
 import dotenv from "dotenv";
+import type { FineTune, Model } from "../src/models";
+
 dotenv.config();
 
 if (!process.env.CLOUDFLARE_API_TOKEN || !process.env.CLOUDFLARE_ACCOUNT_ID) {

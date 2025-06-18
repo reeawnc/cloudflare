@@ -17,7 +17,7 @@ export type Permissions = {
 
 // Context from the auth process, extracted from the Stytch auth token JWT
 // and provided to the MCP Server as this.props
-type AuthenticationContext = {
+export type AuthenticationContext = {
 	organizationID: string;
 	accessToken: string;
 };

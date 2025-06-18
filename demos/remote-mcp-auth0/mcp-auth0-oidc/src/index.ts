@@ -5,7 +5,7 @@ import { Hono } from "hono";
 import { authorize, callback, confirmConsent, tokenExchangeCallback } from "./auth";
 import type { UserProps } from "./types";
 
-export class AuthenticatedMCP extends McpAgent<Env, {}, UserProps> {
+export class AuthenticatedMCP extends McpAgent<Env, Record<string, never>, UserProps> {
 	server = new McpServer({
 		name: "Auth0 OIDC Proxy Demo",
 		version: "1.0.0",

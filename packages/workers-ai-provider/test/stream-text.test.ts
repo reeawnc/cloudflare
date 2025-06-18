@@ -297,7 +297,7 @@ describe("Binding - Streaming Text Tests", () => {
 	it("should handle chunk without 'response' field gracefully in mock", async () => {
 		const workersai = createWorkersAI({
 			binding: {
-				run: async (modelName: string, inputs: any, options?: any) => {
+				run: async (_modelName: string, _inputs: any, _options?: any) => {
 					return mockStream([
 						{ response: "Hello " },
 						{ p: "no response", tool_calls: [] },
@@ -328,7 +328,7 @@ describe("Binding - Streaming Text Tests", () => {
 
 		const workersai = createWorkersAI({
 			binding: {
-				run: async (modelName: string, inputs: any, options?: any) => {
+				run: async (_modelName: string, _inputs: any, options?: any) => {
 					capturedOptions = options;
 					return mockStream([{ response: "Hello with options" }, "[DONE]"]);
 				},
@@ -360,7 +360,7 @@ describe("Binding - Streaming Text Tests", () => {
 	it("should handle old tool call inside response when last message is user message", async () => {
 		const workersai = createWorkersAI({
 			binding: {
-				run: async (modelName: string, inputs: any, options?: any) => {
+				run: async (_modelName: string, _inputs: any, _options?: any) => {
 					return {
 						response: null,
 						tool_calls: [

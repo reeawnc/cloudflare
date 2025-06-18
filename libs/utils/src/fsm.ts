@@ -145,7 +145,7 @@ export function generateMachine<T extends FSMConfig>(config: T): GeneratedMachin
 	// Attach any provided hook methods to the machine, binding them to the machine.
 	if (config.methods) {
 		for (const key in config.methods) {
-			if (Object.prototype.hasOwnProperty.call(config.methods, key)) {
+			if (Object.hasOwn(config.methods, key)) {
 				machine[key] = config.methods[key].bind(machine);
 			}
 		}

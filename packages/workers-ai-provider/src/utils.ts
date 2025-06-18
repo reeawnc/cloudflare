@@ -66,6 +66,7 @@ export function createRun(config: CreateRunConfig): AiRun {
 		inputs: AiModels[Name]["inputs"],
 		options?: AiOptions & Record<string, StringLike>,
 	): Promise<Response | ReadableStream<Uint8Array> | AiModels[Name]["postProcessedOutputs"]> {
+		// biome-ignore lint/correctness/noUnusedVariables: they need to be destructured
 		const { gateway, prefix, extraHeaders, returnRawResponse, ...passthroughOptions } =
 			options || {};
 
@@ -78,7 +79,7 @@ export function createRun(config: CreateRunConfig): AiRun {
 					continue;
 				}
 				urlParams.append(key, valueStr);
-			} catch (error) {
+			} catch (_error) {
 				throw new Error(
 					`Value for option '${key}' is not able to be coerced into a string.`,
 				);

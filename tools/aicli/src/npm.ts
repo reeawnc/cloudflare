@@ -1,6 +1,6 @@
 import "zx/globals";
-import { z } from "zod";
 import { createHash } from "node:crypto";
+import { z } from "zod";
 
 const repoRoot = path.resolve(__dirname, "../../..");
 
@@ -28,8 +28,8 @@ export async function generateNpmLockfiles(): Promise<void> {
 		await fs.rm("./node_modules", { force: true, recursive: true });
 
 		await $({
-			verbose: true,
 			stdio: "inherit",
+			verbose: true,
 		})`npm install --no-audit --progress=false`;
 
 		await fs.rm("./node_modules", { force: true, recursive: true });
@@ -107,7 +107,6 @@ class DemosConfig {
 	}
 }
 
-type TemplateConfig = z.infer<typeof TemplateConfig>;
 const TemplateConfig = z.object({
 	package_json_hash: z.string(),
 });

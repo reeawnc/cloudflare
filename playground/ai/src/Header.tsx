@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/nursery/useUniqueElementIds: it's fine */
+/** biome-ignore-all lint/a11y/noStaticElementInteractions: it's fine */
 interface HeaderProps {
 	onSetCodeVisible: (visible: boolean) => void;
 }
@@ -93,7 +95,7 @@ const Header = ({ onSetCodeVisible }: HeaderProps) => {
 			</a>
 			<a
 				className="hover:bg-gray-50 text-sm cursor-pointer font-sm px-3 py-2 bg-white border border-gray-200 rounded-md shadow-sm flex items-center"
-				// biome-ignore lint/a11y/useValidAnchor: <explanation>
+				// biome-ignore lint/a11y/useValidAnchor: it's fine
 				onClick={() => onSetCodeVisible(true)}
 			>
 				View Code

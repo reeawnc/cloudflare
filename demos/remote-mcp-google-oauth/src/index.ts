@@ -12,7 +12,7 @@ type Props = {
 	accessToken: string;
 };
 
-export class MyMCP extends McpAgent<Env, {}, Props> {
+export class MyMCP extends McpAgent<Env, Record<string, never>, Props> {
 	server = new McpServer({
 		name: "Google OAuth Proxy Demo",
 		version: "0.0.1",

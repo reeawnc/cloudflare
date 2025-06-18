@@ -1,7 +1,7 @@
 import type { Model } from "./models";
 
 const ModelRow = ({ model }: { model: Model }) => {
-	const [provider, author, name] = model.name.split("/");
+	const [_provider, _author, name] = model.name.split("/");
 	const tags = model.properties
 		.map(({ property_id, value }) => {
 			if (property_id === "beta" && value === "true") {

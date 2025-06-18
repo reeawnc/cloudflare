@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useMcp, type UseMcpResult } from "use-mcp/react";
+/** biome-ignore-all lint/nursery/useUniqueElementIds: it's finr */
+import { useEffect, useRef, useState } from "react";
+import { type UseMcpResult, useMcp } from "use-mcp/react";
 
 // MCP Connection wrapper that only renders when active
 function McpConnection({
@@ -18,11 +19,11 @@ function McpConnection({
 
 	// Use the MCP hook with the server URL
 	const connection = useMcp({
-		url: serverUrl,
-		debug: true,
 		autoRetry: false,
 		customHeaders,
+		debug: true,
 		popupFeatures: "width=500,height=600,resizable=yes,scrollbars=yes",
+		url: serverUrl,
 	});
 
 	// Update parent component with connection data
@@ -38,27 +39,23 @@ type ConnectionData = Omit<UseMcpResult, "state"> & {
 	state: "not-connected" | UseMcpResult["state"];
 };
 
-export function McpServers({
-	onToolsUpdate,
-}: {
-	onToolsUpdate?: (tools: any[]) => void;
-}) {
+export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: any[]) => void }) {
 	const [serverUrl, setServerUrl] = useState(() => {
 		return sessionStorage.getItem("mcpServerUrl") || "";
 	});
 	const [isActive, setIsActive] = useState(false);
 	const [showSettings, setShowSettings] = useState(true);
 	const [connectionData, setConnectionData] = useState<ConnectionData>({
-		state: "not-connected",
-		tools: [],
+		authenticate: () => Promise.resolve(undefined),
+		authUrl: undefined,
+		callTool: (_name: string, _args?: Record<string, unknown>) => Promise.resolve(undefined),
+		clearStorage: () => {},
+		disconnect: () => {},
 		error: undefined,
 		log: [],
-		authUrl: undefined,
 		retry: () => {},
-		disconnect: () => {},
-		authenticate: () => Promise.resolve(undefined),
-		callTool: (name: string, args?: Record<string, unknown>) => Promise.resolve(undefined),
-		clearStorage: () => {},
+		state: "not-connected",
+		tools: [],
 	});
 	const logRef = useRef<HTMLDivElement>(null);
 	const [showAuth, setShowAuth] = useState<boolean>(false);
@@ -71,7 +68,16 @@ export function McpServers({
 	const [showToken, setShowToken] = useState<boolean>(false);
 
 	// Extract connection properties
-	const { state, tools, error, log, authUrl, retry, disconnect, authenticate } = connectionData;
+	const {
+		state,
+		tools,
+		error,
+		log,
+		authUrl,
+		retry: _retry,
+		disconnect,
+		authenticate,
+	} = connectionData;
 
 	// Notify parent component when tools change
 	useEffect(() => {
@@ -96,16 +102,17 @@ export function McpServers({
 		disconnect();
 		setIsActive(false);
 		setConnectionData({
-			state: "not-connected",
-			tools: [],
+			authenticate: () => Promise.resolve(undefined),
+			authUrl: undefined,
+			callTool: (_name: string, _args?: Record<string, unknown>) =>
+				Promise.resolve(undefined),
+			clearStorage: () => {},
+			disconnect: () => {},
 			error: undefined,
 			log: [],
-			authUrl: undefined,
 			retry: () => {},
-			disconnect: () => {},
-			authenticate: () => Promise.resolve(undefined),
-			callTool: (name: string, args?: Record<string, unknown>) => Promise.resolve(undefined),
-			clearStorage: () => {},
+			state: "not-connected",
+			tools: [],
 		});
 	};
 
@@ -483,7 +490,7 @@ export function McpServers({
 						<div className="border border-gray-200 rounded-md p-2 bg-gray-50 max-h-32 overflow-y-auto">
 							{tools.map((tool, index) => (
 								<div
-									// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+									// biome-ignore lint/suspicious/noArrayIndexKey: it's fine
 									key={index}
 									className="text-sm py-1 border-b border-gray-100 last:border-b-0"
 								>
@@ -510,7 +517,7 @@ export function McpServers({
 						{log.length > 0 ? (
 							log.map((entry, index) => (
 								<div
-									// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+									// biome-ignore lint/suspicious/noArrayIndexKey: it's fine
 									key={index}
 									className={`py-0.5 ${
 										entry.level === "debug"

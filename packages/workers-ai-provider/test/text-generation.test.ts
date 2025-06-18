@@ -108,7 +108,7 @@ describe("Binding - Text Generation Tests", () => {
 	it("should generate text (non-streaming)", async () => {
 		const workersai = createWorkersAI({
 			binding: {
-				run: async (modelName: string, inputs: any, options?: any) => {
+				run: async (_modelName: string, _inputs: any, _options?: any) => {
 					return { response: "Hello" };
 				},
 			},
@@ -127,7 +127,7 @@ describe("Binding - Text Generation Tests", () => {
 
 		const workersai = createWorkersAI({
 			binding: {
-				run: async (modelName: string, inputs: any, options?: any) => {
+				run: async (_modelName: string, _inputs: any, options?: any) => {
 					capturedOptions = options;
 					return { response: "Hello" };
 				},

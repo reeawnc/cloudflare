@@ -12,7 +12,7 @@ const ONE_YEAR_IN_SECONDS = 31536000;
  * @param data - The data to encode (will be stringified).
  * @returns A URL-safe base64 encoded string.
  */
-function encodeState(data: any): string {
+function _encodeState(data: any): string {
 	try {
 		const jsonString = JSON.stringify(data);
 		// Use btoa for simplicity, assuming Worker environment supports it well enough

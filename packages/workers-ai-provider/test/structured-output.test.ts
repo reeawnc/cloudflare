@@ -78,7 +78,7 @@ describe("Binding - Structured Output Tests", () => {
 	it("should generate structured output with schema (non-streaming)", async () => {
 		const workersai = createWorkersAI({
 			binding: {
-				run: async (modelName: string, inputs: any, options?: any) => {
+				run: async (_modelName: string, _inputs: any, _options?: any) => {
 					return {
 						response: {
 							recipe: {

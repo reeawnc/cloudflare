@@ -1,21 +1,16 @@
-import { useRef, useState } from "react";
-import TextareaAutosize from "react-textarea-autosize";
-
-import { useHotkeys } from "react-hotkeys-hook";
-
-import ViewCodeModal from "./ViewCodeModal";
-import ModelSelector from "./ModelSelector";
-import { SparkleIcon } from "./Icons";
-
 import { useChat } from "@ai-sdk/react";
-import { McpServers } from "./McpServers";
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
+import { useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import TextareaAutosize from "react-textarea-autosize";
 import FinetuneSelector from "./FinetuneSelector";
-
-import Header from "./Header";
 import Footer from "./Footer";
-
+import Header from "./Header";
+import { SparkleIcon } from "./Icons";
+import { McpServers } from "./McpServers";
+import ModelSelector from "./ModelSelector";
 import { models } from "./models";
+import ViewCodeModal from "./ViewCodeModal";
 
 const finetuneTemplates = {
 	"cf-public-cnn-summarization": `You are given a news article below. Please summarize the article, including only its highlights.
@@ -65,10 +60,10 @@ const App = () => {
 		const storedModel = sessionStorage.getItem("selectedModel");
 
 		return {
-			model: (selectedModel || storedModel || defaultModel) as keyof AiModels,
-			max_tokens: 512,
-			stream: true,
 			lora: selectedFinetune || null,
+			max_tokens: 512,
+			model: (selectedModel || storedModel || defaultModel) as keyof AiModels,
+			stream: true,
 		};
 	});
 
@@ -82,8 +77,8 @@ const App = () => {
 		api: "/api/inference",
 		body: {
 			lora: params.lora,
-			model: params.model,
 			max_tokens: params.max_tokens,
+			model: params.model,
 			stream: params.stream,
 			system_message: systemMessage,
 			tools: mcpTools,
@@ -209,6 +204,7 @@ const App = () => {
 											fill="url(#paint2_linear_1012_8647)"
 										/>
 										<defs>
+											{/** biome-ignore lint/nursery/useUniqueElementIds: it's fine */}
 											<linearGradient
 												id="paint0_linear_1012_8647"
 												x1="5.37109"
@@ -221,6 +217,7 @@ const App = () => {
 												<stop offset="0.505208" stopColor="#CE2F55" />
 												<stop offset="1" stopColor="#FF6633" />
 											</linearGradient>
+											{/** biome-ignore lint/nursery/useUniqueElementIds: it's fine */}
 											<linearGradient
 												id="paint1_linear_1012_8647"
 												x1="0.325684"
@@ -233,6 +230,7 @@ const App = () => {
 												<stop offset="0.505208" stopColor="#CE2F55" />
 												<stop offset="1" stopColor="#FF6633" />
 											</linearGradient>
+											{/** biome-ignore lint/nursery/useUniqueElementIds: it's fine */}
 											<linearGradient
 												id="paint2_linear_1012_8647"
 												x1="-5.51246e-08"
@@ -289,8 +287,8 @@ const App = () => {
 											sessionStorage.setItem("selectedModel", modelName);
 											setParams({
 												...params,
-												model: modelName,
 												lora: null,
+												model: modelName,
 											});
 										}}
 									/>
@@ -309,12 +307,12 @@ const App = () => {
 											});
 											setMessages([
 												{
-													id: "0",
-													role: "user",
 													content:
 														finetuneTemplates[
 															model?.name as keyof typeof finetuneTemplates
 														] || "",
+													id: "0",
+													role: "user",
 												},
 											]);
 										}}
@@ -404,19 +402,16 @@ const App = () => {
 												part.type === "file" ? (
 													part.mimeType.startsWith("image/") ? (
 														<img
-															// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+															// biome-ignore lint/suspicious/noArrayIndexKey: it's fine
 															key={i}
 															className="max-w-md mx-auto"
 															src={`data:${part.mimeType};base64,${part.data}`}
-															// biome-ignore lint/a11y/noRedundantAlt: <explanation>
+															// biome-ignore lint/a11y/noRedundantAlt: it's fine
 															alt="Image from tool call response"
 														/>
-													) : (
-														// biome-ignore lint/style/noCommaOperator: <explanation>
-														(console.log(part), null)
-													)
+													) : null
 												) : part.type === "tool-invocation" ? (
-													// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+													// biome-ignore lint/suspicious/noArrayIndexKey: <expla	nation>
 													<div key={i}>
 														<div className="w-full text-center italic text-xs text-gray-400 font-mono max-h-20 overflow-auto break-all px-2 whitespace-pre-line">
 															[tool] {part.toolInvocation.toolName}(
@@ -446,7 +441,7 @@ const App = () => {
 																		/\[(blob:.*)]/,
 																	)[1]
 																}
-																// biome-ignore lint/a11y/noRedundantAlt: <explanation>
+																// biome-ignore lint/a11y/noRedundantAlt: it's fine
 																alt="Image from tool call response"
 															/>
 														) : null}

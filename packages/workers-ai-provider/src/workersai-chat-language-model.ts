@@ -134,6 +134,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 	): Promise<Awaited<ReturnType<LanguageModelV1["doGenerate"]>>> {
 		const { args, warnings } = this.getArgs(options);
 
+		// biome-ignore lint/correctness/noUnusedVariables: this needs to be destructured
 		const { gateway, safePrompt, ...passthroughOptions } = this.settings;
 
 		// Extract image from messages if present

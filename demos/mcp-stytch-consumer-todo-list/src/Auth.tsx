@@ -55,9 +55,9 @@ export function Login() {
 	const loginConfig = useMemo<StytchLoginConfig>(
 		() => ({
 			oauthOptions: {
-				loginRedirectURL: window.location.origin + "/authenticate",
+				loginRedirectURL: `${window.location.origin}/authenticate`,
 				providers: [{ type: OAuthProviders.Google }],
-				signupRedirectURL: window.location.origin + "/authenticate",
+				signupRedirectURL: `${window.location.origin}/authenticate`,
 			},
 			otpOptions: {
 				expirationMinutes: 10,
@@ -106,7 +106,7 @@ export const Logout = () => {
 	if (!user) return null;
 
 	return (
-		<button className="primary" onClick={() => stytch.session.revoke()}>
+		<button type="button" className="primary" onClick={() => stytch.session.revoke()}>
 			{" "}
 			Log Out{" "}
 		</button>

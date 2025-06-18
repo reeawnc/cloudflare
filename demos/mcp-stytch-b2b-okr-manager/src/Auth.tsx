@@ -26,6 +26,7 @@ import { NavLink, useLocation } from "react-router-dom";
  * If the user is not logged in, the user is redirected to the login page and the
  * current URL is stored in localStorage to enable return after authentication.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const withLoginRequired = <P extends object>(Component: React.ComponentType<P>) => {
 	const WrappedComponent: React.FC<P> = (props) => {
 		const { member } = useStytchMember();
@@ -74,7 +75,7 @@ export function Login() {
 		() => ({
 			authFlowType: AuthFlowType.Discovery,
 			oauthOptions: {
-				discoveryRedirectURL: window.location.origin + "/authenticate",
+				discoveryRedirectURL: `${window.location.origin}/authenticate`,
 				providers: [{ type: B2BOAuthProviders.Google }],
 			},
 			products: [B2BProducts.oauth, B2BProducts.emailOtp],
@@ -178,25 +179,25 @@ const adminPortalConfig = {
 		AdminPortalB2BProducts.oauthGoogle,
 	],
 	getRoleDescription: (role: Role) => {
-		if (role.role_id == "stytch_admin") {
+		if (role.role_id === "stytch_admin") {
 			return "The Big Cheese. Full access. Unlimited power.";
 		}
-		if (role.role_id == "manager") {
+		if (role.role_id === "manager") {
 			return "Defines Key Results for Employees to implement.";
 		}
-		if (role.role_id == "stytch_member") {
+		if (role.role_id === "stytch_member") {
 			return "Gives status reports.";
 		}
 		return role.description;
 	},
 	getRoleDisplayName: (role: Role) => {
-		if (role.role_id == "stytch_admin") {
+		if (role.role_id === "stytch_admin") {
 			return "CEO";
 		}
-		if (role.role_id == "manager") {
+		if (role.role_id === "manager") {
 			return "Manager";
 		}
-		if (role.role_id == "stytch_member") {
+		if (role.role_id === "stytch_member") {
 			return "Employee";
 		}
 		return role.role_id;
@@ -253,7 +254,7 @@ export const Nav = () => {
 			>
 				Member Management
 			</NavLink>
-			<button className="primary" onClick={() => stytch.session.revoke()}>
+			<button type="button" className="primary" onClick={() => stytch.session.revoke()}>
 				{" "}
 				Log Out
 			</button>

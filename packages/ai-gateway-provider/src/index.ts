@@ -168,7 +168,7 @@ export class AiGatewayChatLanguageModel implements LanguageModelV1 {
 
 		this.models[step].config = {
 			...this.models[step].config,
-			fetch: (url, req) => resp as unknown as Promise<Response>,
+			fetch: (_url, _req) => resp as unknown as Promise<Response>,
 		};
 
 		return this.models[step][modelMethod](options) as Promise<Awaited<ReturnType<T>>>;

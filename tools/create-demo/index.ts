@@ -1,3 +1,4 @@
+import { exec, execSync } from "node:child_process";
 import * as path from "node:path";
 import {
 	cancel,
@@ -12,7 +13,6 @@ import {
 } from "@clack/prompts";
 import chalk from "chalk";
 import { copyDirectoryOrFile, readPackageJson, writePackageJson } from "./utils";
-import { exec, execSync } from "node:child_process";
 
 const DEMO_PATH_PREFIX = "./demos/";
 const projectNameArg = process.argv[2];
@@ -23,13 +23,13 @@ async function main(): Promise<void> {
 	const projectPath = projectNameArg
 		? `${DEMO_PATH_PREFIX}${projectNameArg}`
 		: ((await text({
-				message: "Enter the full path for the new project location:",
 				initialValue: DEMO_PATH_PREFIX,
+				message: "Enter the full path for the new project location:",
 			})) as string);
 
 	const withClient = await confirm({
-		message: "Create scaffolding for client side?",
 		initialValue: false,
+		message: "Create scaffolding for client side?",
 	});
 
 	const projectName = projectPath.split("/").pop();
@@ -48,13 +48,13 @@ async function main(): Promise<void> {
 		message: "Select which dependencies to install:",
 		options: [
 			{
-				value: "workers-ai-provider",
 				label: "Workers AI Provider for the Vercel AI SDK (also installs zod and ai)",
+				value: "workers-ai-provider",
 			},
-			{ value: "agents-sdk", label: "Agents SDK" },
-			{ value: "@modelcontextprotocol/sdk", label: "Model Context Protocol SDK" },
-			{ value: "zod", label: "Zod" },
-			{ value: "ai", label: "Vercel AI SDK" },
+			{ label: "Agents SDK", value: "agents-sdk" },
+			{ label: "Model Context Protocol SDK", value: "@modelcontextprotocol/sdk" },
+			{ label: "Zod", value: "zod" },
+			{ label: "Vercel AI SDK", value: "ai" },
 		],
 	})) as string[];
 
