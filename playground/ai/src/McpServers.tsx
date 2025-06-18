@@ -116,6 +116,11 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: any[]) =
 		});
 	};
 
+	const handleConnectionUpdate = (data: ConnectionData) => {
+		setConnectionData(data);
+		if (data.state === "failed") setIsActive(false);
+	};
+
 	// Handle authentication if popup was blocked
 	const handleManualAuth = async () => {
 		try {
@@ -134,45 +139,47 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: any[]) =
 
 	// Generate status badge based on connection state
 	const getStatusBadge = () => {
-		const baseClasses = "px-2 py-1 rounded-full text-xs font-medium";
+		const states = {
+			discovering: {
+				color: "blue",
+				label: "Discovering",
+			},
+			authenticating: {
+				color: "purple",
+				label: "Authenticating",
+			},
+			connecting: {
+				color: "yellow",
+				label: "Connecting",
+			},
+			loading: {
+				color: "orange",
+				label: "Loading",
+			},
+			ready: {
+				color: "green",
+				label: "Connected",
+			},
+			failed: {
+				color: "red",
+				label: "Failed",
+			},
+			"not-connected": {
+				color: "gray",
+				label: "Not Connected",
+			},
+		};
 
-		switch (state) {
-			case "discovering":
-				return (
-					<span className={`${baseClasses} bg-blue-100 text-blue-800`}>Discovering</span>
-				);
-			case "authenticating":
-				return (
-					<span className={`${baseClasses} bg-purple-100 text-purple-800`}>
-						Authenticating
-					</span>
-				);
-			case "connecting":
-				return (
-					<span className={`${baseClasses} bg-yellow-100 text-yellow-800`}>
-						Connecting
-					</span>
-				);
-			case "loading":
-				return (
-					<span className={`${baseClasses} bg-orange-100 text-orange-800`}>Loading</span>
-				);
-			case "ready":
-				return (
-					<span className={`${baseClasses} bg-green-100 text-green-800`}>Connected</span>
-				);
-			case "failed":
-				return <span className={`${baseClasses} bg-red-100 text-red-800`}>Failed</span>;
+		const { color, label } = state ? states[state] : states["not-connected"];
 
-			/* biome-ignore lint/complexity/noUselessSwitchCase: eh */
-			case "not-connected":
-			default:
-				return (
-					<span className={`${baseClasses} bg-gray-100 text-gray-800`}>
-						Not Connected
-					</span>
-				);
-		}
+		return (
+			<span
+				data-testid="status"
+				className={`px-2 py-1 rounded-full text-xs font-medium bg-${color}-100 text-${color}-800`}
+			>
+				{label}
+			</span>
+		);
 	};
 
 	return (
@@ -559,7 +566,7 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: any[]) =
 					serverUrl={serverUrl}
 					headerKey={headerKey}
 					bearerToken={bearerToken}
-					onConnectionUpdate={setConnectionData}
+					onConnectionUpdate={handleConnectionUpdate}
 				/>
 			)}
 		</section>
