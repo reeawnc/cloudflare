@@ -116,6 +116,11 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: any[]) =
 		});
 	};
 
+	const handleConnectionUpdate = (data: ConnectionData) => {
+		setConnectionData(data);
+		if (data.state === "failed") setIsActive(false);
+	};
+
 	// Handle authentication if popup was blocked
 	const handleManualAuth = async () => {
 		try {
@@ -559,7 +564,7 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: any[]) =
 					serverUrl={serverUrl}
 					headerKey={headerKey}
 					bearerToken={bearerToken}
-					onConnectionUpdate={setConnectionData}
+					onConnectionUpdate={handleConnectionUpdate}
 				/>
 			)}
 		</section>
