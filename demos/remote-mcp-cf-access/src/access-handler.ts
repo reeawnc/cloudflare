@@ -14,7 +14,7 @@ type EnvWithOauth = Env & { OAUTH_PROVIDER: OAuthHelpers };
 export async function handleAccessRequest(
 	request: Request,
 	env: EnvWithOauth,
-	ctx: ExecutionContext,
+	_ctx: ExecutionContext,
 ) {
 	const { pathname, searchParams } = new URL(request.url);
 
@@ -135,7 +135,7 @@ async function fetchAccessPublicKey(env: Env, kid: string) {
 	const keys = (await resp.json()) as {
 		keys: (JsonWebKey & { kid: string })[];
 	};
-	const jwk = keys.keys.filter((key) => key.kid == kid)[0];
+	const jwk = keys.keys.filter((key) => key.kid === kid)[0];
 	const key = await crypto.subtle.importKey(
 		"jwk",
 		jwk,

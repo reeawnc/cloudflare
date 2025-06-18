@@ -91,9 +91,13 @@ const TodoEditor = withLoginRequired(() => {
 						</div>
 						<div>
 							{!todo.completed && (
-								<button onClick={() => onCompleteTodo(todo.id)}>Complete</button>
+								<button type="button" onClick={() => onCompleteTodo(todo.id)}>
+									Complete
+								</button>
 							)}
-							<button onClick={() => onDeleteTodo(todo.id)}>Delete</button>
+							<button type="button" onClick={() => onDeleteTodo(todo.id)}>
+								Delete
+							</button>
 						</div>
 					</li>
 				))}

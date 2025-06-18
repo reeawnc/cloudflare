@@ -7,9 +7,9 @@ import { type Props, refreshSlackToken, SlackHandler } from "./slack-handler";
 
 // To restrict access to specific users only, add their Slack userIDs to this Set.
 // Leave it empty to allow access to all authenticated users.
-const ALLOWED_USERIDS = new Set([
-	// Example: 'U01234567',
-]);
+// const ALLOWED_USERIDS = new Set([
+// 	// Example: 'U01234567',
+// ]);
 
 export class SlackMCP extends McpAgent<Env, unknown, Props> {
 	server = new McpServer({
@@ -103,6 +103,10 @@ export class SlackMCP extends McpAgent<Env, unknown, Props> {
 						channel: channelId,
 						text: message,
 					});
+
+					if (!response.ok) {
+						throw new Error(response.error);
+					}
 
 					return {
 						content: [

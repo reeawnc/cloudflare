@@ -7,7 +7,7 @@ import type { Props } from "./workers-oauth-utils";
 
 const ALLOWED_EMAILS = new Set(["<INSERT EMAIL>"]);
 
-export class MyMCP extends McpAgent<Env, {}, Props> {
+export class MyMCP extends McpAgent<Env, Record<string, never>, Props> {
 	server = new McpServer({
 		name: "Access OAuth Proxy Demo",
 		version: "1.0.0",
