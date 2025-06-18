@@ -1,7 +1,35 @@
-{ "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json", "organizeImports":
-{ "enabled": true }, "files": { "ignore": ["node_modules/**/*", "dist/**/*"],
-"include": ["src/**/*.ts", "test/**/*.ts"] }, "linter": { "enabled": true,
-"rules": { "recommended": true, "suspicious": { "noExplicitAny": "off",
-"noDebugger": "off", "noConfusingVoidType": "off" }, "style": {
-"noNonNullAssertion": "off" } } }, "formatter": { "enabled": true,
-"indentStyle": "tab", "indentWidth": 4, "lineWidth": 100 } }
+{
+	"$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"useSortedKeys": "on"
+			}
+		}
+	},
+	"files": {
+		"includes": ["src/**/*.ts", "test/**/*.ts", "!node_modules/**/*", "!dist/**/*"]
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"suspicious": {
+				"noExplicitAny": "off",
+				"noDebugger": "off",
+				"noConsoleLog": "off",
+				"noConfusingVoidType": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off"
+			}
+		}
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 4,
+		"lineWidth": 100
+	}
+}
