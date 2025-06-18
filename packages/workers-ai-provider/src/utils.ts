@@ -91,17 +91,17 @@ export function createRun(config: CreateRunConfig): AiRun {
 
 		// Merge default and custom headers.
 		const headers = {
-			"Content-Type": "application/json",
 			Authorization: `Bearer ${apiKey}`,
+			"Content-Type": "application/json",
 		};
 
 		const body = JSON.stringify(inputs);
 
 		// Execute the POST request. The optional AbortSignal is applied here.
 		const response = await fetch(url, {
-			method: "POST",
-			headers,
 			body,
+			headers,
+			method: "POST",
 		});
 
 		// (1) If the user explicitly requests the raw Response, return it as-is.
@@ -134,42 +134,42 @@ export function prepareToolsAndToolChoice(
 	const tools = mode.tools?.length ? mode.tools : undefined;
 
 	if (tools == null) {
-		return { tools: undefined, tool_choice: undefined };
+		return { tool_choice: undefined, tools: undefined };
 	}
 
 	const mappedTools = tools.map((tool) => ({
-		type: "function",
 		function: {
-			name: tool.name,
 			// @ts-expect-error - description is not a property of tool
 			description: tool.description,
+			name: tool.name,
 			// @ts-expect-error - parameters is not a property of tool
 			parameters: tool.parameters,
 		},
+		type: "function",
 	}));
 
 	const toolChoice = mode.toolChoice;
 
 	if (toolChoice == null) {
-		return { tools: mappedTools, tool_choice: undefined };
+		return { tool_choice: undefined, tools: mappedTools };
 	}
 
 	const type = toolChoice.type;
 
 	switch (type) {
 		case "auto":
-			return { tools: mappedTools, tool_choice: type };
+			return { tool_choice: type, tools: mappedTools };
 		case "none":
-			return { tools: mappedTools, tool_choice: type };
+			return { tool_choice: type, tools: mappedTools };
 		case "required":
-			return { tools: mappedTools, tool_choice: "any" };
+			return { tool_choice: "any", tools: mappedTools };
 
 		// workersAI does not support tool mode directly,
 		// so we filter the tools and force the tool choice through 'any'
 		case "tool":
 			return {
-				tools: mappedTools.filter((tool) => tool.function.name === toolChoice.toolName),
 				tool_choice: "any",
+				tools: mappedTools.filter((tool) => tool.function.name === toolChoice.toolName),
 			};
 		default: {
 			const exhaustiveCheck = type satisfies never;
@@ -190,12 +190,12 @@ function mergePartialToolCalls(partialCalls: any[]) {
 
 		if (!mergedCallsByIndex[index]) {
 			mergedCallsByIndex[index] = {
+				function: {
+					arguments: "",
+					name: partialCall.function?.name || "",
+				},
 				id: partialCall.id || "",
 				type: partialCall.type || "",
-				function: {
-					name: partialCall.function?.name || "",
-					arguments: "",
-				},
 			};
 		} else {
 			if (partialCall.id) {
@@ -223,23 +223,23 @@ function processToolCall(toolCall: any): LanguageModelV1FunctionToolCall {
 	// Check for OpenAI format tool calls first
 	if (toolCall.function && toolCall.id) {
 		return {
-			toolCallType: "function",
-			toolCallId: toolCall.id,
-			toolName: toolCall.function.name,
 			args:
 				typeof toolCall.function.arguments === "string"
 					? toolCall.function.arguments
 					: JSON.stringify(toolCall.function.arguments || {}),
+			toolCallId: toolCall.id,
+			toolCallType: "function",
+			toolName: toolCall.function.name,
 		};
 	}
 	return {
-		toolCallType: "function",
-		toolCallId: toolCall.name,
-		toolName: toolCall.name,
 		args:
 			typeof toolCall.arguments === "string"
 				? toolCall.arguments
 				: JSON.stringify(toolCall.arguments || {}),
+		toolCallId: toolCall.name,
+		toolCallType: "function",
+		toolName: toolCall.name,
 	};
 }
 

@@ -4,12 +4,12 @@ export function mapWorkersAIUsage(output: AiTextGenerationOutput | AiTextToImage
 			usage: { prompt_tokens: number; completion_tokens: number };
 		}
 	).usage ?? {
-		prompt_tokens: 0,
 		completion_tokens: 0,
+		prompt_tokens: 0,
 	};
 
 	return {
-		promptTokens: usage.prompt_tokens,
 		completionTokens: usage.completion_tokens,
+		promptTokens: usage.prompt_tokens,
 	};
 }

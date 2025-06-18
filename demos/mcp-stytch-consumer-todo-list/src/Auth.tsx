@@ -1,11 +1,11 @@
+import { IdentityProvider, StytchLogin, useStytch, useStytchUser } from "@stytch/react";
 import {
 	OAuthProviders,
 	OTPMethods,
 	Products,
-	StytchEvent,
-	StytchLoginConfig,
+	type StytchEvent,
+	type StytchLoginConfig,
 } from "@stytch/vanilla-js";
-import { IdentityProvider, StytchLogin, useStytch, useStytchUser } from "@stytch/react";
 import { useEffect, useMemo } from "react";
 
 /**
@@ -54,16 +54,16 @@ const onLoginComplete = () => {
 export function Login() {
 	const loginConfig = useMemo<StytchLoginConfig>(
 		() => ({
-			products: [Products.otp, Products.oauth],
+			oauthOptions: {
+				loginRedirectURL: window.location.origin + "/authenticate",
+				providers: [{ type: OAuthProviders.Google }],
+				signupRedirectURL: window.location.origin + "/authenticate",
+			},
 			otpOptions: {
 				expirationMinutes: 10,
 				methods: [OTPMethods.Email],
 			},
-			oauthOptions: {
-				providers: [{ type: OAuthProviders.Google }],
-				loginRedirectURL: window.location.origin + "/authenticate",
-				signupRedirectURL: window.location.origin + "/authenticate",
-			},
+			products: [Products.otp, Products.oauth],
 		}),
 		[],
 	);
@@ -80,9 +80,7 @@ export function Login() {
  * The OAuth Authorization page implementation. Wraps the Stytch IdentityProvider UI component.
  * View all configuration options at https://stytch.com/docs/sdks/idp-ui-configuration
  */
-export const Authorize = withLoginRequired(function () {
-	return <IdentityProvider />;
-});
+export const Authorize = withLoginRequired(() => <IdentityProvider />);
 
 /**
  * The Authentication callback page implementation. Handles completing the login flow after OAuth
@@ -101,7 +99,7 @@ export function Authenticate() {
 	return <>Loading...</>;
 }
 
-export const Logout = function () {
+export const Logout = () => {
 	const stytch = useStytch();
 	const { user } = useStytchUser();
 

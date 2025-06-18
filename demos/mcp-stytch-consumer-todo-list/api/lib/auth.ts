@@ -1,7 +1,7 @@
-import { createRemoteJWKSet, jwtVerify } from "jose";
+import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
-import { getCookie } from "hono/cookie";
+import { createRemoteJWKSet, jwtVerify } from "jose";
 
 /**
  * stytchAuthMiddleware is a Hono middleware that validates that the user is logged in
@@ -44,8 +44,8 @@ export const stytchBearerTokenAuthMiddleware = createMiddleware<{
 		const verifyResult = await validateStytchJWT(accessToken, c.env);
 		// @ts-expect-error Props go brr
 		c.executionCtx.props = {
-			claims: verifyResult.payload,
 			accessToken,
+			claims: verifyResult.payload,
 		};
 	} catch (error) {
 		console.error(error);
@@ -63,10 +63,10 @@ async function validateStytchJWT(token: string, env: Env) {
 	}
 
 	return await jwtVerify(token, jwks, {
+		algorithms: ["RS256"],
 		audience: env.STYTCH_PROJECT_ID,
 		issuer: [`stytch.com/${env.STYTCH_PROJECT_ID}`],
 		typ: "JWT",
-		algorithms: ["RS256"],
 	});
 }
 

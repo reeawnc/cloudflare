@@ -1,9 +1,9 @@
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
-import { okrService } from "./OKRService.ts";
-import type { AuthenticationContext, Objective } from "../types";
 import { McpAgent } from "agents/mcp";
+import { z } from "zod";
+import type { AuthenticationContext, Objective } from "../types";
 import { type RBACParams, stytchRBACEnforcement } from "./lib/auth.ts";
+import { okrService } from "./OKRService.ts";
 
 /**
  * The `OKRManagerMCP` class exposes the OKR Manager Service via the Model Context Protocol
@@ -34,8 +34,8 @@ export class OKRManagerMCP extends McpAgent<Env, unknown, AuthenticationContext>
 		return {
 			content: [
 				{
-					type: "text",
 					text: `Success! ${description}\n\nNew state:\n${JSON.stringify(newState, null, 2)}\n\nFor Organization:\n${this.props.organizationID}`,
+					type: "text",
 				},
 			],
 		};
@@ -51,7 +51,7 @@ export class OKRManagerMCP extends McpAgent<Env, unknown, AuthenticationContext>
 			"Objectives",
 			new ResourceTemplate("okrmanager://objectives/{id}", {
 				list: this.withRequiredPermissions(
-					{ resource_id: "objective", action: "read" },
+					{ action: "read", resource_id: "objective" },
 					async () => {
 						const objectives = await this.okrService.get();
 
@@ -65,15 +65,15 @@ export class OKRManagerMCP extends McpAgent<Env, unknown, AuthenticationContext>
 				),
 			}),
 			this.withRequiredPermissions(
-				{ resource_id: "objective", action: "read" },
+				{ action: "read", resource_id: "objective" },
 				async (uri, { id }) => {
 					const objectives = await this.okrService.get();
 					const objective = objectives.find((objective) => objective.id === id);
 					return {
 						contents: [
 							{
-								uri: uri.href,
 								text: JSON.stringify(objective, null, 2),
+								uri: uri.href,
 							},
 						],
 					};
@@ -85,7 +85,7 @@ export class OKRManagerMCP extends McpAgent<Env, unknown, AuthenticationContext>
 			"Key Result",
 			new ResourceTemplate("okrmanager://key_result/{id}", {
 				list: this.withRequiredPermissions(
-					{ resource_id: "key_result", action: "read" },
+					{ action: "read", resource_id: "key_result" },
 					async () => {
 						const objectives = await this.okrService.get();
 
@@ -101,7 +101,7 @@ export class OKRManagerMCP extends McpAgent<Env, unknown, AuthenticationContext>
 				),
 			}),
 			this.withRequiredPermissions(
-				{ resource_id: "key_result", action: "read" },
+				{ action: "read", resource_id: "key_result" },
 				async (uri, { id }) => {
 					const objectives = await this.okrService.get();
 					const keyResults = objectives.flatMap((objective) => objective.keyResults);
@@ -109,8 +109,8 @@ export class OKRManagerMCP extends McpAgent<Env, unknown, AuthenticationContext>
 					return {
 						contents: [
 							{
-								uri: uri.href,
 								text: JSON.stringify(keyResult, null, 2),
+								uri: uri.href,
 							},
 						],
 					};
@@ -160,8 +160,8 @@ export class OKRManagerMCP extends McpAgent<Env, unknown, AuthenticationContext>
 		);
 
 		const addKeyResultSchema = {
-			okrID: z.string(),
 			keyResultText: z.string(),
+			okrID: z.string(),
 		};
 		server.tool(
 			"addKeyResult",
@@ -177,9 +177,9 @@ export class OKRManagerMCP extends McpAgent<Env, unknown, AuthenticationContext>
 		);
 
 		const setKeyResultAttainmentSchema = {
-			okrID: z.string(),
-			keyResultID: z.string(),
 			attainment: z.number().int().min(0).max(100),
+			keyResultID: z.string(),
+			okrID: z.string(),
 		};
 		server.tool(
 			"setKeyResultAttainment",
@@ -199,8 +199,8 @@ export class OKRManagerMCP extends McpAgent<Env, unknown, AuthenticationContext>
 		);
 
 		const deleteKeyResultSchema = {
-			okrID: z.string(),
 			keyResultID: z.string(),
+			okrID: z.string(),
 		};
 		server.tool(
 			"deleteKeyResult",

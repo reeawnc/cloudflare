@@ -1,6 +1,6 @@
+import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
-import { getCookie } from "hono/cookie";
 import { B2BClient } from "stytch";
 import type { AuthenticationContext } from "../../types";
 
@@ -47,12 +47,12 @@ export const stytchSessionAuthMiddleware = ({ resource_id, action }: RBACParams)
 			// Read the RBAC Guide for more information:
 			// https://stytch.com/docs/b2b/guides/rbac/backend
 			await getClient(c.env).sessions.authenticateJwt({
-				session_jwt: sessionCookie,
 				authorization_check: {
+					action,
 					organization_id: authRes.member_session.organization_id,
 					resource_id,
-					action,
 				},
+				session_jwt: sessionCookie,
 			});
 			c.set("memberID", authRes.member_session.member_id);
 			c.set("organizationID", authRes.member_session.organization_id);
@@ -82,8 +82,8 @@ export const stytchBearerTokenAuthMiddleware = createMiddleware<{
 		const tokenRes = await getClient(c.env).idp.introspectTokenLocal(accessToken);
 		// @ts-expect-error executionCtx is untyped
 		c.executionCtx.props = {
-			organizationID: tokenRes.organization.organization_id,
 			accessToken,
+			organizationID: tokenRes.organization.organization_id,
 		};
 	} catch (error) {
 		console.error(error);
@@ -104,9 +104,9 @@ export async function stytchRBACEnforcement(
 ): Promise<void> {
 	await getClient(env).idp.introspectTokenLocal(ctx.accessToken, {
 		authorization_check: {
+			action: params.action,
 			organization_id: ctx.organizationID,
 			resource_id: params.resource_id,
-			action: params.action,
 		},
 	});
 }

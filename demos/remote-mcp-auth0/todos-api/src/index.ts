@@ -1,14 +1,13 @@
-import { Hono } from "hono";
 import { faker } from "@faker-js/faker";
-
-import { jwt, requireScope } from "./middlewares/jwt";
+import { Hono } from "hono";
 import type { JWTHeaderParameters, JWTPayload } from "jose";
+import { jwt, requireScope } from "./middlewares/jwt";
 
 const app = new Hono<{
-  Variables: {
-    jwtPayload: JWTPayload;
-    jwtProtectedHeader: JWTHeaderParameters;
-  };
+	Variables: {
+		jwtPayload: JWTPayload;
+		jwtProtectedHeader: JWTHeaderParameters;
+	};
 }>();
 
 /**
@@ -28,10 +27,10 @@ app.use("*", jwt());
  * Returns the current user's claims.
  */
 app.get("/api/me", (c) => {
-  const claims = c.var.jwtPayload as JWTPayload;
-  return c.json({
-    ...claims,
-  });
+	const claims = c.var.jwtPayload as JWTPayload;
+	return c.json({
+		...claims,
+	});
 });
 
 /**
@@ -39,22 +38,22 @@ app.get("/api/me", (c) => {
  * Returns the current user's todos.
  */
 app.get("/api/todos", requireScope("read:todos"), async (c) => {
-  const user = c.var.jwtPayload as JWTPayload;
+	const user = c.var.jwtPayload as JWTPayload;
 
-  return c.json({
-    todos: faker.helpers.multiple(
-      () => ({
-        id: faker.string.uuid(),
-        owner: user.sub,
-        title: faker.lorem.sentence(),
-        description: faker.lorem.paragraph(),
-        date: faker.date.future(),
-      }),
-      {
-        count: 5,
-      },
-    ),
-  });
+	return c.json({
+		todos: faker.helpers.multiple(
+			() => ({
+				date: faker.date.future(),
+				description: faker.lorem.paragraph(),
+				id: faker.string.uuid(),
+				owner: user.sub,
+				title: faker.lorem.sentence(),
+			}),
+			{
+				count: 5,
+			},
+		),
+	});
 });
 
 /**
@@ -62,13 +61,13 @@ app.get("/api/todos", requireScope("read:todos"), async (c) => {
  * Returns the billing settings.
  */
 app.get("/api/billing", requireScope("read:billing"), async (c) => {
-  return c.json({
-    billing: {
-      method: "credit-card",
-      last4: "1234",
-      expiration: "01/2025",
-    },
-  });
+	return c.json({
+		billing: {
+			expiration: "01/2025",
+			last4: "1234",
+			method: "credit-card",
+		},
+	});
 });
 
 export default app;

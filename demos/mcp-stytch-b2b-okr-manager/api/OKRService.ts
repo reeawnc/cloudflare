@@ -1,21 +1,21 @@
-import type { Objective, KeyResult } from "../types";
+import type { KeyResult, Objective } from "../types";
 
 const DEFAULT_OKRS = [
 	{
 		id: "okr_0",
-		objectiveText: "Define OKRs for your Enterprise Business",
 		keyResults: [
 			{
+				attainment: 0,
 				id: "kr_0",
 				text: "Define three OKRs to drive Enterprise Synergy",
-				attainment: 0,
 			},
 			{
+				attainment: 0,
 				id: "kr_1",
 				text: "Make a powerpoint presentation on OKRs for the Company Offsite",
-				attainment: 0,
 			},
 		],
+		objectiveText: "Define OKRs for your Enterprise Business",
 	},
 ];
 
@@ -53,8 +53,8 @@ class OKRService {
 		const okrs = await this.get();
 		const newOkr: Objective = {
 			id: `okr_${Date.now().toString()}`,
-			objectiveText: objectiveText,
 			keyResults: [],
+			objectiveText: objectiveText,
 		};
 		okrs.push(newOkr);
 		return this.#set(okrs);
@@ -75,9 +75,9 @@ class OKRService {
 			throw new Error(`OKR with ID ${okrID} not found`);
 		}
 		const newKeyResult: KeyResult = {
+			attainment: 0,
 			id: `kr_${Date.now().toString()}`,
 			text: keyResultText,
-			attainment: 0,
 		};
 		okr.keyResults.push(newKeyResult);
 		return this.#set(okrs);

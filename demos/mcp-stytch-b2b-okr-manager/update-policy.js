@@ -6,124 +6,124 @@ import { fetch } from "undici";
 const policy = {
 	custom_resources: [
 		{
-			resource_id: "objective",
 			available_actions: ["create", "read", "update", "delete"],
+			resource_id: "objective",
 		},
 		{
-			resource_id: "key_result",
 			available_actions: ["create", "read", "update", "delete"],
+			resource_id: "key_result",
 		},
 	],
 	custom_roles: [
 		{
-			role_id: "manager",
 			permissions: [
 				{
-					resource_id: "key_result",
 					actions: ["*"],
+					resource_id: "key_result",
 				},
 				{
-					resource_id: "objective",
 					actions: ["read"],
+					resource_id: "objective",
 				},
 				{
-					resource_id: "stytch.member",
 					actions: ["create", "search"],
+					resource_id: "stytch.member",
 				},
 			],
+			role_id: "manager",
 		},
 	],
 	custom_scopes: [
 		{
+			permissions: [
+				{
+					actions: ["*"],
+					resource_id: "objective",
+				},
+			],
 			scope: "manage:objectives",
-			permissions: [
-				{
-					resource_id: "objective",
-					actions: ["*"],
-				},
-			],
 		},
 		{
+			permissions: [
+				{
+					actions: ["*"],
+					resource_id: "key_result",
+				},
+			],
 			scope: "manage:krs",
-			permissions: [
-				{
-					resource_id: "key_result",
-					actions: ["*"],
-				},
-			],
 		},
 		{
-			scope: "read:okrs",
 			permissions: [
 				{
-					resource_id: "key_result",
 					actions: ["read"],
+					resource_id: "key_result",
 				},
 				{
+					actions: ["read"],
 					resource_id: "objective",
-					actions: ["read"],
 				},
 			],
+			scope: "read:okrs",
 		},
 		{
-			scope: "report_kr_status",
 			permissions: [
 				{
-					resource_id: "key_result",
 					actions: ["read", "update"],
+					resource_id: "key_result",
 				},
 			],
+			scope: "report_kr_status",
 		},
 	],
-	stytch_member: {
-		role_id: "stytch_member",
-		description:
-			"Granted to all Members upon creation; grants permissions already implicitly granted to logged in Members via the SDK. Cannot be deleted.",
-		permissions: [
-			{
-				resource_id: "stytch.self",
-				actions: ["*"],
-			},
-			{
-				resource_id: "objective",
-				actions: ["read"],
-			},
-			{
-				resource_id: "key_result",
-				actions: ["read", "update"],
-			},
-		],
-	},
 	stytch_admin: {
-		role_id: "stytch_admin",
 		description:
 			"Granted to Members who create an organization through the Stytch discovery flow. Admins will also have the stytch_member role. Cannot be deleted.",
 		permissions: [
 			{
+				actions: ["*"],
 				resource_id: "stytch.organization",
-				actions: ["*"],
 			},
 			{
+				actions: ["*"],
 				resource_id: "stytch.member",
-				actions: ["*"],
 			},
 			{
+				actions: ["*"],
 				resource_id: "stytch.sso",
-				actions: ["*"],
 			},
 			{
+				actions: ["*"],
 				resource_id: "stytch.scim",
-				actions: ["*"],
 			},
 			{
+				actions: ["*"],
 				resource_id: "objective",
-				actions: ["*"],
 			},
 			{
-				resource_id: "key_result",
 				actions: ["*"],
+				resource_id: "key_result",
 			},
 		],
+		role_id: "stytch_admin",
+	},
+	stytch_member: {
+		description:
+			"Granted to all Members upon creation; grants permissions already implicitly granted to logged in Members via the SDK. Cannot be deleted.",
+		permissions: [
+			{
+				actions: ["*"],
+				resource_id: "stytch.self",
+			},
+			{
+				actions: ["read"],
+				resource_id: "objective",
+			},
+			{
+				actions: ["read", "update"],
+				resource_id: "key_result",
+			},
+		],
+		role_id: "stytch_member",
 	},
 };
 
@@ -136,8 +136,8 @@ program
 const options = program.opts();
 const rbac_url = `https://management.stytch.com/v1/projects/${options.projectId}/rbac_policy`;
 const body = {
-	project_id: options.projectId,
 	policy: policy,
+	project_id: options.projectId,
 };
 
 async function makePutRequest() {
@@ -149,9 +149,9 @@ async function makePutRequest() {
 		};
 
 		const response = await fetch(rbac_url, {
-			method: "PUT",
-			headers,
 			body: JSON.stringify(body),
+			headers,
+			method: "PUT",
 		});
 
 		const responseText = await response.json();

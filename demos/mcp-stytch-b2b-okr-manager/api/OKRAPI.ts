@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { okrService } from "./OKRService.ts";
 import { stytchSessionAuthMiddleware } from "./lib/auth";
+import { okrService } from "./OKRService.ts";
 
 /**
  * The Hono app exposes the OKR Service via REST endpoints for consumption by the frontend
@@ -9,7 +9,7 @@ export const OKRAPI = new Hono<{ Bindings: Env }>()
 
 	.get(
 		"/objectives",
-		stytchSessionAuthMiddleware({ resource_id: "objective", action: "read" }),
+		stytchSessionAuthMiddleware({ action: "read", resource_id: "objective" }),
 		async (c) => {
 			const objectives = await okrService(c.env, c.var.organizationID).get();
 			return c.json({ objectives });
@@ -18,7 +18,7 @@ export const OKRAPI = new Hono<{ Bindings: Env }>()
 
 	.post(
 		"/objectives",
-		stytchSessionAuthMiddleware({ resource_id: "objective", action: "create" }),
+		stytchSessionAuthMiddleware({ action: "create", resource_id: "objective" }),
 		async (c) => {
 			const newObjective = await c.req.json<{ objectiveText: string }>();
 			const objectives = await okrService(c.env, c.var.organizationID).addObjective(
@@ -30,7 +30,7 @@ export const OKRAPI = new Hono<{ Bindings: Env }>()
 
 	.delete(
 		"/objectives/:okrID",
-		stytchSessionAuthMiddleware({ resource_id: "objective", action: "delete" }),
+		stytchSessionAuthMiddleware({ action: "delete", resource_id: "objective" }),
 		async (c) => {
 			const objectives = await okrService(c.env, c.var.organizationID).deleteObjective(
 				c.req.param().okrID,
@@ -41,7 +41,7 @@ export const OKRAPI = new Hono<{ Bindings: Env }>()
 
 	.post(
 		"/objectives/:okrID/keyresults",
-		stytchSessionAuthMiddleware({ resource_id: "key_result", action: "create" }),
+		stytchSessionAuthMiddleware({ action: "create", resource_id: "key_result" }),
 		async (c) => {
 			const newKeyResult = await c.req.json<{ keyResultText: string }>();
 			const objectives = await okrService(c.env, c.var.organizationID).addKeyResult(
@@ -54,7 +54,7 @@ export const OKRAPI = new Hono<{ Bindings: Env }>()
 
 	.post(
 		"/objectives/:okrID/keyresults/:krID/attainment",
-		stytchSessionAuthMiddleware({ resource_id: "key_result", action: "update" }),
+		stytchSessionAuthMiddleware({ action: "update", resource_id: "key_result" }),
 		async (c) => {
 			const newAttainment = await c.req.json<{ attainment: number }>();
 			const objectives = await okrService(c.env, c.var.organizationID).setKeyResultAttainment(
@@ -68,7 +68,7 @@ export const OKRAPI = new Hono<{ Bindings: Env }>()
 
 	.delete(
 		"/objectives/:okrID/keyresults/:krID",
-		stytchSessionAuthMiddleware({ resource_id: "key_result", action: "delete" }),
+		stytchSessionAuthMiddleware({ action: "delete", resource_id: "key_result" }),
 		async (c) => {
 			const objectives = await okrService(c.env, c.var.organizationID).deleteKeyResult(
 				c.req.param().okrID,

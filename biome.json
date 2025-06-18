@@ -9,7 +9,17 @@
 		"enabled": true
 	},
 	"files": {
-		"includes": ["!worker-configuration.d.ts", "!types/workerd.d.ts"]
+		"includes": [
+			"demos/**",
+			"packages/**",
+			"!**/worker-configuration.d.ts",
+			"!types/workerd.d.ts",
+			"!**/tsconfig.json",
+			"!**/tsconfig.*.json",
+			"!**/wrangler.json",
+			"!**/wrangler.jsonc",
+			"!**/package.json"
+		]
 	},
 	"formatter": {
 		"enabled": true,

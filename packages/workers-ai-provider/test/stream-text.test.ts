@@ -1,9 +1,9 @@
 import { TextEncoder } from "node:util";
 import { streamText } from "ai";
-import { http, HttpResponse, type DefaultBodyType } from "msw";
+import { type DefaultBodyType, HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
-import z from "zod";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import z from "zod";
 import { createWorkersAI } from "../src/index";
 
 const TEST_ACCOUNT_ID = "test-account-id";
@@ -20,11 +20,11 @@ const defaultStreamingHandler = http.post(
 				"data: [DONE]\n\n",
 			].join(""),
 			{
-				status: 200,
 				headers: {
 					"Content-Type": "text/event-stream",
 					"Transfer-Encoding": "chunked",
 				},
+				status: 200,
 			},
 		);
 	},
@@ -39,8 +39,8 @@ describe("REST API - Streaming Text Tests", () => {
 
 	it("should stream text using Workers AI provider (via streamText)", async () => {
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 
 		const result = streamText({
@@ -70,11 +70,11 @@ describe("REST API - Streaming Text Tests", () => {
 							"data: [DONE]\n\n",
 						].join(""),
 						{
-							status: 200,
 							headers: {
 								"Content-Type": "text/event-stream",
 								"Transfer-Encoding": "chunked",
 							},
+							status: 200,
 						},
 					);
 				},
@@ -82,8 +82,8 @@ describe("REST API - Streaming Text Tests", () => {
 		);
 
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 
 		const result = streamText({
@@ -115,11 +115,11 @@ describe("REST API - Streaming Text Tests", () => {
 							"",
 						),
 						{
-							status: 200,
 							headers: {
 								"Content-Type": "text/event-stream",
 								"Transfer-Encoding": "chunked",
 							},
+							status: 200,
 						},
 					);
 				},
@@ -127,14 +127,14 @@ describe("REST API - Streaming Text Tests", () => {
 		);
 
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 
 		const model = workersai(TEST_MODEL, {
-			aString: "a",
 			aBool: true,
 			aNumber: 1,
+			aString: "a",
 		});
 
 		const result = streamText({
@@ -164,15 +164,15 @@ describe("REST API - Streaming Text Tests", () => {
 							response: null,
 							tool_calls: [
 								{
-									name: "get_weather",
 									arguments: {
 										location: "London",
 									},
+									name: "get_weather",
 								},
 							],
 							usage: {
-								prompt_tokens: 168,
 								completion_tokens: 23,
+								prompt_tokens: 168,
 								total_tokens: 191,
 							},
 						},
@@ -182,8 +182,8 @@ describe("REST API - Streaming Text Tests", () => {
 		);
 
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 
 		const result = await streamText({
@@ -192,12 +192,12 @@ describe("REST API - Streaming Text Tests", () => {
 			tools: {
 				get_weather: {
 					description: "Get the weather in a location",
-					parameters: z.object({
-						location: z.string().describe("The location to get the weather for"),
-					}),
 					execute: async ({ location }) => ({
 						location,
 						weather: location === "London" ? "Raining" : "Sunny",
+					}),
+					parameters: z.object({
+						location: z.string().describe("The location to get the weather for"),
 					}),
 				},
 			},
@@ -214,10 +214,10 @@ describe("REST API - Streaming Text Tests", () => {
 		expect(toolCalls).toHaveLength(1);
 		expect(toolCalls).toMatchObject([
 			{
-				type: "tool-call",
+				args: { location: "London" },
 				toolCallId: "get_weather",
 				toolName: "get_weather",
-				args: { location: "London" },
+				type: "tool-call",
 			},
 		]);
 	});
@@ -232,17 +232,17 @@ describe("REST API - Streaming Text Tests", () => {
 						result: {
 							tool_calls: [
 								{
+									function: {
+										arguments: '{"location": "London"}',
+										name: "get_weather",
+									},
 									id: "chatcmpl-tool-b482f0e36b0c4190b9bee3fb61408a9e",
 									type: "function",
-									function: {
-										name: "get_weather",
-										arguments: '{"location": "London"}',
-									},
 								},
 							],
 							usage: {
-								prompt_tokens: 179,
 								completion_tokens: 17,
+								prompt_tokens: 179,
 								total_tokens: 196,
 							},
 						},
@@ -252,8 +252,8 @@ describe("REST API - Streaming Text Tests", () => {
 		);
 
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 
 		const result = await streamText({
@@ -262,12 +262,12 @@ describe("REST API - Streaming Text Tests", () => {
 			tools: {
 				get_weather: {
 					description: "Get the weather in a location",
-					parameters: z.object({
-						location: z.string().describe("The location to get the weather for"),
-					}),
 					execute: async ({ location }) => ({
 						location,
 						weather: location === "London" ? "Raining" : "Sunny",
+					}),
+					parameters: z.object({
+						location: z.string().describe("The location to get the weather for"),
 					}),
 				},
 			},
@@ -284,10 +284,10 @@ describe("REST API - Streaming Text Tests", () => {
 		expect(toolCalls).toHaveLength(1);
 		expect(toolCalls).toMatchObject([
 			{
-				type: "tool-call",
+				args: { location: "London" },
 				toolCallId: "chatcmpl-tool-b482f0e36b0c4190b9bee3fb61408a9e",
 				toolName: "get_weather",
-				args: { location: "London" },
+				type: "tool-call",
 			},
 		]);
 	});
@@ -300,7 +300,7 @@ describe("Binding - Streaming Text Tests", () => {
 				run: async (modelName: string, inputs: any, options?: any) => {
 					return mockStream([
 						{ response: "Hello " },
-						{ tool_calls: [], p: "no response" },
+						{ p: "no response", tool_calls: [] },
 						{ response: "world!" },
 						"[DONE]",
 					]);
@@ -336,9 +336,9 @@ describe("Binding - Streaming Text Tests", () => {
 		});
 
 		const model = workersai(TEST_MODEL, {
-			aString: "a",
 			aBool: true,
 			aNumber: 1,
+			aString: "a",
 		});
 
 		const result = streamText({
@@ -365,15 +365,15 @@ describe("Binding - Streaming Text Tests", () => {
 						response: null,
 						tool_calls: [
 							{
-								name: "get_weather",
 								arguments: {
 									location: "London",
 								},
+								name: "get_weather",
 							},
 						],
 						usage: {
-							prompt_tokens: 168,
 							completion_tokens: 23,
+							prompt_tokens: 168,
 							total_tokens: 191,
 						},
 					};
@@ -387,12 +387,12 @@ describe("Binding - Streaming Text Tests", () => {
 			tools: {
 				get_weather: {
 					description: "Get the weather in a location",
-					parameters: z.object({
-						location: z.string().describe("The location to get the weather for"),
-					}),
 					execute: async ({ location }) => ({
 						location,
 						weather: location === "London" ? "Raining" : "Sunny",
+					}),
+					parameters: z.object({
+						location: z.string().describe("The location to get the weather for"),
 					}),
 				},
 			},
@@ -409,10 +409,10 @@ describe("Binding - Streaming Text Tests", () => {
 		expect(toolCalls).toHaveLength(1);
 		expect(toolCalls).toMatchObject([
 			{
-				type: "tool-call",
+				args: { location: "London" },
 				toolCallId: "get_weather",
 				toolName: "get_weather",
-				args: { location: "London" },
+				type: "tool-call",
 			},
 		]);
 	});
@@ -424,26 +424,26 @@ describe("Binding - Streaming Text Tests", () => {
 					return {
 						tool_calls: [
 							{
+								function: {
+									arguments: '{"location": "London"}',
+									name: "get_weather",
+								},
 								id: "chatcmpl-tool-b482f0e36b0c4190b9bee3fb61408a9e",
 								type: "function",
-								function: {
-									name: "get_weather",
-									arguments: '{"location": "London"}',
-								},
 							},
 
 							{
+								function: {
+									arguments: '{"location": "London"}',
+									name: "get_temperature",
+								},
 								id: "chatcmpl-tool-a482f0e36b0c4190b9bee3fb61408a9c",
 								type: "function",
-								function: {
-									name: "get_temperature",
-									arguments: '{"location": "London"}',
-								},
 							},
 						],
 						usage: {
-							prompt_tokens: 179,
 							completion_tokens: 17,
+							prompt_tokens: 179,
 							total_tokens: 196,
 						},
 					};
@@ -455,24 +455,24 @@ describe("Binding - Streaming Text Tests", () => {
 			model: workersai(TEST_MODEL),
 			prompt: "Get the weather information for London",
 			tools: {
+				get_temperature: {
+					description: "Get the temperature in a location",
+					execute: async ({ location }) => ({
+						location,
+						weather: location === "London" ? "80" : "100",
+					}),
+					parameters: z.object({
+						location: z.string().describe("The location to get the temperature for"),
+					}),
+				},
 				get_weather: {
 					description: "Get the weather in a location",
-					parameters: z.object({
-						location: z.string().describe("The location to get the weather for"),
-					}),
 					execute: async ({ location }) => ({
 						location,
 						weather: location === "London" ? "Raining" : "Sunny",
 					}),
-				},
-				get_temperature: {
-					description: "Get the temperature in a location",
 					parameters: z.object({
-						location: z.string().describe("The location to get the temperature for"),
-					}),
-					execute: async ({ location }) => ({
-						location,
-						weather: location === "London" ? "80" : "100",
+						location: z.string().describe("The location to get the weather for"),
 					}),
 				},
 			},
@@ -488,16 +488,16 @@ describe("Binding - Streaming Text Tests", () => {
 
 		expect(toolCalls).toHaveLength(2);
 		expect(toolCalls[0]).toMatchObject({
-			type: "tool-call",
+			args: { location: "London" },
 			toolCallId: "chatcmpl-tool-b482f0e36b0c4190b9bee3fb61408a9e",
 			toolName: "get_weather",
-			args: { location: "London" },
+			type: "tool-call",
 		});
 		expect(toolCalls[1]).toMatchObject({
-			type: "tool-call",
+			args: { location: "London" },
 			toolCallId: "chatcmpl-tool-a482f0e36b0c4190b9bee3fb61408a9c",
 			toolName: "get_temperature",
-			args: { location: "London" },
+			type: "tool-call",
 		});
 	});
 });

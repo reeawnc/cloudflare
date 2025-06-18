@@ -5,13 +5,12 @@ import {
 	UnsupportedFunctionalityError,
 } from "@ai-sdk/provider";
 import { convertToWorkersAIChatMessages } from "./convert-to-workersai-chat-messages";
-import type { WorkersAIChatSettings } from "./workersai-chat-settings";
-import type { TextGenerationModels } from "./workersai-models";
-
+import { mapWorkersAIFinishReason } from "./map-workersai-finish-reason";
 import { mapWorkersAIUsage } from "./map-workersai-usage";
 import { getMappedStream } from "./streaming";
 import { lastMessageWasUser, prepareToolsAndToolChoice, processToolCalls } from "./utils";
-import { mapWorkersAIFinishReason } from "./map-workersai-finish-reason";
+import type { WorkersAIChatSettings } from "./workersai-chat-settings";
+import type { TextGenerationModels } from "./workersai-models";
 
 type WorkersAIChatConfig = {
 	provider: string;
@@ -57,30 +56,29 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 
 		if (frequencyPenalty != null) {
 			warnings.push({
-				type: "unsupported-setting",
 				setting: "frequencyPenalty",
+				type: "unsupported-setting",
 			});
 		}
 
 		if (presencePenalty != null) {
 			warnings.push({
-				type: "unsupported-setting",
 				setting: "presencePenalty",
+				type: "unsupported-setting",
 			});
 		}
 
 		const baseArgs = {
+			// standardized settings:
+			max_tokens: maxTokens,
 			// model id:
 			model: this.modelId,
+			random_seed: seed,
 
 			// model specific settings:
 			safe_prompt: this.settings.safePrompt,
-
-			// standardized settings:
-			max_tokens: maxTokens,
 			temperature,
 			top_p: topP,
-			random_seed: seed,
 		};
 
 		switch (type) {
@@ -96,8 +94,8 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 					args: {
 						...baseArgs,
 						response_format: {
-							type: "json_schema",
 							json_schema: mode.schema,
+							type: "json_schema",
 						},
 						tools: undefined,
 					},
@@ -110,7 +108,7 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 					args: {
 						...baseArgs,
 						tool_choice: "any",
-						tools: [{ type: "function", function: mode.tool }],
+						tools: [{ function: mode.tool, type: "function" }],
 					},
 					warnings,
 				};
@@ -151,8 +149,8 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		const output = await this.config.binding.run(
 			args.model,
 			{
-				messages: messages,
 				max_tokens: args.max_tokens,
+				messages: messages,
 				temperature: args.temperature,
 				tools: args.tools,
 				top_p: args.top_p,
@@ -170,14 +168,14 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		}
 
 		return {
+			finishReason: mapWorkersAIFinishReason(output),
+			rawCall: { rawPrompt: messages, rawSettings: args },
+			rawResponse: { body: output },
 			text:
 				typeof output.response === "object" && output.response !== null
 					? JSON.stringify(output.response) // ai-sdk expects a string here
 					: output.response,
 			toolCalls: processToolCalls(output),
-			finishReason: mapWorkersAIFinishReason(output),
-			rawCall: { rawPrompt: messages, rawSettings: args },
-			rawResponse: { body: output },
 			usage: mapWorkersAIUsage(output),
 			warnings,
 		};
@@ -202,12 +200,13 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 			}
 
 			return {
+				rawCall: { rawPrompt: messages, rawSettings: args },
 				stream: new ReadableStream<LanguageModelV1StreamPart>({
 					async start(controller) {
 						if (response.text) {
 							controller.enqueue({
-								type: "text-delta",
 								textDelta: response.text,
+								type: "text-delta",
 							});
 						}
 						if (response.toolCalls) {
@@ -219,14 +218,13 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 							}
 						}
 						controller.enqueue({
-							type: "finish",
 							finishReason: mapWorkersAIFinishReason(response),
+							type: "finish",
 							usage: response.usage,
 						});
 						controller.close();
 					},
 				}),
-				rawCall: { rawPrompt: messages, rawSettings: args },
 				warnings,
 			};
 		}
@@ -244,8 +242,8 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		const response = await this.config.binding.run(
 			args.model,
 			{
-				messages: messages,
 				max_tokens: args.max_tokens,
+				messages: messages,
 				stream: true,
 				temperature: args.temperature,
 				tools: args.tools,
@@ -264,8 +262,8 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 		}
 
 		return {
-			stream: getMappedStream(new Response(response)),
 			rawCall: { rawPrompt: messages, rawSettings: args },
+			stream: getMappedStream(new Response(response)),
 			warnings,
 		};
 	}

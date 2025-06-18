@@ -1,16 +1,8 @@
 import {
-	AuthFlowType,
-	B2BOAuthProviders,
-	B2BProducts,
-	type StytchB2BUIConfig,
-	type StytchEvent,
-} from "@stytch/vanilla-js";
-import { useEffect, useMemo, useState } from "react";
-import {
+	B2BIdentityProvider,
+	StytchB2B,
 	useStytchB2BClient,
 	useStytchMember,
-	StytchB2B,
-	B2BIdentityProvider,
 } from "@stytch/react/b2b";
 import {
 	AdminPortalB2BProducts,
@@ -18,8 +10,16 @@ import {
 	AdminPortalOrgSettings,
 	AdminPortalSSO,
 } from "@stytch/react/b2b/adminPortal";
-import { NavLink, useLocation } from "react-router-dom";
+import {
+	AuthFlowType,
+	B2BOAuthProviders,
+	B2BProducts,
+	type StytchB2BUIConfig,
+	type StytchEvent,
+} from "@stytch/vanilla-js";
 import type { IDPConsentScreenManifest } from "@stytch/vanilla-js/b2b";
+import { useEffect, useMemo, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 
 /**
  * A higher-order component that enforces a login requirement for the wrapped component.
@@ -73,12 +73,12 @@ export function Login() {
 	const loginConfig = useMemo<StytchB2BUIConfig>(
 		() => ({
 			authFlowType: AuthFlowType.Discovery,
+			oauthOptions: {
+				discoveryRedirectURL: window.location.origin + "/authenticate",
+				providers: [{ type: B2BOAuthProviders.Google }],
+			},
 			products: [B2BProducts.oauth, B2BProducts.emailOtp],
 			sessionOptions: { sessionDurationMinutes: 60 },
-			oauthOptions: {
-				providers: [{ type: B2BOAuthProviders.Google }],
-				discoveryRedirectURL: window.location.origin + "/authenticate",
-			},
 		}),
 		[],
 	);
@@ -123,7 +123,9 @@ export const Authorize = withLoginRequired(() => {
 	// Group scopes by Resource, or by Action, or some other way that makes sense for your target audience
 	const consentManifestGenerator = ({
 		scopes,
-	}: { scopes: string[] }): IDPConsentScreenManifest => {
+	}: {
+		scopes: string[];
+	}): IDPConsentScreenManifest => {
 		const filtered = (s: Array<string | null>): Array<string> =>
 			s.filter(Boolean) as Array<string>;
 
@@ -136,7 +138,7 @@ export const Authorize = withLoginRequired(() => {
 		};
 
 		const objectivePermissions = {
-			header: `Access your Objectives`,
+			header: "Access your Objectives",
 			items: filtered([
 				scopes.includes("read:okrs")
 					? "Read your Organization's top secret Objectives"
@@ -147,7 +149,7 @@ export const Authorize = withLoginRequired(() => {
 		};
 
 		const keyResultsPermissions = {
-			header: `Access your Key Results`,
+			header: "Access your Key Results",
 			items: filtered([
 				scopes.includes("read:okrs") ? "Read your Organization's Key Results" : null,
 				scopes.includes("manage:krs") ? "Create new Key Results" : null,
@@ -178,33 +180,35 @@ const adminPortalConfig = {
 	getRoleDescription: (role: Role) => {
 		if (role.role_id == "stytch_admin") {
 			return "The Big Cheese. Full access. Unlimited power.";
-		} else if (role.role_id == "manager") {
-			return "Defines Key Results for Employees to implement.";
-		} else if (role.role_id == "stytch_member") {
-			return "Gives status reports.";
-		} else {
-			return role.description;
 		}
+		if (role.role_id == "manager") {
+			return "Defines Key Results for Employees to implement.";
+		}
+		if (role.role_id == "stytch_member") {
+			return "Gives status reports.";
+		}
+		return role.description;
 	},
 	getRoleDisplayName: (role: Role) => {
 		if (role.role_id == "stytch_admin") {
 			return "CEO";
-		} else if (role.role_id == "manager") {
-			return "Manager";
-		} else if (role.role_id == "stytch_member") {
-			return "Employee";
-		} else {
-			return role.role_id;
 		}
+		if (role.role_id == "manager") {
+			return "Manager";
+		}
+		if (role.role_id == "stytch_member") {
+			return "Employee";
+		}
+		return role.role_id;
 	},
 };
 
 const adminPortalStyles = {
-	fontFamily: `'IBM Plex Sans', monospace;`,
 	container: {
 		backgroundColor: "rgb(251, 250, 249)",
 		borderWidth: 0,
 	},
+	fontFamily: `'IBM Plex Sans', monospace;`,
 };
 
 export const SSOSettings = withLoginRequired(() => {

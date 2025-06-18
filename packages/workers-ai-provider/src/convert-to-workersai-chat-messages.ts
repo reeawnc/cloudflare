@@ -19,13 +19,12 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 	for (const { role, content } of prompt) {
 		switch (role) {
 			case "system": {
-				messages.push({ role: "system", content });
+				messages.push({ content, role: "system" });
 				break;
 			}
 
 			case "user": {
 				messages.push({
-					role: "user",
 					content: content
 						.map((part) => {
 							switch (part.type) {
@@ -38,8 +37,8 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 										// Store the image data directly as Uint8Array
 										// For Llama 3.2 Vision model, which needs array of integers
 										images.push({
-											mimeType: part.mimeType,
 											image: part.image,
+											mimeType: part.mimeType,
 											providerMetadata: part.providerMetadata,
 										});
 									}
@@ -48,6 +47,7 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 							}
 						})
 						.join("\n"),
+					role: "user",
 				});
 				break;
 			}
@@ -73,12 +73,12 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 							});
 
 							toolCalls.push({
+								function: {
+									arguments: JSON.stringify(part.args),
+									name: part.toolName,
+								},
 								id: part.toolCallId,
 								type: "function",
-								function: {
-									name: part.toolName,
-									arguments: JSON.stringify(part.args),
-								},
 							});
 							break;
 						}
@@ -90,14 +90,14 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 				}
 
 				messages.push({
-					role: "assistant",
 					content: text,
+					role: "assistant",
 					tool_calls:
 						toolCalls.length > 0
 							? toolCalls.map(({ function: { name, arguments: args } }) => ({
+									function: { arguments: args, name },
 									id: "null",
 									type: "function",
-									function: { name, arguments: args },
 								}))
 							: undefined,
 				});
@@ -107,9 +107,9 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 			case "tool": {
 				for (const toolResponse of content) {
 					messages.push({
-						role: "tool",
-						name: toolResponse.toolName,
 						content: JSON.stringify(toolResponse.result),
+						name: toolResponse.toolName,
+						role: "tool",
 					});
 				}
 				break;
@@ -121,5 +121,5 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 		}
 	}
 
-	return { messages, images };
+	return { images, messages };
 }

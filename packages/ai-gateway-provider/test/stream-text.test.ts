@@ -1,9 +1,9 @@
+import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { http } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { createAiGateway } from "../src";
-import { createOpenAI } from "@ai-sdk/openai";
 
 const TEST_ACCOUNT_ID = "test-account-id";
 const TEST_API_KEY = "test-api-key";
@@ -25,11 +25,11 @@ const defaultStreamingHandler = http.post(
 				"data: [DONE]",
 			].join(""),
 			{
-				status: 200,
 				headers: {
 					"Content-Type": "text/event-stream",
 					"Transfer-Encoding": "chunked",
 				},
+				status: 200,
 			},
 		);
 	},
@@ -45,8 +45,8 @@ describe("REST API - Streaming Text Tests", () => {
 	it("should stream text using", async () => {
 		const aigateway = createAiGateway({
 			accountId: TEST_ACCOUNT_ID,
-			gateway: TEST_GATEWAY,
 			apiKey: TEST_API_KEY,
+			gateway: TEST_GATEWAY,
 		});
 		const openai = createOpenAI({ apiKey: TEST_API_KEY });
 
@@ -77,11 +77,11 @@ describe("Binding - Streaming Text Tests", () => {
 							"data: [DONE]",
 						].join(""),
 						{
-							status: 200,
 							headers: {
 								"Content-Type": "text/event-stream",
 								"Transfer-Encoding": "chunked",
 							},
+							status: 200,
 						},
 					);
 				},

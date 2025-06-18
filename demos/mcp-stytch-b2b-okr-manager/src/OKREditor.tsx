@@ -1,15 +1,12 @@
-import { useState, useEffect, type FormEvent } from "react";
-import { hc } from "hono/client";
-import {
-	useStytchOrganization,
-	withStytchPermissions,
-} from "@stytch/react/b2b";
-import type { OKRApp } from "../api/OKRAPI.ts";
-import { withLoginRequired } from "./Auth.tsx";
-import type { KeyResult, Objective, Permissions } from "../types";
 import type { PermissionsMap } from "@stytch/core/public";
-import { NavLink } from "react-router-dom";
+import { useStytchOrganization, withStytchPermissions } from "@stytch/react/b2b";
+import { hc } from "hono/client";
 import { CircleHelp, Pen, PlusCircle, TrashIcon } from "lucide-react";
+import { type FormEvent, useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+import type { OKRApp } from "../api/OKRAPI.ts";
+import type { KeyResult, Objective, Permissions } from "../types";
+import { withLoginRequired } from "./Auth.tsx";
 import { Modal } from "./components/modal.tsx";
 
 const client = hc<OKRApp>(`${window.location.origin}/api`);
@@ -36,9 +33,9 @@ const deleteObjective = (id: string) =>
 const createKeyResult = (okrID: string, keyResultText: string) =>
 	client.objectives[":okrID"].keyresults
 		.$post({
-			param: { okrID },
 			// @ts-expect-error RPC inference is not working
 			json: { keyResultText },
+			param: { okrID },
 		})
 		.then((res) => res.json())
 		.then((res) => res.objectives);
@@ -46,21 +43,17 @@ const createKeyResult = (okrID: string, keyResultText: string) =>
 const deleteKeyResult = (okrID: string, krID: string) =>
 	client.objectives[":okrID"].keyresults[":krID"]
 		.$delete({
-			param: { okrID, krID },
+			param: { krID, okrID },
 		})
 		.then((res) => res.json())
 		.then((res) => res.objectives);
 
-const setKeyResultAttainment = (
-	okrID: string,
-	krID: string,
-	attainment: number
-) =>
+const setKeyResultAttainment = (okrID: string, krID: string, attainment: number) =>
 	client.objectives[":okrID"].keyresults[":krID"].attainment
 		.$post({
-			param: { okrID, krID },
 			// @ts-expect-error RPC inference is not working
 			json: { attainment },
+			param: { krID, okrID },
 		})
 		.then((res) => res.json())
 		.then((res) => res.objectives);
@@ -82,15 +75,13 @@ const KeyResultEditor = ({
 	const [attainment, setAttainment] = useState(keyResult.attainment);
 
 	const onDeleteKeyResult = (okrID: string, krID: string) => {
-		deleteKeyResult(okrID, krID).then((objectives) =>
-			setObjectives(objectives)
-		);
+		deleteKeyResult(okrID, krID).then((objectives) => setObjectives(objectives));
 	};
 
 	const onSetKeyResultAttainment = (evt: FormEvent) => {
 		evt.preventDefault();
-		setKeyResultAttainment(objective.id, keyResult.id, attainment).then(
-			(objectives) => setObjectives(objectives)
+		setKeyResultAttainment(objective.id, keyResult.id, attainment).then((objectives) =>
+			setObjectives(objectives),
 		);
 		setModalOpen(false);
 	};
@@ -103,8 +94,7 @@ const KeyResultEditor = ({
 	return (
 		<li>
 			<div className={fullyAttained ? "complete" : ""}>
-				<strong>Key Result:</strong> {keyResult.text} (
-				{keyResult.attainment}% achieved)
+				<strong>Key Result:</strong> {keyResult.text} ({keyResult.attainment}% achieved)
 				<button
 					disabled={!canEdit}
 					className="text tiny"
@@ -115,9 +105,7 @@ const KeyResultEditor = ({
 				<button
 					disabled={!canDelete}
 					className="text tiny"
-					onClick={() =>
-						onDeleteKeyResult(objective.id, keyResult.id)
-					}
+					onClick={() => onDeleteKeyResult(objective.id, keyResult.id)}
 				>
 					<TrashIcon />
 				</button>
@@ -156,9 +144,7 @@ const ObjectiveEditor = ({
 	const [modalOpen, setModalOpen] = useState(false);
 	const onAddKeyResult = (evt: FormEvent, okrID: string) => {
 		evt.preventDefault();
-		createKeyResult(okrID, newKeyResultText).then((objectives) =>
-			setObjectives(objectives)
-		);
+		createKeyResult(okrID, newKeyResultText).then((objectives) => setObjectives(objectives));
 		setNewKeyResultText("");
 		setModalOpen(false);
 	};
@@ -205,26 +191,22 @@ const ObjectiveEditor = ({
 							setObjectives={setObjectives}
 						/>
 					))}
-					{objective.keyResults.length === 0 && (
-						<li>No key results defined yet....</li>
-					)}
+					{objective.keyResults.length === 0 && <li>No key results defined yet....</li>}
 				</ul>
 
 				<Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
 					<form onSubmit={(evt) => onAddKeyResult(evt, objective.id)}>
 						<h4>Add Key Result</h4>
 						<p>
-							Add a specific, measurable result that supports the
-							grand vision of the Objective.
+							Add a specific, measurable result that supports the grand vision of the
+							Objective.
 						</p>
 						<div className="input-group">
 							<input
 								type="text"
 								placeholder="Enter Key Result Text"
 								value={newKeyResultText}
-								onChange={(e) =>
-									setNewKeyResultText(e.target.value)
-								}
+								onChange={(e) => setNewKeyResultText(e.target.value)}
 								required
 							/>
 							<button type="submit" className="primary">
@@ -262,9 +244,7 @@ const OKREditor = ({ stytchPermissions }: EditorProps) => {
 
 	const onAddObjective = (evt: FormEvent) => {
 		evt.preventDefault();
-		createObjective(newObjectiveText).then((objectives) =>
-			setObjectives(objectives)
-		);
+		createObjective(newObjectiveText).then((objectives) => setObjectives(objectives));
 		setNewObjectiveText("");
 		setModalOpen(false);
 	};
@@ -283,8 +263,7 @@ const OKREditor = ({ stytchPermissions }: EditorProps) => {
 				<Modal isOpen={infoModalOpen} onClose={onInfoModalClose}>
 					<h3>About this Demo</h3>
 					<p>
-						The data in this demo below can be edited via the UI +
-						REST API, or via a{" "}
+						The data in this demo below can be edited via the UI + REST API, or via a{" "}
 						<NavLink to="https://modelcontextprotocol.io/introduction">
 							MCP Server
 						</NavLink>{" "}
@@ -292,42 +271,35 @@ const OKREditor = ({ stytchPermissions }: EditorProps) => {
 						<NavLink to="https://modelcontextprotocol.io/introduction">
 							Cloudflare Workers
 						</NavLink>
-						. Connect to the Server running at{" "}
-						<b>{window.location.origin}/sse</b> with your MCP Client
-						to try it out. <br />
+						. Connect to the Server running at <b>{window.location.origin}/sse</b> with
+						your MCP Client to try it out. <br />
 						<br />
 						This demo integrates with Stytch's{" "}
 						<NavLink to={"https://stytch.com/b2b"} target="_blank">
 							B2B Product
 						</NavLink>{" "}
 						for Organization and Member management.{" "}
-						<NavLink to={"/settings/members"}>Invite</NavLink> some
-						coworkers to collaborate with!
+						<NavLink to={"/settings/members"}>Invite</NavLink> some coworkers to
+						collaborate with!
 						<br />
 						<br />
-						Members with the <b>CEO</b> role can create new
-						Objectives and Key Results. Members with the{" "}
-						<b>Manager</b> role can create and edit Key Results.
-						Other members can only read the data.
+						Members with the <b>CEO</b> role can create new Objectives and Key Results.
+						Members with the <b>Manager</b> role can create and edit Key Results. Other
+						members can only read the data.
 					</p>
 				</Modal>
 
 				<Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
 					<form onSubmit={onAddObjective}>
 						<h3>Create a New Objective</h3>
-						<p>
-							What is a high level goal your Organization needs to
-							accomplish?
-						</p>
+						<p>What is a high level goal your Organization needs to accomplish?</p>
 						<div className="input-group">
 							<input
 								disabled={!canCreate}
 								type="text"
 								placeholder="Enter Objective Text"
 								value={newObjectiveText}
-								onChange={(e) =>
-									setNewObjectiveText(e.target.value)
-								}
+								onChange={(e) => setNewObjectiveText(e.target.value)}
 								required
 							/>
 							<button type="submit" className="primary">
@@ -338,12 +310,8 @@ const OKREditor = ({ stytchPermissions }: EditorProps) => {
 				</Modal>
 
 				<h1>
-					Objectives and Key Results for{" "}
-					{organization?.organization_name}
-					<button
-						className="text"
-						onClick={() => setInfoModalOpen(true)}
-					>
+					Objectives and Key Results for {organization?.organization_name}
+					<button className="text" onClick={() => setInfoModalOpen(true)}>
 						<CircleHelp />
 					</button>
 				</h1>
@@ -357,9 +325,7 @@ const OKREditor = ({ stytchPermissions }: EditorProps) => {
 							setObjectives={setObjectives}
 						/>
 					))}
-					{objectives.length === 0 && (
-						<li>No objectives defined yet....</li>
-					)}
+					{objectives.length === 0 && <li>No objectives defined yet....</li>}
 				</ul>
 				<button
 					disabled={!canCreate}
@@ -373,6 +339,4 @@ const OKREditor = ({ stytchPermissions }: EditorProps) => {
 	);
 };
 
-export default withLoginRequired(
-	withStytchPermissions<Permissions, object>(OKREditor)
-);
+export default withLoginRequired(withStytchPermissions<Permissions, object>(OKREditor));

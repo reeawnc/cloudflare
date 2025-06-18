@@ -1,4 +1,4 @@
-import { TooManyEmbeddingValuesForCallError, type EmbeddingModelV1 } from "@ai-sdk/provider";
+import { type EmbeddingModelV1, TooManyEmbeddingValuesForCallError } from "@ai-sdk/provider";
 import type { StringLike } from "./utils";
 import type { EmbeddingModels } from "./workersai-models";
 
@@ -63,9 +63,9 @@ export class WorkersAIEmbeddingModel implements EmbeddingModelV1<string> {
 	> {
 		if (values.length > this.maxEmbeddingsPerCall) {
 			throw new TooManyEmbeddingValuesForCallError({
-				provider: this.provider,
-				modelId: this.modelId,
 				maxEmbeddingsPerCall: this.maxEmbeddingsPerCall,
+				modelId: this.modelId,
+				provider: this.provider,
 				values,
 			});
 		}

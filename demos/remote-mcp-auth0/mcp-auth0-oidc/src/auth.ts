@@ -1,8 +1,3 @@
-import type { Context } from "hono";
-import { html, raw } from "hono/html";
-import * as oauth from "oauth4webapi";
-import { getCookie, setCookie } from "hono/cookie";
-
 import { env } from "cloudflare:workers";
 import type {
 	AuthRequest,
@@ -10,6 +5,10 @@ import type {
 	TokenExchangeCallbackOptions,
 	TokenExchangeCallbackResult,
 } from "@cloudflare/workers-oauth-provider";
+import type { Context } from "hono";
+import { getCookie, setCookie } from "hono/cookie";
+import { html, raw } from "hono/html";
+import * as oauth from "oauth4webapi";
 
 import type { UserProps } from "./types";
 
@@ -26,7 +25,11 @@ export async function getOidcConfig({
 	issuer,
 	client_id,
 	client_secret,
-}: { issuer: string; client_id: string; client_secret: string }) {
+}: {
+	issuer: string;
+	client_id: string;
+	client_secret: string;
+}) {
 	const as = await oauth
 		.discoveryRequest(new URL(issuer), { algorithm: "oidc" })
 		.then((response) => oauth.processDiscoveryResponse(new URL(issuer), response));
@@ -63,22 +66,22 @@ export async function authorize(c: Context<{ Bindings: Env & { OAUTH_PROVIDER: O
 
 	// We will persist everything in a cookie.
 	const auth0AuthRequest: Auth0AuthRequest = {
+		codeChallenge: await oauth.calculatePKCECodeChallenge(codeVerifier),
+		codeVerifier,
+		consentToken,
 		mcpAuthRequest: mcpClientAuthRequest,
 		nonce: oauth.generateRandomNonce(),
-		codeVerifier,
-		codeChallenge: await oauth.calculatePKCECodeChallenge(codeVerifier),
-		consentToken,
 		transactionState,
 	};
 
 	// Store the auth request in a transaction-specific cookie
 	const cookieName = `auth0_req_${transactionState}`;
 	setCookie(c, cookieName, btoa(JSON.stringify(auth0AuthRequest)), {
-		path: "/",
 		httpOnly: true,
-		secure: c.env.NODE_ENV !== "development",
+		maxAge: 60 * 60 * 1,
+		path: "/",
 		sameSite: c.env.NODE_ENV !== "development" ? "none" : "lax",
-		maxAge: 60 * 60 * 1, // 1 hour
+		secure: c.env.NODE_ENV !== "development", // 1 hour
 	});
 
 	// Extract client information for the consent screen
@@ -90,13 +93,13 @@ export async function authorize(c: Context<{ Bindings: Env & { OAUTH_PROVIDER: O
 	// Render the consent screen with CSRF protection
 	return c.html(
 		renderConsentScreen({
-			clientName,
 			clientLogo,
+			clientName,
 			clientUri,
+			consentToken,
 			redirectUri: mcpClientAuthRequest.redirectUri,
 			requestedScopes,
 			transactionState,
-			consentToken,
 		}),
 	);
 }
@@ -149,17 +152,17 @@ export async function confirmConsent(
 
 		// Clear the transaction cookie
 		setCookie(c, cookieName, "", {
-			path: "/",
 			maxAge: 0,
+			path: "/",
 		});
 
 		return c.redirect(redirectUri.toString());
 	}
 
 	const { as } = await getOidcConfig({
-		issuer: `https://${c.env.AUTH0_DOMAIN}/`,
 		client_id: c.env.AUTH0_CLIENT_ID,
 		client_secret: c.env.AUTH0_CLIENT_SECRET,
+		issuer: `https://${c.env.AUTH0_DOMAIN}/`,
 	});
 
 	// Redirect to Auth0's authorization endpoint
@@ -201,14 +204,14 @@ export async function callback(c: Context<{ Bindings: Env & { OAUTH_PROVIDER: OA
 
 	// Clear the transaction cookie as it's no longer needed
 	setCookie(c, cookieName, "", {
-		path: "/",
 		maxAge: 0,
+		path: "/",
 	});
 
 	const { as, client, clientAuth } = await getOidcConfig({
-		issuer: `https://${c.env.AUTH0_DOMAIN}/`,
 		client_id: c.env.AUTH0_CLIENT_ID,
 		client_secret: c.env.AUTH0_CLIENT_SECRET,
+		issuer: `https://${c.env.AUTH0_DOMAIN}/`,
 	});
 
 	// Perform the Code Exchange
@@ -241,21 +244,21 @@ export async function callback(c: Context<{ Bindings: Env & { OAUTH_PROVIDER: OA
 
 	// Complete the authorization
 	const { redirectTo } = await c.env.OAUTH_PROVIDER.completeAuthorization({
-		request: auth0AuthRequest.mcpAuthRequest,
-		userId: claims.sub!,
 		metadata: {
 			label: claims.name || claims.email || claims.sub,
 		},
-		scope: auth0AuthRequest.mcpAuthRequest.scope,
 		props: {
 			claims: claims,
 			tokenSet: {
-				idToken: result.id_token,
 				accessToken: result.access_token,
 				accessTokenTTL: result.expires_in,
+				idToken: result.id_token,
 				refreshToken: result.refresh_token,
 			},
 		} as UserProps,
+		request: auth0AuthRequest.mcpAuthRequest,
+		scope: auth0AuthRequest.mcpAuthRequest.scope,
+		userId: claims.sub!,
 	});
 
 	return Response.redirect(redirectTo);
@@ -273,10 +276,10 @@ export async function tokenExchangeCallback(
 	// by the MCP Server has the same TTL as the one issued by Auth0.
 	if (options.grantType === "authorization_code") {
 		return {
+			accessTokenTTL: options.props.tokenSet.accessTokenTTL,
 			newProps: {
 				...options.props,
 			},
-			accessTokenTTL: options.props.tokenSet.accessTokenTTL,
 		};
 	}
 
@@ -287,9 +290,9 @@ export async function tokenExchangeCallback(
 		}
 
 		const { as, client, clientAuth } = await getOidcConfig({
-			issuer: `https://${env.AUTH0_DOMAIN}/`,
 			client_id: env.AUTH0_CLIENT_ID,
 			client_secret: env.AUTH0_CLIENT_SECRET,
+			issuer: `https://${env.AUTH0_DOMAIN}/`,
 		});
 
 		// Perform the refresh token exchange with Auth0.
@@ -309,17 +312,17 @@ export async function tokenExchangeCallback(
 
 		// Store the new token set and claims.
 		return {
+			accessTokenTTL: refreshTokenResponse.expires_in,
 			newProps: {
 				...options.props,
 				claims: claims,
 				tokenSet: {
-					idToken: refreshTokenResponse.id_token,
 					accessToken: refreshTokenResponse.access_token,
 					accessTokenTTL: refreshTokenResponse.expires_in,
+					idToken: refreshTokenResponse.id_token,
 					refreshToken: refreshTokenResponse.refresh_token || auth0RefreshToken,
 				},
 			},
-			accessTokenTTL: refreshTokenResponse.expires_in,
 		};
 	}
 }

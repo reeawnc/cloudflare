@@ -52,24 +52,23 @@ export class AutoRAGChatLanguageModel implements LanguageModelV1 {
 
 		if (frequencyPenalty != null) {
 			warnings.push({
-				type: "unsupported-setting",
 				setting: "frequencyPenalty",
+				type: "unsupported-setting",
 			});
 		}
 
 		if (presencePenalty != null) {
 			warnings.push({
-				type: "unsupported-setting",
 				setting: "presencePenalty",
+				type: "unsupported-setting",
 			});
 		}
 
 		const baseArgs = {
-			// model id:
-			model: this.modelId,
-
 			// messages:
 			messages: convertToWorkersAIChatMessages(prompt),
+			// model id:
+			model: this.modelId,
 		};
 
 		switch (type) {
@@ -85,8 +84,8 @@ export class AutoRAGChatLanguageModel implements LanguageModelV1 {
 					args: {
 						...baseArgs,
 						response_format: {
-							type: "json_schema",
 							json_schema: mode.schema,
+							type: "json_schema",
 						},
 						tools: undefined,
 					},
@@ -99,7 +98,7 @@ export class AutoRAGChatLanguageModel implements LanguageModelV1 {
 					args: {
 						...baseArgs,
 						tool_choice: "any",
-						tools: [{ type: "function", function: mode.tool }],
+						tools: [{ function: mode.tool, type: "function" }],
 					},
 					warnings,
 				};
@@ -132,20 +131,20 @@ export class AutoRAGChatLanguageModel implements LanguageModelV1 {
 		});
 
 		return {
-			text: output.response,
-			toolCalls: processToolCalls(output),
-			finishReason: "stop", // TODO: mapWorkersAIFinishReason(response.finish_reason),
+			finishReason: "stop",
 			rawCall: { rawPrompt: args.messages, rawSettings: args },
-			usage: mapWorkersAIUsage(output),
-			warnings,
 			sources: output.data.map(({ file_id, filename, score }) => ({
 				id: file_id,
-				sourceType: "url",
-				url: filename,
 				providerMetadata: {
 					attributes: { score },
 				},
-			})),
+				sourceType: "url",
+				url: filename,
+			})), // TODO: mapWorkersAIFinishReason(response.finish_reason),
+			text: output.response,
+			toolCalls: processToolCalls(output),
+			usage: mapWorkersAIUsage(output),
+			warnings,
 		};
 	}
 
@@ -164,8 +163,8 @@ export class AutoRAGChatLanguageModel implements LanguageModelV1 {
 		});
 
 		return {
-			stream: getMappedStream(response),
 			rawCall: { rawPrompt: args.messages, rawSettings: args },
+			stream: getMappedStream(response),
 			warnings,
 		};
 	}

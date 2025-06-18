@@ -1,5 +1,5 @@
 import { embed, embedMany } from "ai";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
 import { describe, expect, it } from "vitest";
 import { createWorkersAI } from "../src/index";
@@ -42,8 +42,8 @@ describe("REST API - Embedding Tests", () => {
 		const server = setupServer(embedHandler);
 		server.listen();
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 		const result = await embed({
 			model: workersai.embedding(TEST_EMBEDDING_MODEL),
@@ -57,8 +57,8 @@ describe("REST API - Embedding Tests", () => {
 		const server = setupServer(embedManyHandler);
 		server.listen();
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 		const result = await embedMany({
 			model: workersai.embedding(TEST_EMBEDDING_MODEL),

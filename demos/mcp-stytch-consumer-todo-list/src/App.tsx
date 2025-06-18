@@ -1,9 +1,8 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import { StytchUIClient } from "@stytch/vanilla-js";
 import { StytchProvider } from "@stytch/react";
-
-import TodoEditor from "./Todos.tsx";
+import { StytchUIClient } from "@stytch/vanilla-js";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Authenticate, Authorize, Login, Logout } from "./Auth.tsx";
+import TodoEditor from "./Todos.tsx";
 
 const stytch = new StytchUIClient(import.meta.env.VITE_STYTCH_PUBLIC_TOKEN ?? "");
 

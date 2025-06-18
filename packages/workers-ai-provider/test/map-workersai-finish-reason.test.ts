@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { mapWorkersAIFinishReason } from "../src/map-workersai-finish-reason";
 import type { LanguageModelV1FinishReason } from "@ai-sdk/provider";
+import { describe, expect, it } from "vitest";
+import { mapWorkersAIFinishReason } from "../src/map-workersai-finish-reason";
 
 describe("mapWorkersAIFinishReason", () => {
 	describe("direct mappings", () => {
@@ -118,14 +118,14 @@ describe("mapWorkersAIFinishReason", () => {
 
 		it("should handle all finish reasons from choices[0]", () => {
 			const testCases = [
-				{ input: "stop", expected: "stop" },
-				{ input: "length", expected: "length" },
-				{ input: "model_length", expected: "length" },
-				{ input: "tool_calls", expected: "tool-calls" },
-				{ input: "error", expected: "error" },
-				{ input: "other", expected: "other" },
-				{ input: "unknown", expected: "unknown" },
-				{ input: "invalid_reason", expected: "stop" },
+				{ expected: "stop", input: "stop" },
+				{ expected: "length", input: "length" },
+				{ expected: "length", input: "model_length" },
+				{ expected: "tool-calls", input: "tool_calls" },
+				{ expected: "error", input: "error" },
+				{ expected: "other", input: "other" },
+				{ expected: "unknown", input: "unknown" },
+				{ expected: "stop", input: "invalid_reason" },
 			];
 
 			for (const { input, expected } of testCases) {
@@ -188,14 +188,14 @@ describe("mapWorkersAIFinishReason", () => {
 
 		it("should handle all finish reasons from direct property", () => {
 			const testCases = [
-				{ input: "stop", expected: "stop" },
-				{ input: "length", expected: "length" },
-				{ input: "model_length", expected: "length" },
-				{ input: "tool_calls", expected: "tool-calls" },
-				{ input: "error", expected: "error" },
-				{ input: "other", expected: "other" },
-				{ input: "unknown", expected: "unknown" },
-				{ input: "invalid_reason", expected: "stop" },
+				{ expected: "stop", input: "stop" },
+				{ expected: "length", input: "length" },
+				{ expected: "length", input: "model_length" },
+				{ expected: "tool-calls", input: "tool_calls" },
+				{ expected: "error", input: "error" },
+				{ expected: "other", input: "other" },
+				{ expected: "unknown", input: "unknown" },
+				{ expected: "stop", input: "invalid_reason" },
 			];
 
 			for (const { input, expected } of testCases) {
@@ -265,12 +265,12 @@ describe("mapWorkersAIFinishReason", () => {
 
 		it("should handle complex nested objects without expected properties", () => {
 			const response = {
+				array: [1, 2, 3],
 				nested: {
 					deep: {
 						property: "value",
 					},
 				},
-				array: [1, 2, 3],
 			};
 			const result = mapWorkersAIFinishReason(response);
 			expect(result).toBe("stop");

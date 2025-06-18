@@ -5,18 +5,18 @@ describe("processPartialToolCalls", () => {
 	it("should merge partial tool calls by index", () => {
 		const partialCalls = [
 			{
-				index: 0,
+				function: { arguments: '{"par', name: "test_func" },
 				id: "call_123",
+				index: 0,
 				type: "function",
-				function: { name: "test_func", arguments: '{"par' },
 			},
 			{
-				index: 0,
 				function: { arguments: 'am": "val' },
+				index: 0,
 			},
 			{
-				index: 0,
 				function: { arguments: 'ue"}' },
+				index: 0,
 			},
 		];
 		const result = processPartialToolCalls(partialCalls);
@@ -29,22 +29,22 @@ describe("processPartialToolCalls", () => {
 	it("should handle multiple partial tool calls with different indices", () => {
 		const partialCalls = [
 			{
-				index: 0,
+				function: { arguments: '{"a":', name: "func1" },
 				id: "call_1",
-				function: { name: "func1", arguments: '{"a":' },
-			},
-			{
-				index: 1,
-				id: "call_2",
-				function: { name: "func2", arguments: '{"b":' },
-			},
-			{
 				index: 0,
-				function: { arguments: '"value1"}' },
 			},
 			{
+				function: { arguments: '{"b":', name: "func2" },
+				id: "call_2",
 				index: 1,
+			},
+			{
+				function: { arguments: '"value1"}' },
+				index: 0,
+			},
+			{
 				function: { arguments: '"value2"}' },
+				index: 1,
 			},
 		];
 
@@ -64,12 +64,12 @@ describe("processToolCalls", () => {
 		const output = {
 			tool_calls: [
 				{
+					function: {
+						arguments: '{"param": "value"}',
+						name: "test_function",
+					},
 					id: "call_123",
 					type: "function",
-					function: {
-						name: "test_function",
-						arguments: '{"param": "value"}',
-					},
 				},
 			],
 		};
@@ -77,10 +77,10 @@ describe("processToolCalls", () => {
 		const result = processToolCalls(output);
 		expect(result).toEqual([
 			{
-				toolCallType: "function",
-				toolCallId: "call_123",
-				toolName: "test_function",
 				args: '{"param": "value"}',
+				toolCallId: "call_123",
+				toolCallType: "function",
+				toolName: "test_function",
 			},
 		]);
 	});
@@ -89,12 +89,12 @@ describe("processToolCalls", () => {
 		const output = {
 			tool_calls: [
 				{
+					function: {
+						arguments: { param: "value" },
+						name: "test_function",
+					},
 					id: "call_123",
 					type: "function",
-					function: {
-						name: "test_function",
-						arguments: { param: "value" },
-					},
 				},
 			],
 		};
@@ -107,8 +107,8 @@ describe("processToolCalls", () => {
 		const output = {
 			tool_calls: [
 				{
-					name: "test_function",
 					arguments: '{"param": "value"}',
+					name: "test_function",
 				},
 			],
 		};
@@ -116,10 +116,10 @@ describe("processToolCalls", () => {
 		const result = processToolCalls(output);
 		expect(result).toEqual([
 			{
-				toolCallType: "function",
-				toolCallId: "test_function",
-				toolName: "test_function",
 				args: '{"param": "value"}',
+				toolCallId: "test_function",
+				toolCallType: "function",
+				toolName: "test_function",
 			},
 		]);
 	});
@@ -134,11 +134,11 @@ describe("processToolCalls", () => {
 		const output = {
 			tool_calls: [
 				{
-					id: "call_123",
 					function: {
-						name: "test_function",
 						arguments: null,
+						name: "test_function",
 					},
+					id: "call_123",
 				},
 			],
 		};

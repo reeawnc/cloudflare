@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { todoService } from "./TodoService.ts";
 import { stytchSessionAuthMiddleware } from "./lib/auth";
+import { todoService } from "./TodoService.ts";
 
 /**
  * The Hono app exposes the TODO Service via REST endpoints for consumption by the frontend

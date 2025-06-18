@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest";
-import { setupServer } from "msw/node";
-import { http, HttpResponse } from "msw";
-import { createAiGateway } from "../src";
-import { generateText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
+import { generateText } from "ai";
+import { HttpResponse, http } from "msw";
+import { setupServer } from "msw/node";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { createAiGateway } from "../src";
 
 const TEST_ACCOUNT_ID = "test-account-id";
 const TEST_API_KEY = "test-api-key";
@@ -13,17 +13,17 @@ const textGenerationHandler = http.post(
 	`https://gateway.ai.cloudflare.com/v1/${TEST_ACCOUNT_ID}/${TEST_GATEWAY}`,
 	async () => {
 		return HttpResponse.json({
-			object: "chat.completion",
 			choices: [
 				{
 					index: 0,
 					message: {
-						role: "assistant",
 						content: "Hello",
 						refusal: null,
+						role: "assistant",
 					},
 				},
 			],
+			object: "chat.completion",
 		});
 	},
 );
@@ -38,8 +38,8 @@ describe("Text Generation Tests", () => {
 	it("should generate text (non-streaming)", async () => {
 		const aigateway = createAiGateway({
 			accountId: TEST_ACCOUNT_ID,
-			gateway: TEST_GATEWAY,
 			apiKey: TEST_API_KEY,
+			gateway: TEST_GATEWAY,
 		});
 		const openai = createOpenAI({ apiKey: TEST_API_KEY });
 

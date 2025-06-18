@@ -13,7 +13,6 @@ async function streamToObject(stream: ReadableStream) {
 	return await response.json();
 }
 
-
 type InternalLanguageModelV1 = LanguageModelV1 & { config?: { fetch?: FetchFunction | undefined } };
 
 export class AiGatewayChatLanguageModel implements LanguageModelV1 {
@@ -62,9 +61,9 @@ export class AiGatewayChatLanguageModel implements LanguageModelV1 {
 
 			model.config.fetch = (url, request) => {
 				requests.push({
-					url: url as string,
-					request: request as Request,
 					modelProvider: model.provider,
+					request: request as Request,
+					url: url as string,
 				});
 				throw new AiGatewayInternalFetchError("Stopping provider execution...");
 			};
@@ -99,9 +98,9 @@ export class AiGatewayChatLanguageModel implements LanguageModelV1 {
 				}
 
 				return {
-					provider: providerConfig.name,
 					endpoint: providerConfig.transformEndpoint(req.url),
 					headers: req.request.headers,
+					provider: providerConfig.name,
 					query: await streamToObject(req.request.body),
 				};
 			}),
@@ -126,9 +125,9 @@ export class AiGatewayChatLanguageModel implements LanguageModelV1 {
 			resp = await fetch(
 				`https://gateway.ai.cloudflare.com/v1/${this.config.accountId}/${this.config.gateway}`,
 				{
-					method: "POST",
-					headers: headers,
 					body: JSON.stringify(body),
+					headers: headers,
+					method: "POST",
 				},
 			);
 		}

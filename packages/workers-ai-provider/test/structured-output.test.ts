@@ -1,5 +1,5 @@
 import { generateObject } from "ai";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
@@ -13,17 +13,19 @@ const structuredOutputHandler = http.post(
 	`https://api.cloudflare.com/client/v4/accounts/${TEST_ACCOUNT_ID}/ai/run/${TEST_MODEL}`,
 	async () => {
 		return HttpResponse.json({
+			errors: [],
+			messages: [],
 			result: {
 				response: JSON.stringify({
 					recipe: {
-						name: "Spaghetti Bolognese",
 						ingredients: [
-							{ name: "spaghetti", amount: "200g" },
-							{ name: "minced beef", amount: "300g" },
-							{ name: "tomato sauce", amount: "500ml" },
-							{ name: "onion", amount: "1 medium" },
-							{ name: "garlic", amount: "2 cloves" },
+							{ amount: "200g", name: "spaghetti" },
+							{ amount: "300g", name: "minced beef" },
+							{ amount: "500ml", name: "tomato sauce" },
+							{ amount: "1 medium", name: "onion" },
+							{ amount: "2 cloves", name: "garlic" },
 						],
+						name: "Spaghetti Bolognese",
 						steps: [
 							"Cook spaghetti.",
 							"Fry onion & garlic.",
@@ -35,8 +37,6 @@ const structuredOutputHandler = http.post(
 				}),
 			},
 			success: true,
-			errors: [],
-			messages: [],
 		});
 	},
 );
@@ -45,8 +45,8 @@ const server = setupServer(structuredOutputHandler);
 
 const recipeSchema = z.object({
 	recipe: z.object({
+		ingredients: z.array(z.object({ amount: z.string(), name: z.string() })),
 		name: z.string(),
-		ingredients: z.array(z.object({ name: z.string(), amount: z.string() })),
 		steps: z.array(z.string()),
 	}),
 });
@@ -58,14 +58,14 @@ describe("REST API - Structured Output Tests", () => {
 
 	it("should generate structured output with schema (non-streaming)", async () => {
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 
 		const { object } = await generateObject({
 			model: workersai(TEST_MODEL),
-			schema: recipeSchema,
 			prompt: "Give me a Spaghetti Bolognese recipe",
+			schema: recipeSchema,
 		});
 
 		expect(object.recipe.name).toBe("Spaghetti Bolognese");
@@ -82,14 +82,14 @@ describe("Binding - Structured Output Tests", () => {
 					return {
 						response: {
 							recipe: {
-								name: "Spaghetti Bolognese",
 								ingredients: [
-									{ name: "spaghetti", amount: "200g" },
-									{ name: "minced beef", amount: "300g" },
-									{ name: "tomato sauce", amount: "500ml" },
-									{ name: "onion", amount: "1 medium" },
-									{ name: "garlic", amount: "2 cloves" },
+									{ amount: "200g", name: "spaghetti" },
+									{ amount: "300g", name: "minced beef" },
+									{ amount: "500ml", name: "tomato sauce" },
+									{ amount: "1 medium", name: "onion" },
+									{ amount: "2 cloves", name: "garlic" },
 								],
+								name: "Spaghetti Bolognese",
 								steps: [
 									"Cook spaghetti.",
 									"Fry onion & garlic.",
@@ -106,8 +106,8 @@ describe("Binding - Structured Output Tests", () => {
 
 		const { object } = await generateObject({
 			model: workersai(TEST_MODEL),
-			schema: recipeSchema,
 			prompt: "Give me a Spaghetti Bolognese recipe",
+			schema: recipeSchema,
 		});
 
 		expect(object.recipe.name).toBe("Spaghetti Bolognese");

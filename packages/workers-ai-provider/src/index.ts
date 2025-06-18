@@ -100,9 +100,9 @@ export function createWorkersAI(options: WorkersAISettings): WorkersAI {
 
 	const createChatModel = (modelId: TextGenerationModels, settings: WorkersAIChatSettings = {}) =>
 		new WorkersAIChatLanguageModel(modelId, settings, {
-			provider: "workersai.chat",
 			binding,
 			gateway: options.gateway,
+			provider: "workersai.chat",
 		});
 
 	const createImageModel = (
@@ -110,18 +110,18 @@ export function createWorkersAI(options: WorkersAISettings): WorkersAI {
 		settings: WorkersAIImageSettings = {},
 	) =>
 		new WorkersAIImageModel(modelId, settings, {
-			provider: "workersai.image",
 			binding,
 			gateway: options.gateway,
+			provider: "workersai.image",
 		});
 	const createEmbeddingModel = (
 		modelId: EmbeddingModels,
 		settings: WorkersAIEmbeddingSettings = {},
 	) =>
 		new WorkersAIEmbeddingModel(modelId, settings, {
-			provider: "workersai.embedding",
 			binding,
 			gateway: options.gateway,
+			provider: "workersai.embedding",
 		});
 
 	const provider = (modelId: TextGenerationModels, settings?: WorkersAIChatSettings) => {
@@ -162,8 +162,8 @@ export function createAutoRAG(options: AutoRAGSettings): AutoRAGProvider {
 	const createChatModel = (settings: AutoRAGChatSettings = {}) =>
 		// @ts-ignore Needs fix from @cloudflare/workers-types for custom types
 		new AutoRAGChatLanguageModel("@cf/meta/llama-3.3-70b-instruct-fp8-fast", settings, {
-			provider: "autorag.chat",
 			binding,
+			provider: "autorag.chat",
 		});
 
 	const provider = (settings?: AutoRAGChatSettings) => {

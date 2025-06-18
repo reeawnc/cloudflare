@@ -1,8 +1,8 @@
 import OAuthProvider from "@cloudflare/workers-oauth-provider";
-import { McpAgent } from "agents/mcp";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import { WebClient } from "@slack/web-api";
+import { McpAgent } from "agents/mcp";
+import { z } from "zod";
 import { type Props, refreshSlackToken, SlackHandler } from "./slack-handler";
 
 // To restrict access to specific users only, add their Slack userIDs to this Set.
@@ -19,24 +19,19 @@ export class SlackMCP extends McpAgent<Env, unknown, Props> {
 
 	async init() {
 		// Who am I tool
-		this.server.tool(
-			"whoami",
-			"Get information about your Slack user",
-			{},
-			async () => ({
-				content: [
-					{
-						type: "text",
-						text: JSON.stringify({
-							userId: this.props.userId,
-							userName: this.props.userName,
-							teamName: this.props.teamName,
-							scope: this.props.scope,
-						}),
-					},
-				],
-			}),
-		);
+		this.server.tool("whoami", "Get information about your Slack user", {}, async () => ({
+			content: [
+				{
+					text: JSON.stringify({
+						scope: this.props.scope,
+						teamName: this.props.teamName,
+						userId: this.props.userId,
+						userName: this.props.userName,
+					}),
+					type: "text",
+				},
+			],
+		}));
 
 		// List channels tool
 		this.server.tool(
@@ -53,8 +48,8 @@ export class SlackMCP extends McpAgent<Env, unknown, Props> {
 				return {
 					content: [
 						{
-							type: "text",
 							text: JSON.stringify(response.channels, null, 2),
+							type: "text",
 						},
 					],
 				};
@@ -84,8 +79,8 @@ export class SlackMCP extends McpAgent<Env, unknown, Props> {
 				return {
 					content: [
 						{
-							type: "text",
 							text: JSON.stringify(response.messages, null, 2),
+							type: "text",
 						},
 					],
 				};
@@ -112,8 +107,8 @@ export class SlackMCP extends McpAgent<Env, unknown, Props> {
 					return {
 						content: [
 							{
-								type: "text",
 								text: "Message posted successfully! This should not happen with read-only permissions.",
+								type: "text",
 							},
 						],
 					};
@@ -121,8 +116,8 @@ export class SlackMCP extends McpAgent<Env, unknown, Props> {
 					return {
 						content: [
 							{
-								type: "text",
 								text: `Failed to post message as expected with read-only permissions: ${(error as Error).message || JSON.stringify(error)}\n\nThis demonstrates that the MCP has properly limited access to read-only operations.`,
+								type: "text",
 							},
 						],
 					};
@@ -133,12 +128,12 @@ export class SlackMCP extends McpAgent<Env, unknown, Props> {
 }
 
 export default new OAuthProvider({
-	apiRoute: "/sse",
 	apiHandler: SlackMCP.mount("/sse") as any,
-	defaultHandler: SlackHandler as any,
+	apiRoute: "/sse",
 	authorizeEndpoint: "/authorize",
-	tokenEndpoint: "/token",
 	clientRegistrationEndpoint: "/register",
+	defaultHandler: SlackHandler as any,
+	tokenEndpoint: "/token",
 	tokenExchangeCallback: async (options) => {
 		if (options.grantType === "refresh_token") {
 			// Some Slack OAuth tokens don't expire, in which case we won't get a refreshToken,

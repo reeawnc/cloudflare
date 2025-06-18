@@ -36,9 +36,9 @@ export class WorkersAIImageModel implements ImageModelV1 {
 
 		if (aspectRatio != null) {
 			warnings.push({
-				type: "unsupported-setting",
-				setting: "aspectRatio",
 				details: "This model does not support aspect ratio. Use `size` instead.",
+				setting: "aspectRatio",
+				type: "unsupported-setting",
 			});
 		}
 
@@ -46,10 +46,10 @@ export class WorkersAIImageModel implements ImageModelV1 {
 			const outputStream: ReadableStream<Uint8Array> = await this.config.binding.run(
 				this.modelId,
 				{
+					height,
 					prompt,
 					seed,
 					width,
-					height,
 				},
 			);
 
@@ -65,12 +65,12 @@ export class WorkersAIImageModel implements ImageModelV1 {
 
 		return {
 			images,
-			warnings,
 			response: {
-				timestamp: new Date(),
-				modelId: this.modelId,
 				headers: {},
+				modelId: this.modelId,
+				timestamp: new Date(),
 			},
+			warnings,
 		};
 	}
 }
@@ -79,8 +79,8 @@ function getDimensionsFromSizeString(size: string | undefined) {
 	const [width, height] = size?.split("x") ?? [undefined, undefined];
 
 	return {
-		width: parseInteger(width),
 		height: parseInteger(height),
+		width: parseInteger(width),
 	};
 }
 

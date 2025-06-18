@@ -1,8 +1,8 @@
-import { OKRManagerMCP } from "./OKRManagerMCP.ts";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { getStytchOAuthEndpointUrl, stytchBearerTokenAuthMiddleware } from "./lib/auth";
 import { OKRAPI } from "./OKRAPI.ts";
-import { cors } from "hono/cors";
-import { Hono } from "hono";
+import { OKRManagerMCP } from "./OKRManagerMCP.ts";
 
 // Export the OKRManagerMCP class so the Worker runtime can find it
 export { OKRManagerMCP };
@@ -17,17 +17,17 @@ export default new Hono<{ Bindings: Env }>()
 	.get("/.well-known/oauth-authorization-server", async (c) => {
 		const url = new URL(c.req.url);
 		return c.json({
-			issuer: c.env.STYTCH_PROJECT_ID,
 			// Link to the OAuth Authorization screen implemented within the React UI
 			authorization_endpoint: `${url.origin}/oauth/authorize`,
-			token_endpoint: getStytchOAuthEndpointUrl(c.env, "oauth2/token"),
-			registration_endpoint: getStytchOAuthEndpointUrl(c.env, "oauth2/register"),
-			scopes_supported: ["openid", "profile", "email", "offline_access"],
-			response_types_supported: ["code"],
-			response_modes_supported: ["query"],
-			grant_types_supported: ["authorization_code", "refresh_token"],
-			token_endpoint_auth_methods_supported: ["none"],
 			code_challenge_methods_supported: ["S256"],
+			grant_types_supported: ["authorization_code", "refresh_token"],
+			issuer: c.env.STYTCH_PROJECT_ID,
+			registration_endpoint: getStytchOAuthEndpointUrl(c.env, "oauth2/register"),
+			response_modes_supported: ["query"],
+			response_types_supported: ["code"],
+			scopes_supported: ["openid", "profile", "email", "offline_access"],
+			token_endpoint: getStytchOAuthEndpointUrl(c.env, "oauth2/token"),
+			token_endpoint_auth_methods_supported: ["none"],
 		});
 	})
 

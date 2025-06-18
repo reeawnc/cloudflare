@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 export default function Setup({ children }: { children: ReactNode }) {
 	if (!import.meta.env.VITE_STYTCH_PUBLIC_TOKEN) {

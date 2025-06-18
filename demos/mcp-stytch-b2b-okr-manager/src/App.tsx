@@ -1,9 +1,8 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { StytchB2BProvider } from "@stytch/react/b2b";
 import { StytchB2BUIClient } from "@stytch/vanilla-js/b2b";
-
-import OKREditor from "./OKREditor.tsx";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Authorize, Login, MemberSettings, Nav, OrgSettings, SSOSettings } from "./Auth.tsx";
+import OKREditor from "./OKREditor.tsx";
 
 const stytch = new StytchB2BUIClient(import.meta.env.VITE_STYTCH_PUBLIC_TOKEN);
 

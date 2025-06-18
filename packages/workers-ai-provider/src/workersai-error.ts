@@ -2,11 +2,11 @@ import { createJsonErrorResponseHandler } from "@ai-sdk/provider-utils";
 import { z } from "zod";
 
 const workersAIErrorDataSchema = z.object({
-	object: z.literal("error"),
-	message: z.string(),
-	type: z.string(),
-	param: z.string().nullable(),
 	code: z.string().nullable(),
+	message: z.string(),
+	object: z.literal("error"),
+	param: z.string().nullable(),
+	type: z.string(),
 });
 
 export const workersAIFailedResponseHandler = createJsonErrorResponseHandler({

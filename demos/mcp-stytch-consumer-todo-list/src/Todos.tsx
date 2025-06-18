@@ -1,8 +1,8 @@
-import { useState, useEffect, FormEvent } from "react";
 import { hc } from "hono/client";
-import { TodoApp } from "../api/TodoAPI.ts";
+import { type FormEvent, useEffect, useState } from "react";
+import type { TodoApp } from "../api/TodoAPI.ts";
+import type { Todo } from "../types";
 import { withLoginRequired } from "./Auth.tsx";
-import { Todo } from "../types";
 
 const client = hc<TodoApp>(`${window.location.origin}/api`);
 

@@ -1,4 +1,4 @@
-import { Todo } from "../types";
+import type { Todo } from "../types";
 
 /**
  * The `TodoService` class provides methods for managing a to-do list backed by Cloudflare KV storage.
@@ -31,9 +31,9 @@ class TodoService {
 	add = async (todoText: string): Promise<Todo[]> => {
 		const todos = await this.get();
 		const newTodo: Todo = {
+			completed: false,
 			id: Date.now().toString(),
 			text: todoText,
-			completed: false,
 		};
 		todos.push(newTodo);
 		return this.#set(todos);

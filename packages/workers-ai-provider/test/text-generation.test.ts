@@ -1,5 +1,5 @@
 import { generateText } from "ai";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { createWorkersAI } from "../src/index";
@@ -24,8 +24,8 @@ describe("REST API - Text Generation Tests", () => {
 
 	it("should generate text (non-streaming)", async () => {
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 		const result = await generateText({
 			model: workersai(TEST_MODEL),
@@ -38,8 +38,8 @@ describe("REST API - Text Generation Tests", () => {
 		let capturedOptions: any = null;
 
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 
 		server.use(
@@ -56,9 +56,9 @@ describe("REST API - Text Generation Tests", () => {
 		);
 
 		const model = workersai(TEST_MODEL, {
-			aString: "a",
 			aBool: true,
 			aNumber: 1,
+			aString: "a",
 		});
 
 		const result = await generateText({
@@ -74,8 +74,8 @@ describe("REST API - Text Generation Tests", () => {
 
 	it("should throw if passthrough option cannot be coerced into a string", async () => {
 		const workersai = createWorkersAI({
-			apiKey: TEST_API_KEY,
 			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
 		});
 
 		await expect(
@@ -135,9 +135,9 @@ describe("Binding - Text Generation Tests", () => {
 		});
 
 		const model = workersai(TEST_MODEL, {
-			aString: "a",
 			aBool: true,
 			aNumber: 1,
+			aString: "a",
 		});
 
 		const result = await generateText({

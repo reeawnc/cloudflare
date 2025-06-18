@@ -1,11 +1,8 @@
-import {
-	McpServer,
-	ResourceTemplate,
-} from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
-import { todoService } from "./TodoService.ts";
-import { AuthenticationContext, Todo } from "../types";
+import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { McpAgent } from "agents/mcp";
+import { z } from "zod";
+import type { AuthenticationContext, Todo } from "../types";
+import { todoService } from "./TodoService.ts";
 
 /**
  * The `TodoMCP` class exposes the TODO Service via the Model Context Protocol
@@ -20,19 +17,19 @@ export class TodoMCP extends McpAgent<Env, unknown, AuthenticationContext> {
 
 	formatResponse = (
 		description: string,
-		newState: Todo[]
+		newState: Todo[],
 	): {
 		content: Array<{ type: "text"; text: string }>;
 	} => {
 		return {
 			content: [
 				{
-					type: "text",
 					text: `Success! ${description}\n\nNew state:\n${JSON.stringify(
 						newState,
 						null,
-						2
+						2,
 					)}}`,
+					type: "text",
 				},
 			],
 		};
@@ -64,14 +61,14 @@ export class TodoMCP extends McpAgent<Env, unknown, AuthenticationContext> {
 				return {
 					contents: [
 						{
-							uri: uri.href,
 							text: todo
 								? `text: ${todo.text} completed: ${todo.completed}`
 								: "NOT FOUND",
+							uri: uri.href,
 						},
 					],
 				};
-			}
+			},
 		);
 
 		server.tool(
@@ -81,7 +78,7 @@ export class TodoMCP extends McpAgent<Env, unknown, AuthenticationContext> {
 			async ({ todoText }) => {
 				const todos = await this.todoService.add(todoText);
 				return this.formatResponse("TODO added successfully", todos);
-			}
+			},
 		);
 
 		server.tool(
@@ -90,11 +87,8 @@ export class TodoMCP extends McpAgent<Env, unknown, AuthenticationContext> {
 			{ todoID: z.string() },
 			async ({ todoID }) => {
 				const todos = await this.todoService.markCompleted(todoID);
-				return this.formatResponse(
-					"TODO completed successfully",
-					todos
-				);
-			}
+				return this.formatResponse("TODO completed successfully", todos);
+			},
 		);
 
 		server.tool(
@@ -104,7 +98,7 @@ export class TodoMCP extends McpAgent<Env, unknown, AuthenticationContext> {
 			async ({ todoID }) => {
 				const todos = await this.todoService.delete(todoID);
 				return this.formatResponse("TODO deleted successfully", todos);
-			}
+			},
 		);
 
 		return server;
