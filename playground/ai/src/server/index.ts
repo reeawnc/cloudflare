@@ -1,6 +1,6 @@
-import { createWorkersAI } from "workers-ai-provider";
-import { jsonSchema, streamText, type UIMessage } from "ai";
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
+import { jsonSchema, streamText, type UIMessage } from "ai";
+import { createWorkersAI } from "workers-ai-provider";
 import { models } from "../models";
 
 type Env = {
@@ -26,7 +26,7 @@ async function replyToMessage(request: Request, env: Env, _ctx: ExecutionContext
 		system_message,
 		max_tokens,
 		tools = [],
-		lora,
+		lora: _lora,
 	} = await request.json<PostInferenceBody>();
 
 	// Invalid model sent to API, return 400
@@ -55,26 +55,26 @@ async function replyToMessage(request: Request, env: Env, _ctx: ExecutionContext
 	// console.log(mcpTools);
 
 	const result = streamText({
-		model: workersai(model as Parameters<typeof workersai>[0]),
-		messages,
-		system: system_message,
 		maxTokens: max_tokens,
-		toolCallStreaming: false,
-		tools: mcpTools,
+		messages,
+		model: workersai(model as Parameters<typeof workersai>[0]),
 		onError: (err) => {
 			console.log({ err });
 		},
+		system: system_message,
+		toolCallStreaming: false,
+		tools: mcpTools,
 	});
 
 	return result.toDataStreamResponse({
+		getErrorMessage: (error: unknown) => {
+			console.log(error);
+			return "Error during inference";
+		},
 		headers: {
 			"Content-Type": "text/x-unknown",
 			"content-encoding": "identity",
 			"transfer-encoding": "chunked",
-		},
-		getErrorMessage: (error: unknown) => {
-			console.log(error);
-			return "Error during inference";
 		},
 	});
 }

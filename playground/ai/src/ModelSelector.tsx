@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
 import { useCombobox } from "downshift";
+import { useEffect, useRef, useState } from "react";
 
 import ModelRow from "./ModelRow";
 import type { Model } from "./models";
@@ -165,8 +165,9 @@ const ModelSelector = ({
 		highlightedIndex,
 		getItemProps,
 	} = useCombobox({
-		items: inputItems,
 		inputValue,
+		items: inputItems,
+		itemToString: (item) => item?.name || "",
 		onInputValueChange: ({ inputValue, type }) => {
 			if (type === useCombobox.stateChangeTypes.InputChange) {
 				setInputValue(inputValue || "");
@@ -182,14 +183,13 @@ const ModelSelector = ({
 			// Blur search to reset filtering
 			inputRef.current?.blur();
 		},
-		itemToString: (item) => item?.name || "",
 	});
 
 	return (
 		<div className="relative">
 			<div className="mb-1">
 				<div className="flex justify-between items-center mb-1">
-					{/* biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+					{/* biome-ignore lint/a11y/noLabelWithoutControl: it's fine */}
 					<label {...getLabelProps()} className="font-semibold text-sm">
 						Model
 					</label>
@@ -225,6 +225,7 @@ const ModelSelector = ({
 				/>
 				{inputValue || !selectedItem ? <span /> : <ModelRow model={selectedItem} />}
 				<span className="px-2" {...getToggleButtonProps()}>
+					{/** biome-ignore lint/complexity/noUselessFragments: it's fine */}
 					{isOpen ? <>&#8593;</> : <>&#8595;</>}
 				</span>
 			</div>
@@ -244,7 +245,7 @@ const ModelSelector = ({
 								selectedItem === item && "font-bold"
 							} ${highlightedIndex === index && "bg-gray-100"}`}
 							key={item.id}
-							{...getItemProps({ item, index })}
+							{...getItemProps({ index, item })}
 						>
 							<ModelRow model={item} />
 						</li>

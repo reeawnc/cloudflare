@@ -214,7 +214,7 @@ async function main() {
 					changedFilesOutput = runCommand(
 						`git diff --name-only ${baseCommit} HEAD -- "${projectRoot}"`,
 					);
-				} catch (error) {
+				} catch (_error) {
 					console.warn(
 						`Error obtaining diff for project "${project}". Falling back to all tracked files.`,
 					);
@@ -272,10 +272,10 @@ async function main() {
 			// Generate the README content via the Cloudflare AI endpoint.
 			const { object } = await generateObject({
 				model: openai("gpt-4o"),
+				prompt: finalPrompt,
 				schema: z.object({
 					markdown: z.string(),
 				}),
-				prompt: finalPrompt,
 			});
 
 			// Append the "Last updated" comment with the current commit SHA.

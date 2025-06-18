@@ -58,24 +58,24 @@ test("exit and entry hooks are called in correct order", async () => {
 	const callOrder: string[] = [];
 	const config = {
 		init: "idle",
-		transitions: [
-			{ action: "run", from: "idle", to: "running" },
-			{ action: "stop", from: "running", to: "idle" },
-		],
 		methods: {
-			async onExitIdle() {
-				callOrder.push("exitIdle");
+			onEnterIdle() {
+				callOrder.push("enterIdle");
 			},
 			async onEnterRunning() {
 				callOrder.push("enterRunning");
 			},
+			async onExitIdle() {
+				callOrder.push("exitIdle");
+			},
 			onExitRunning() {
 				callOrder.push("exitRunning");
 			},
-			onEnterIdle() {
-				callOrder.push("enterIdle");
-			},
 		},
+		transitions: [
+			{ action: "run", from: "idle", to: "running" },
+			{ action: "stop", from: "running", to: "idle" },
+		],
 	} as const;
 	const machine = generateMachine(config);
 	await machine.run();
@@ -112,15 +112,15 @@ test("synchronous hooks are called", async () => {
 	const callOrder: string[] = [];
 	const config = {
 		init: "a",
-		transitions: [{ action: "move", from: "a", to: "b" }],
 		methods: {
-			onExitA() {
-				callOrder.push("exitA");
-			},
 			onEnterB() {
 				callOrder.push("enterB");
 			},
+			onExitA() {
+				callOrder.push("exitA");
+			},
 		},
+		transitions: [{ action: "move", from: "a", to: "b" }],
 	} as const;
 	const machine = generateMachine(config);
 	await machine.move();
@@ -130,12 +130,12 @@ test("synchronous hooks are called", async () => {
 test("exit hook error prevents transition", async () => {
 	const config = {
 		init: "s1",
-		transitions: [{ action: "go", from: "s1", to: "s2" }],
 		methods: {
 			onExitS1() {
 				throw new Error("exit error");
 			},
 		},
+		transitions: [{ action: "go", from: "s1", to: "s2" }],
 	} as const;
 	const machine = generateMachine(config);
 	await expect(machine.go()).rejects.toThrow("exit error");
@@ -145,12 +145,12 @@ test("exit hook error prevents transition", async () => {
 test("entry hook error after state update", async () => {
 	const config = {
 		init: "s1",
-		transitions: [{ action: "go", from: "s1", to: "s2" }],
 		methods: {
 			onEnterS2() {
 				throw new Error("entry error");
 			},
 		},
+		transitions: [{ action: "go", from: "s1", to: "s2" }],
 	} as const;
 	const machine = generateMachine(config);
 	await expect(machine.go()).rejects.toThrow("entry error");

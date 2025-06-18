@@ -1,21 +1,21 @@
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import App from "./App";
 import OAuthCallbackPage from "./OAuthCallbackPage";
 import "./index.css";
 
 const router = createBrowserRouter([
 	{
-		path: "/",
 		element: <App />,
+		path: "/",
 	},
 	{
-		path: "/oauth/callback",
 		element: <OAuthCallbackPage />,
+		path: "/oauth/callback",
 	},
 	{
-		path: "*",
 		element: <Navigate to="/" replace />,
+		path: "*",
 	},
 ]);
 

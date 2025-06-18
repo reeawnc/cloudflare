@@ -1,6 +1,6 @@
-import { onMcpAuthorization } from "use-mcp";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { onMcpAuthorization } from "use-mcp";
 
 export default function OAuthCallbackPage() {
 	const [searchParams] = useSearchParams();
@@ -20,12 +20,12 @@ export default function OAuthCallbackPage() {
 			.then((res) =>
 				setResult({
 					// @ts-expect-error need to fix this
-					status: res.success ? "success" : "error",
-					// @ts-expect-error need to fix this
 					message: res.error,
+					// @ts-expect-error need to fix this
+					status: res.success ? "success" : "error",
 				}),
 			)
-			.catch((err: Error) => setResult({ status: "error", message: err.message }));
+			.catch((err: Error) => setResult({ message: err.message, status: "error" }));
 	}, [searchParams]);
 
 	return (

@@ -12,6 +12,9 @@
 		"includes": [
 			"demos/**",
 			"packages/**",
+			"libs/**",
+			"playground/**",
+			"tools/**",
 			"!**/worker-configuration.d.ts",
 			"!types/workerd.d.ts",
 			"!**/tsconfig.json",

@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { useSelect } from "downshift";
-import type { Model, FineTune } from "./models";
+import { useState } from "react";
+import type { FineTune } from "./models";
 
 const FinetuneSelector = ({
 	models,
@@ -23,7 +23,7 @@ const FinetuneSelector = ({
 		getItemProps,
 	} = useSelect({
 		items: models,
-		selectedItem,
+		itemToString: (item) => item?.name || "",
 		onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
 			// Update parent state
 			onSelection(newSelectedItem);
@@ -31,12 +31,12 @@ const FinetuneSelector = ({
 			// Update local state
 			setSelectedItem(newSelectedItem);
 		},
-		itemToString: (item) => item?.name || "",
+		selectedItem,
 	});
 
 	return (
 		<div className="relative">
-			{/* biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+			{/* biome-ignore lint/a11y/noLabelWithoutControl: it's fine */}
 			<label {...getLabelProps()} className="font-semibold text-sm block mb-1 md:block">
 				Finetune
 			</label>
@@ -47,6 +47,7 @@ const FinetuneSelector = ({
 				<div className="w-full whitespace-nowrap items-center flex">
 					{selectedItem ? selectedItem.name : "None"}
 				</div>
+				{/** biome-ignore lint/complexity/noUselessFragments: it's fine */}
 				<span className="px-2">{isOpen ? <>&#8593;</> : <>&#8595;</>}</span>
 			</div>
 
@@ -67,7 +68,7 @@ const FinetuneSelector = ({
 								selectedItem === item && "font-bold"
 							} ${highlightedIndex === index && "bg-gray-100"}`}
 							key={item?.id || null}
-							{...getItemProps({ item, index })}
+							{...getItemProps({ index, item })}
 						>
 							{item?.name || "None"}
 						</li>
