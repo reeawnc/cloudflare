@@ -1,4 +1,4 @@
-import { McpServers } from './components/McpServers.js'
+import { McpServers } from "./components/McpServers.js";
 
 function App() {
 	return (
@@ -11,7 +11,7 @@ function App() {
 				<McpServers />
 			</div>
 		</div>
-	)
+	);
 }
 
-export default App
+export default App;
