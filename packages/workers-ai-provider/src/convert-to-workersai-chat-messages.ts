@@ -66,6 +66,12 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 							text += part.text;
 							break;
 						}
+
+						case "reasoning": {
+							text += part.text;
+							break;
+						}
+
 						case "tool-call": {
 							text = JSON.stringify({
 								name: part.toolName,
@@ -84,7 +90,7 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 						}
 						default: {
 							const exhaustiveCheck = part;
-							throw new Error(`Unsupported part: ${exhaustiveCheck}`);
+							throw new Error(`Unsupported part type: ${exhaustiveCheck.type}`);
 						}
 					}
 				}
@@ -104,6 +110,7 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 
 				break;
 			}
+
 			case "tool": {
 				for (const toolResponse of content) {
 					messages.push({
@@ -114,6 +121,7 @@ export function convertToWorkersAIChatMessages(prompt: LanguageModelV1Prompt): {
 				}
 				break;
 			}
+
 			default: {
 				const exhaustiveCheck = role satisfies never;
 				throw new Error(`Unsupported role: ${exhaustiveCheck}`);

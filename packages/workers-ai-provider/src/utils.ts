@@ -252,6 +252,16 @@ export function processToolCalls(output: any): LanguageModelV1FunctionToolCall[]
 		});
 	}
 
+	if (
+		output?.choices?.[0]?.message?.tool_calls &&
+		Array.isArray(output.choices[0].message.tool_calls)
+	) {
+		return output.choices[0].message.tool_calls.map((toolCall: any) => {
+			const processedToolCall = processToolCall(toolCall);
+			return processedToolCall;
+		});
+	}
+
 	return [];
 }
 
