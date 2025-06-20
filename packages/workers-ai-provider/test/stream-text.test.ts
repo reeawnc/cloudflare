@@ -291,6 +291,95 @@ describe("REST API - Streaming Text Tests", () => {
 			},
 		]);
 	});
+
+	it("should handle openai tool call inside response when last message is user message", async () => {
+		server.use(
+			http.post(
+				`https://api.cloudflare.com/client/v4/accounts/${TEST_ACCOUNT_ID}/ai/run/${TEST_MODEL}`,
+				// `doStream` calls `doGenerate` underneath when the last message is from the user
+				async () => {
+					return HttpResponse.json({
+						result: {
+							id: "chatcmpl-2d657a54f93d4ecbb966cc50efd42819",
+							object: "chat.completion",
+							created: 1750346826,
+							model: "@cf/qwen/qwen3-30b-a3b-fp8",
+							choices: [
+								{
+									index: 0,
+									message: {
+										role: "assistant",
+										reasoning_content:
+											"\nOkay, the user is asking for the weather in London. Let me check the tools available. There's a function called get_weather that takes a location parameter. Since London is the location mentioned, I need to call that function with \"London\" as the argument. I'll make sure the JSON is correctly formatted and enclosed within the tool_call tags.\n",
+										content: "\n\n",
+										tool_calls: [
+											{
+												id: "chatcmpl-tool-c267de54771c4833a823f423f0def197",
+												type: "function",
+												function: {
+													name: "get_weather",
+													arguments: '{"location": "London"}',
+												},
+											},
+										],
+									},
+									logprobs: null,
+									finish_reason: "tool_calls",
+									stop_reason: null,
+								},
+							],
+							usage: {
+								prompt_tokens: 169,
+								completion_tokens: 94,
+								total_tokens: 263,
+							},
+							prompt_logprobs: null,
+						},
+					});
+				},
+			),
+		);
+
+		const workersai = createWorkersAI({
+			accountId: TEST_ACCOUNT_ID,
+			apiKey: TEST_API_KEY,
+		});
+
+		const result = await streamText({
+			model: workersai(TEST_MODEL),
+			prompt: "Get the weather information for London",
+			tools: {
+				get_weather: {
+					description: "Get the weather in a location",
+					execute: async ({ location }) => ({
+						location,
+						weather: location === "London" ? "Raining" : "Sunny",
+					}),
+					parameters: z.object({
+						location: z.string().describe("The location to get the weather for"),
+					}),
+				},
+			},
+		});
+
+		const toolCalls: any = [];
+
+		for await (const chunk of result.fullStream) {
+			if (chunk.type === "tool-call") {
+				toolCalls.push(chunk);
+			}
+		}
+
+		expect(toolCalls).toHaveLength(1);
+		expect(toolCalls).toMatchObject([
+			{
+				args: { location: "London" },
+				toolCallId: "chatcmpl-tool-c267de54771c4833a823f423f0def197",
+				toolName: "get_weather",
+				type: "tool-call",
+			},
+		]);
+	});
 });
 
 describe("Binding - Streaming Text Tests", () => {
@@ -490,6 +579,116 @@ describe("Binding - Streaming Text Tests", () => {
 		expect(toolCalls[0]).toMatchObject({
 			args: { location: "London" },
 			toolCallId: "chatcmpl-tool-b482f0e36b0c4190b9bee3fb61408a9e",
+			toolName: "get_weather",
+			type: "tool-call",
+		});
+		expect(toolCalls[1]).toMatchObject({
+			args: { location: "London" },
+			toolCallId: "chatcmpl-tool-a482f0e36b0c4190b9bee3fb61408a9c",
+			toolName: "get_temperature",
+			type: "tool-call",
+		});
+	});
+
+	it("should handle new tool call inside response when last message is user message", async () => {
+		const workersai = createWorkersAI({
+			binding: {
+				run: async () => {
+					return {
+						id: "chatcmpl-2d657a54f93d4ecbb966cc50efd42819",
+						object: "chat.completion",
+						created: 1750346826,
+						model: "@cf/qwen/qwen3-30b-a3b-fp8",
+						choices: [
+							{
+								index: 0,
+								message: {
+									role: "assistant",
+									reasoning_content:
+										"\nOkay, the user is asking for the weather in London. Let me check the tools available. There's a function called get_weather that takes a location parameter. Since London is the location mentioned, I need to call that function with \"London\" as the argument. I'll make sure the JSON is correctly formatted and enclosed within the tool_call tags.\n",
+									content: "\n\n",
+									tool_calls: [
+										{
+											id: "chatcmpl-tool-c267de54771c4833a823f423f0def197",
+											type: "function",
+											function: {
+												name: "get_weather",
+												arguments: '{"location": "London"}',
+											},
+										},
+										{
+											id: "chatcmpl-tool-a482f0e36b0c4190b9bee3fb61408a9c",
+											type: "function",
+											function: {
+												name: "get_temperature",
+												arguments: '{"location": "London"}',
+											},
+										},
+									],
+								},
+								logprobs: null,
+								finish_reason: "tool_calls",
+								stop_reason: null,
+							},
+						],
+						usage: {
+							prompt_tokens: 169,
+							completion_tokens: 94,
+							total_tokens: 263,
+						},
+						prompt_logprobs: null,
+					};
+				},
+			},
+		});
+
+		const result = await streamText({
+			model: workersai(TEST_MODEL),
+			prompt: "Get the weather information for London",
+			tools: {
+				get_temperature: {
+					description: "Get the temperature in a location",
+					execute: async ({ location }) => ({
+						location,
+						weather: location === "London" ? "80" : "100",
+					}),
+					parameters: z.object({
+						location: z.string().describe("The location to get the temperature for"),
+					}),
+				},
+				get_weather: {
+					description: "Get the weather in a location",
+					execute: async ({ location }) => ({
+						location,
+						weather: location === "London" ? "Raining" : "Sunny",
+					}),
+					parameters: z.object({
+						location: z.string().describe("The location to get the weather for"),
+					}),
+				},
+			},
+		});
+
+		const toolCalls: any = [];
+		let reasoning = "";
+
+		for await (const chunk of result.fullStream) {
+			if (chunk.type === "tool-call") {
+				toolCalls.push(chunk);
+			}
+
+			if (chunk.type === "reasoning") {
+				reasoning += chunk.textDelta;
+			}
+		}
+
+		expect(reasoning).toEqual(
+			"\nOkay, the user is asking for the weather in London. Let me check the tools available. There's a function called get_weather that takes a location parameter. Since London is the location mentioned, I need to call that function with \"London\" as the argument. I'll make sure the JSON is correctly formatted and enclosed within the tool_call tags.\n",
+		);
+		expect(toolCalls).toHaveLength(2);
+		expect(toolCalls[0]).toMatchObject({
+			args: { location: "London" },
+			toolCallId: "chatcmpl-tool-c267de54771c4833a823f423f0def197",
 			toolName: "get_weather",
 			type: "tool-call",
 		});

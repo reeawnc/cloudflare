@@ -177,6 +177,8 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 					? JSON.stringify(output.response) // ai-sdk expects a string here
 					: output.response,
 			toolCalls: processToolCalls(output),
+			// @ts-ignore: Missing types
+			reasoning: output?.choices?.[0]?.message?.reasoning_content,
 			usage: mapWorkersAIUsage(output),
 			warnings,
 		};
@@ -217,6 +219,12 @@ export class WorkersAIChatLanguageModel implements LanguageModelV1 {
 									...toolCall,
 								});
 							}
+						}
+						if (response.reasoning && typeof response.reasoning === "string") {
+							controller.enqueue({
+								type: "reasoning",
+								textDelta: response.reasoning,
+							});
 						}
 						controller.enqueue({
 							finishReason: mapWorkersAIFinishReason(response),
