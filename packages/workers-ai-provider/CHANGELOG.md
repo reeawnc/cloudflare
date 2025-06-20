@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.7.0
+
+### Minor Changes
+
+- [#205](https://github.com/cloudflare/ai/pull/205) [`804804b`](https://github.com/cloudflare/ai/commit/804804b721f9201f16e3617ade91e255949a4ca6) Thanks [@JoaquinGimenez1](https://github.com/JoaquinGimenez1)! - Adds support for Chat Completions API responses
+
 ## 0.6.5
 
 ### Patch Changes
