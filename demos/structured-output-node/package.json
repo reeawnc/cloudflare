@@ -4,8 +4,8 @@
 		"zod": "^3.25.67"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.0.0",
-		"@cloudflare/workers-types": "^4.20250618.0",
+		"@biomejs/biome": "^2.0.4",
+		"@cloudflare/workers-types": "^4.20250620.0",
 		"typescript": "^5.8.3",
 		"vitest": "~3.2.4"
 	},

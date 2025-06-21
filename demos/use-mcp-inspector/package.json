@@ -10,13 +10,13 @@
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
-		"lucide-react": "^0.516.0",
+		"lucide-react": "^0.522.0",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
-		"use-mcp": "^0.0.8"
+		"use-mcp": "^0.0.9"
 	},
 	"devDependencies": {
-		"@cloudflare/vite-plugin": "^1.7.0",
+		"@cloudflare/vite-plugin": "^1.7.4",
 		"@tailwindcss/typography": "^0.5.16",
 		"@tailwindcss/vite": "^4.1.10",
 		"@types/react": "^19.1.8",
@@ -27,6 +27,6 @@
 		"tailwindcss": "^4.1.10",
 		"typescript": "^5.8.3",
 		"vite": "^6.3.5",
-		"wrangler": "^4.20.1"
+		"wrangler": "^4.20.5"
 	}
 }

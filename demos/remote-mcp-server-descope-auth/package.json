@@ -11,9 +11,9 @@
 		"cf-typegen": "wrangler types"
 	},
 	"dependencies": {
-		"@modelcontextprotocol/sdk": "^1.12.3",
+		"@modelcontextprotocol/sdk": "^1.13.0",
 		"agents": "^0.0.95",
-		"hono": "^4.8.0",
+		"hono": "^4.8.2",
 		"jose": "^6.0.11",
 		"zod": "^3.25.67"
 	},
@@ -21,6 +21,6 @@
 		"marked": "^15.0.12",
 		"typescript": "^5.8.3",
 		"workers-mcp": "^0.0.13",
-		"wrangler": "^4.20.1"
+		"wrangler": "^4.20.5"
 	}
 }
