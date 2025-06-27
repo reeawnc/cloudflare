@@ -21,9 +21,9 @@ Follow the steps below to get this application fully functional and running usin
 
 2. Navigate to [Frontend SDKs](https://stytch.com/dashboard/sdk-configuration?env=test) to enable the Frontend SDK in Test
 
-3. Navigate to [Connected Apps](https://stytch.com/dashboard/connected-apps?env=test) to enable Dynamic Client Registration
+3. Navigate to [Connected Apps](https://stytch.com/dashboard/connected-apps?env=test) to enable Dynamic Client Registration and configure your authorization URL as `http://localhost:3000/oauth/authorize`.
 
-4. Navigate to [Project Settings](https://stytch.com/dashboard/project-settings?env=test) to view your Project ID and API keys. You will need these values later.
+4. Navigate to [Project Settings](https://stytch.com/dashboard?env=test) to view your Project Domain, Project ID, and API keys. You will need these values later.
 
 ### On your machine
 
@@ -42,11 +42,12 @@ Next, create an `.env.local` file by running the command below which copies the 
 cp .env.template .env.local
 ```
 
-Open `.env.local` in the text editor of your choice, and set the environment variables using the `public_token` found on [Project Settings](https://stytch.com/dashboard/project-settings?env=test).
+Open `.env.local` in the text editor of your choice, and set the environment variables using the `public_token` and `project domain` found on [Project Settings](https://stytch.com/dashboard/project-settings?env=test). 
 
 ```
 # This is what a completed .env.local file will look like
 VITE_STYTCH_PUBLIC_TOKEN=public-token-test-abc123-abcde-1234-0987-0000-abcd1234
+VITE_STYTCH_DOMAIN=random-domain-name.customers.stytch.dev
 ```
 
 Create a `.dev.vars` file by running the command below which copies the contents of `.dev.vars.template`
