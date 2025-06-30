@@ -38,11 +38,11 @@ export const stytchBearerTokenAuthMiddleware = createMiddleware<{
 
 	if (!authHeader || !authHeader.startsWith("Bearer ")) {
 		const wwwAuthValue = `Bearer error="Unauthorized", error_description="Unauthorized", resource_metadata="${url.origin}/.well-known/oauth-protected-resource"`;
-        const responseHeaders = new Headers();
+		const responseHeaders = new Headers();
 
-        responseHeaders.set('WWW-Authenticate', wwwAuthValue);
-        const res = new Response(null, {status: 401, headers: responseHeaders})
-        throw new HTTPException(401, {message: 'Missing or invalid access token', res: res})
+		responseHeaders.set("WWW-Authenticate", wwwAuthValue);
+		const res = new Response(null, { status: 401, headers: responseHeaders });
+		throw new HTTPException(401, { message: "Missing or invalid access token", res: res });
 	}
 	const accessToken = authHeader.substring(7);
 
