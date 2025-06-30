@@ -64,7 +64,7 @@ cp .dev.vars.template .dev.vars
 ```
 # This is what a completed .env.local file will look like
 VITE_STYTCH_PUBLIC_TOKEN=public-token-test-abc123-abcde-1234-0987-0000-abcd1234
-VITE_STYTCH_DOMAIN=project-domain.customers.stytch.dev
+VITE_STYTCH_DOMAIN=https://project-domain.customers.stytch.dev
 ```
 
 
