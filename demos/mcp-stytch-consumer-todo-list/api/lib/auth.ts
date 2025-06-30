@@ -45,7 +45,6 @@ export const stytchBearerTokenAuthMiddleware = createMiddleware<{
         throw new HTTPException(401, {message: 'Missing or invalid access token', res: res})
 	}
 	const accessToken = authHeader.substring(7);
-	console.log(authHeader);
 
 	try {
 		const verifyResult = await validateStytchJWT(accessToken, c.env);
