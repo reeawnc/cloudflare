@@ -2,11 +2,9 @@ import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 import { B2BClient } from "stytch";
-import { createRemoteJWKSet, jwtVerify } from "jose";
 import type { AuthenticationContext } from "../../types";
 
 let client: B2BClient | null = null;
-let jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
 
 function getClient(env: Env): B2BClient {
 	if (!client) {
@@ -17,19 +15,6 @@ function getClient(env: Env): B2BClient {
 		});
 	}
 	return client;
-}
-
-async function validateStytchJWT(token: string, env: Env) {
-	if (!jwks) {
-		jwks = createRemoteJWKSet(new URL(getStytchOAuthEndpointUrl(env, ".well-known/jwks.json")));
-	}
-
-	return await jwtVerify(token, jwks, {
-		algorithms: ["RS256"],
-		audience: env.STYTCH_PROJECT_ID,
-		issuer: [`https://${env.STYTCH_DOMAIN}`],
-		typ: "JWT",
-	});
 }
 
 export type RBACParams = {
