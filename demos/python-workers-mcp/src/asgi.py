@@ -34,7 +34,7 @@ def request_to_scope(req, env, ws=False):
     # async def example(request: Request):
     #     request.headers.get("content-type")
     # - this will error if header is not "bytes" as in ASGI spec.
-    headers = [(k.lower().encode(), v.encode()) for k, v in req.headers]
+    headers = [(k.lower().encode(), v.encode()) for k, v in req.headers.items()]
     url = URL.new(req.url)
     assert url.protocol[-1] == ":"
     scheme = url.protocol[:-1]
