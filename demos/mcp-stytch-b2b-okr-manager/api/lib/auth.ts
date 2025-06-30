@@ -2,18 +2,34 @@ import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 import { B2BClient } from "stytch";
+import { createRemoteJWKSet, jwtVerify } from "jose";
 import type { AuthenticationContext } from "../../types";
 
 let client: B2BClient | null = null;
+let jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
 
 function getClient(env: Env): B2BClient {
 	if (!client) {
 		client = new B2BClient({
 			project_id: env.STYTCH_PROJECT_ID,
 			secret: env.STYTCH_PROJECT_SECRET,
+			custom_base_url: `https://${env.STYTCH_DOMAIN}`
 		});
 	}
 	return client;
+}
+
+async function validateStytchJWT(token: string, env: Env) {
+	if (!jwks) {
+		jwks = createRemoteJWKSet(new URL(getStytchOAuthEndpointUrl(env, ".well-known/jwks.json")));
+	}
+
+	return await jwtVerify(token, jwks, {
+		algorithms: ["RS256"],
+		audience: env.STYTCH_PROJECT_ID,
+		issuer: [`https://${env.STYTCH_DOMAIN}`],
+		typ: "JWT",
+	});
 }
 
 export type RBACParams = {
@@ -74,7 +90,13 @@ export const stytchBearerTokenAuthMiddleware = createMiddleware<{
 	const authHeader = c.req.header("Authorization");
 
 	if (!authHeader || !authHeader.startsWith("Bearer ")) {
-		throw new HTTPException(401, { message: "Missing or invalid access token" });
+		const url = new URL(c.req.url);
+		const wwwAuthValue = `Bearer error="Unauthorized", error_description="Unauthorized", resource_metadata="${url.origin}/.well-known/oauth-protected-resource"`;
+        const responseHeaders = new Headers();
+
+        responseHeaders.set('WWW-Authenticate', wwwAuthValue);
+        const res = new Response(null, {status: 401, headers: responseHeaders})
+        throw new HTTPException(401, {message: 'Missing or invalid access token', res: res})
 	}
 	const accessToken = authHeader.substring(7);
 
@@ -112,9 +134,6 @@ export async function stytchRBACEnforcement(
 }
 
 export function getStytchOAuthEndpointUrl(env: Env, endpoint: string): string {
-	const baseURL = env.STYTCH_PROJECT_ID.includes("test")
-		? "https://test.stytch.com/v1/public"
-		: "https://api.stytch.com/v1/public";
-
-	return `${baseURL}/${env.STYTCH_PROJECT_ID}/${endpoint}`;
+	const baseURL = `https://${env.STYTCH_DOMAIN}`;
+	return `${baseURL}/${endpoint}`;
 }
