@@ -4,7 +4,11 @@ import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-d
 import { Authenticate, Authorize, Login, Logout } from "./Auth.tsx";
 import TodoEditor from "./Todos.tsx";
 
-const stytch = new StytchUIClient(import.meta.env.VITE_STYTCH_PUBLIC_TOKEN ?? "");
+const stytch = new StytchUIClient(import.meta.env.VITE_STYTCH_PUBLIC_TOKEN ?? "", {
+	endpointOptions: {
+		testApiDomain: import.meta.env.VITE_STYTCH_DOMAIN
+	}
+});
 
 function App() {
 	return (
