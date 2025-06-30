@@ -73,7 +73,7 @@ VITE_STYTCH_DOMAIN=project-domain.customers.stytch.dev
 // This is what a completed .dev.vars file will look like
 STYTCH_PROJECT_ID=project-test-6c20cd16-73d5-44f7-852c-9a7e7b2ccf62
 STYTCH_PROJECT_SECRET=secret-test-.....
-STYTCH_DOMAIN=project-domain.customers.stytch.dev
+STYTCH_DOMAIN=https://project-domain.customers.stytch.dev
 ```
 
 
