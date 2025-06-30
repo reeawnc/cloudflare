@@ -11,7 +11,7 @@ function getClient(env: Env): B2BClient {
 		client = new B2BClient({
 			project_id: env.STYTCH_PROJECT_ID,
 			secret: env.STYTCH_PROJECT_SECRET,
-			custom_base_url: `https://${env.STYTCH_DOMAIN}`
+			custom_base_url: `${env.STYTCH_DOMAIN}`
 		});
 	}
 	return client;
@@ -119,6 +119,6 @@ export async function stytchRBACEnforcement(
 }
 
 export function getStytchOAuthEndpointUrl(env: Env, endpoint: string): string {
-	const baseURL = `https://${env.STYTCH_DOMAIN}`;
+	const baseURL = `${env.STYTCH_DOMAIN}`;
 	return `${baseURL}/${endpoint}`;
 }
