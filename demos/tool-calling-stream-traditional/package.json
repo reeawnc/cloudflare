@@ -16,18 +16,18 @@
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
-		"agents": "^0.0.95",
+		"agents": "^0.0.100",
 		"ai": "^4.3.16",
-		"hono": "^4.8.2",
+		"hono": "^4.8.3",
 		"zod": "^3.25.67"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.0.4",
-		"@cloudflare/vite-plugin": "^1.7.4",
-		"@cloudflare/vitest-pool-workers": "^0.8.43",
+		"@biomejs/biome": "^2.0.6",
+		"@cloudflare/vite-plugin": "^1.7.5",
+		"@cloudflare/vitest-pool-workers": "^0.8.47",
 		"typescript": "^5.8.3",
 		"vite": "^6.3.5",
 		"vitest": "~3.2.4",
-		"wrangler": "^4.20.5"
+		"wrangler": "^4.22.0"
 	}
 }

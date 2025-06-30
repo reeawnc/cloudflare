@@ -14,33 +14,33 @@
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@modelcontextprotocol/sdk": "^1.13.0",
+		"@modelcontextprotocol/sdk": "^1.13.2",
 		"@stytch/react": "^19.5.5",
 		"@stytch/vanilla-js": "^5.24.6",
-		"agents": "^0.0.95",
+		"agents": "^0.0.100",
 		"commander": "^14.0.0",
-		"hono": "^4.8.2",
-		"lucide-react": "^0.522.0",
+		"hono": "^4.8.3",
+		"lucide-react": "^0.525.0",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
-		"react-router-dom": "^7.6.2",
-		"stytch": "^12.22.0",
+		"react-router-dom": "^7.6.3",
+		"stytch": "^12.23.0",
 		"workers-mcp": "^0.0.13",
 		"zod": "^3.25.67"
 	},
 	"devDependencies": {
-		"@cloudflare/vite-plugin": "^1.7.4",
-		"@eslint/js": "^9.29.0",
+		"@cloudflare/vite-plugin": "^1.7.5",
+		"@eslint/js": "^9.30.0",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
-		"@vitejs/plugin-react": "^4.5.2",
-		"eslint": "^9.29.0",
+		"@vitejs/plugin-react": "^4.6.0",
+		"eslint": "^9.30.0",
 		"eslint-plugin-react-hooks": "^5.2.0",
 		"eslint-plugin-react-refresh": "^0.4.20",
 		"globals": "^16.2.0",
 		"typescript": "^5.8.3",
-		"typescript-eslint": "^8.34.1",
+		"typescript-eslint": "^8.35.0",
 		"vite": "^6.3.5",
-		"wrangler": "^4.20.5"
+		"wrangler": "^4.22.0"
 	}
 }
