@@ -9,12 +9,7 @@
 		"enabled": true
 	},
 	"files": {
-		"includes": [
-			"src/**/*.ts",
-			"test/**/*.ts",
-			"!node_modules/**/*",
-			"!dist/**/*"
-		]
+		"includes": ["src/**/*.ts", "test/**/*.ts", "!node_modules/**/*", "!dist/**/*"]
 	},
 	"formatter": {
 		"enabled": true,

@@ -6,8 +6,8 @@ import TodoEditor from "./Todos.tsx";
 
 const stytch = new StytchUIClient(import.meta.env.VITE_STYTCH_PUBLIC_TOKEN ?? "", {
 	endpointOptions: {
-		testApiDomain: import.meta.env.VITE_STYTCH_DOMAIN
-	}
+		testApiDomain: import.meta.env.VITE_STYTCH_DOMAIN,
+	},
 });
 
 function App() {
