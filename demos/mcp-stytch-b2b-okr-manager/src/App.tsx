@@ -4,7 +4,11 @@ import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-d
 import { Authorize, Login, MemberSettings, Nav, OrgSettings, SSOSettings } from "./Auth.tsx";
 import OKREditor from "./OKREditor.tsx";
 
-const stytch = new StytchB2BUIClient(import.meta.env.VITE_STYTCH_PUBLIC_TOKEN);
+const stytch = new StytchB2BUIClient(import.meta.env.VITE_STYTCH_PUBLIC_TOKEN, {
+	endpointOptions: {
+		testApiDomain: import.meta.env.VITE_STYTCH_TEST_API_DOMAIN,
+	}
+});
 
 function App() {
 	return (

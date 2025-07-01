@@ -55,22 +55,25 @@ npm i
 
 ```bash
 cp .env.template .env.local
+cp .dev.vars.template .dev.vars
 ```
 
 
-3. Open `.env.local` in the text editor of your choice, and set the environment variables using the `public_token` found on [Project Settings](https://stytch.com/dashboard/project-settings?env=test).
+3. Open `.env.local` in the text editor of your choice, and set the environment variables using the `public_token` and `project domain` found on [Project Settings](https://stytch.com/dashboard/project-settings?env=test).
 
 ```
 # This is what a completed .env.local file will look like
 VITE_STYTCH_PUBLIC_TOKEN=public-token-test-abc123-abcde-1234-0987-0000-abcd1234
+VITE_STYTCH_DOMAIN=https://project-domain.customers.stytch.dev
 ```
 
 
-4. Open `.dev.vars` in the text editor of your choice, and set the environment variables using the `Project ID` and `Secret`  found on [Project Settings](https://stytch.com/dashboard/project-settings?env=test).
+4. Open `.dev.vars` in the text editor of your choice, and set the environment variables using the `Project ID`, `Project Domain` and `Secret`  found on [Project Settings](https://stytch.com/dashboard/project-settings?env=test).
 ```
 // This is what a completed .dev.vars file will look like
 STYTCH_PROJECT_ID=project-test-6c20cd16-73d5-44f7-852c-9a7e7b2ccf62
 STYTCH_PROJECT_SECRET=secret-test-.....
+STYTCH_DOMAIN=https://project-domain.customers.stytch.dev
 ```
 
 
