@@ -20,10 +20,10 @@
 	},
 	"devDependencies": {
 		"@ai-sdk/react": "^1.2.12",
-		"@cloudflare/vite-plugin": "^1.7.5",
-		"@cloudflare/workers-types": "^4.20250628.0",
+		"@cloudflare/vite-plugin": "^1.8.0",
+		"@cloudflare/workers-types": "^4.20250701.0",
 		"@modelcontextprotocol/sdk": "^1.13.2",
-		"@playwright/test": "^1.53.1",
+		"@playwright/test": "^1.53.2",
 		"@tailwindcss/vite": "^4.1.11",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
@@ -37,7 +37,7 @@
 		"tailwindcss": "^4.1.11",
 		"typescript": "^5.8.3",
 		"use-mcp": "^0.0.14",
-		"vite": "^6.3.5",
+		"vite": "^7.0.0",
 		"wrangler": "^4.22.0"
 	}
 }
