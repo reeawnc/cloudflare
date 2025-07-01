@@ -19,7 +19,7 @@
 		"@clack/prompts": "^0.11.0",
 		"@cloudflare/workers-oauth-provider": "^0.0.5",
 		"@langchain/core": "^0.3.61",
-		"@modelcontextprotocol/sdk": "^1.13.3",
+		"@modelcontextprotocol/sdk": "1.13.1",
 		"@repo/aicli": "workspace:*",
 		"@types/ejs": "^3.1.5",
 		"@types/node": "^24.0.8",

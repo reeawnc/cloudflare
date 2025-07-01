@@ -4,7 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"start": "vite dev",
-		"deploy": "vite build && wrangler deploy",
+		"clean": "rm -rf .wrangler node_modules/.vite dist",
+		"deploy": "npm run clean && vite build && wrangler deploy",
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -22,7 +23,7 @@
 		"@ai-sdk/react": "^1.2.12",
 		"@cloudflare/vite-plugin": "^1.8.0",
 		"@cloudflare/workers-types": "^4.20250701.0",
-		"@modelcontextprotocol/sdk": "^1.13.3",
+		"@modelcontextprotocol/sdk": "1.13.1",
 		"@playwright/test": "^1.53.2",
 		"@tailwindcss/vite": "^4.1.11",
 		"@types/react": "^19.1.8",

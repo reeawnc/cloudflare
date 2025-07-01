@@ -7,11 +7,13 @@ function McpConnection({
 	serverUrl,
 	headerKey,
 	bearerToken,
+	transportType,
 	onConnectionUpdate,
 }: {
 	serverUrl: string;
 	headerKey?: string;
 	bearerToken?: string;
+	transportType: "auto" | "http" | "sse";
 	onConnectionUpdate: (data: ConnectionData) => void;
 }) {
 	// Build custom headers object
@@ -23,6 +25,7 @@ function McpConnection({
 		customHeaders,
 		debug: true,
 		popupFeatures: "width=500,height=600,resizable=yes,scrollbars=yes",
+		transportType,
 		url: serverUrl,
 	});
 
@@ -42,6 +45,9 @@ type ConnectionData = Omit<UseMcpResult, "state"> & {
 export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: any[]) => void }) {
 	const [serverUrl, setServerUrl] = useState(() => {
 		return sessionStorage.getItem("mcpServerUrl") || "";
+	});
+	const [transportType, setTransportType] = useState<"auto" | "http" | "sse">(() => {
+		return (sessionStorage.getItem("mcpTransportType") as "auto" | "http" | "sse") || "auto";
 	});
 	const [isActive, setIsActive] = useState(false);
 	const [showSettings, setShowSettings] = useState(true);
@@ -566,6 +572,7 @@ export function McpServers({ onToolsUpdate }: { onToolsUpdate?: (tools: any[]) =
 					serverUrl={serverUrl}
 					headerKey={headerKey}
 					bearerToken={bearerToken}
+					transportType={transportType}
 					onConnectionUpdate={handleConnectionUpdate}
 				/>
 			)}
