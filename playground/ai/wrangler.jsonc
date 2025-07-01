@@ -11,4 +11,7 @@
   "routes": [
     { "pattern": "playground.ai.cloudflare.com", "custom_domain": true },
   ],
+  "assets": {
+    "not_found_handling": "single-page-application",
+  },
 }
