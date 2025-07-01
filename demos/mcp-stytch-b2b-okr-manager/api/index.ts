@@ -18,7 +18,7 @@ export default new Hono<{ Bindings: Env }>()
 		const url = new URL(c.req.url);
 		return c.json({
 			resource: url.origin,
-			authorization_servers: [c.env.STYTCH_DOMAIN]
+			authorization_servers: [c.env.STYTCH_DOMAIN],
 		});
 	})
 

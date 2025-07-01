@@ -105,7 +105,7 @@ test("should throw error if transition function returns non-string", async () =>
 	} as const;
 	// @ts-expect-error
 	const machine = generateMachine(config);
-	expect(machine.badTransition()).rejects.toThrow(/did not return a valid state string/);
+	await expect(machine.badTransition()).rejects.toThrow(/did not return a valid state string/);
 });
 
 test("synchronous hooks are called", async () => {
@@ -214,7 +214,7 @@ test("async transition returns non-string", async () => {
 	} as const;
 	// @ts-expect-error
 	const machine = generateMachine(config);
-	expect(machine.badAsync()).rejects.toThrow(/did not return a valid state string/);
+	await expect(machine.badAsync()).rejects.toThrow(/did not return a valid state string/);
 	expect(machine.state).toBe("init");
 });
 
