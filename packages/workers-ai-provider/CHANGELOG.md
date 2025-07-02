@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.7.1
+
+### Patch Changes
+
+- [#231](https://github.com/cloudflare/ai/pull/231) [`143a384`](https://github.com/cloudflare/ai/commit/143a384281f9aa601091c924030e7508424777cf) Thanks [@JoaquinGimenez1](https://github.com/JoaquinGimenez1)! - Adds support for getting delta content
+
 ## 0.7.0
 
 ### Minor Changes
