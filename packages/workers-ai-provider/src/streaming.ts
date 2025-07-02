@@ -34,6 +34,11 @@ export function getMappedStream(response: Response) {
 						type: "reasoning",
 						textDelta: chunk.choices[0].delta.reasoning_content,
 					});
+				chunk?.choices?.[0]?.delta?.content?.length &&
+					controller.enqueue({
+						type: "text-delta",
+						textDelta: chunk.choices[0].delta.content,
+					});
 			}
 
 			if (partialToolCalls.length > 0) {
