@@ -397,7 +397,7 @@ describe("REST API - Streaming Text Tests", () => {
 							`data: {"id":"chatcmpl-7047b0aace8d4e5888c1a01a0673f3ff","object":"chat.completion.chunk","created":1751571006,"model":"${TEST_MODEL}","choices":[{"index":0,"delta":{"content":" **"},"logprobs":null,"finish_reason":null}],"usage":{"prompt_tokens":13,"total_tokens":462,"completion_tokens":449}}\n\n`,
 							`data: {"id":"chatcmpl-7047b0aace8d4e5888c1a01a0673f3ff","object":"chat.completion.chunk","created":1751571006,"model":"${TEST_MODEL}","choices":[{"index":0,"delta":{"content":"cow is cool"},"logprobs":null,"finish_reason":null}],"usage":{"prompt_tokens":13,"total_tokens":463,"completion_tokens":450}}\n\n`,
 							`data: {"id":"chatcmpl-7047b0aace8d4e5888c1a01a0673f3ff","object":"chat.completion.chunk","created":1751571006,"model":"${TEST_MODEL}","choices":[],"usage":{"prompt_tokens":13,"total_tokens":1035,"completion_tokens":1022}}\n\n`,
-							`[DONE]\n\n`,
+							"[DONE]\n\n",
 						].join(""),
 						{
 							headers: {
