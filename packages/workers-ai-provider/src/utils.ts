@@ -277,9 +277,11 @@ export function processText(output: AiTextGenerationOutput): string | undefined 
 		return output?.choices?.[0]?.message?.content;
 	}
 
-	if (typeof output.response === "object" && output.response !== null) {
-		return JSON.stringify(output.response); // ai-sdk expects a string here
-	}
+	if ("response" in output) {
+		if (typeof output.response === "object" && output.response !== null) {
+			return JSON.stringify(output.response); // ai-sdk expects a string here
+		}
 
-	return output.response;
+		return output.response;
+	}
 }
