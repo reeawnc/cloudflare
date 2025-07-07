@@ -1,5 +1,11 @@
 # workers-ai-provider
 
+## 0.7.2
+
+### Patch Changes
+
+- [#233](https://github.com/cloudflare/ai/pull/233) [`836bc3d`](https://github.com/cloudflare/ai/commit/836bc3d83b1347a09c83c6876f72410e1487583c) Thanks [@JoaquinGimenez1](https://github.com/JoaquinGimenez1)! - Process Text from response content
+
 ## 0.7.1
 
 ### Patch Changes
