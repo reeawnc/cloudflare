@@ -31,9 +31,13 @@ wrangler secret put GITHUB_CLIENT_ID
 wrangler secret put GITHUB_CLIENT_SECRET
 wrangler secret put COOKIE_ENCRYPTION_KEY # add any random string here e.g. openssl rand -hex 32
 ```
+
+> [!IMPORTANT]
+> When you create the first secret, Wrangler will ask if you want to create a new Worker. Submit "Y" to create a new Worker and save the secret.
+
 #### Set up a KV namespace
 - Create the KV namespace: 
-`wrangler kv:namespace create "OAUTH_KV"`
+`wrangler kv namespace create "OAUTH_KV"`
 - Update the Wrangler file with the KV ID
 
 #### Deploy & Test
